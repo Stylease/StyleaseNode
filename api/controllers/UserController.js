@@ -63,4 +63,58 @@ module.exports = {
       });
     }
   },
+
+  login: function(req, res) {
+    if(req.body){
+      User.login(req.body, function(err,data){
+        if(err)
+        {
+          res.json({
+            value:false,
+            data:err
+          });
+        }
+        else {
+          res.json({
+            value:true,
+            data: {message: "Login Successful"}
+          });
+        }
+      })
+    }
+    else {
+      res.json({
+        value:false,
+        data:"Invalid call"
+      });
+    }
+  },
+  getProfile: function(req, res) {
+      if (req.session.user) {
+          res.json({
+              value: true,
+              data: req.session.user
+          });
+      } else {
+          res.json({
+              value: false,
+              data: {}
+          });
+      }
+  },
+  logout: function(req, res) {
+      req.session.destroy(function(err) {
+          if (err) {
+              res.json({
+                  value: false,
+                  data: err
+              });
+          } else {
+              res.json({
+                  value: true,
+                  data: {}
+              });
+          }
+      });
+  },
 };

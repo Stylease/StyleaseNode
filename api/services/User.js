@@ -1,16 +1,27 @@
 var mongoose = require('mongoose');
+var md5 = require('md5');
 var Schema = mongoose.Schema;
 var schema = new Schema({
-  name: {type:String,default:""},
-  password: {type:String,default:""},
-  mobile: {type:String,default:""},
+  name: {
+    type: String,
+    default: ""
+  },
+  email: String,
+  password: {
+    type: String,
+    default: ""
+  },
+  mobile: {
+    type: String,
+    default: ""
+  },
   oauthLogin: {
     type: [{
       socialProvider: String,
       socialId: String,
       modificationTime: Date
     }],
-    index:true
+    index: true
   },
   timestamp: Date,
   // notification: {
@@ -18,26 +29,26 @@ var schema = new Schema({
   //   index:true
   // },
   cart: {
-    type:[{
-      timestamp:Date,
-      product:{
+    type: [{
+      timestamp: Date,
+      product: {
         type: Schema.Types.ObjectId,
         ref: 'Product',
         index: true
       }
     }],
-    index:true
+    index: true
   },
   wishlist: {
     type: [{
-      timestamp:Date,
-      product:{
+      timestamp: Date,
+      product: {
         type: Schema.Types.ObjectId,
         ref: 'Product',
         index: true
       }
     }],
-    index:true
+    index: true
   }
 
 });
@@ -50,7 +61,7 @@ var models = {
     var user = this(data);
     if (data._id) {
       data.expiry = new Date(data.expiry);
-      data.password=sails.md5(data.password);
+      data.password = md5(data.password);
       data.userid = new Date();
       this.findOneAndUpdate({
         _id: data._id
@@ -67,7 +78,7 @@ var models = {
     } else {
       user.timestamp = new Date();
       data.expiry = new Date();
-      user.password = sails.md5(user.password);
+      user.password = md5(user.password);
 
       user.save(function(err, created) {
         if (err) {
@@ -123,6 +134,21 @@ var models = {
       }
     });
   },
+  login: function(data, callback) {
+         data.password = md5(data.password);
+         User.findOne({
+             email: data.email,
+             password: data.password
+         }, function(err, data2) {
+             if (err) {
+                 console.log(err);
+                 callback(err, null);
+             } else {
+                callback(null, data2)
+             }
+         });
+     },
+
 };
 
 module.exports = _.assign(module.exports, models);
