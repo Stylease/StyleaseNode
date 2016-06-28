@@ -1,19 +1,22 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
+  category: {
+    type:Schema.Types.ObjectId,
+    ref:'Category',
+    index:true
+  },
   name: {type:String,default:""},
   order: {type:Number,default:""},
-  status: Boolean,
-  type: {type:String,default:""}
+  status: {type:String,default:""}
 
 });
-
-module.exports = mongoose.model('Size', schema);
+module.exports = mongoose.model('Subcategory', schema);
 
 var models = {
   saveData: function(data, callback) {
     //        delete data.password;
-    var size = this(data);
+    var subcategory = this(data);
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
@@ -29,7 +32,7 @@ var models = {
       });
     } else {
 
-      size.save(function(err, created) {
+      subcategory.save(function(err, created) {
         if (err) {
           callback(err, null);
         } else if (created) {
@@ -57,6 +60,20 @@ var models = {
     this.find({}, {
       password: 0
     }).exec(function(err, found) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (found && found.length > 0) {
+        callback(null, found);
+      } else {
+        callback(null, []);
+      }
+    });
+  },
+  getAllCat: function(data, callback) {
+    this.find({}, {
+      password: 0
+    }).populate("category", "_id  name", null, { sort: { "name": 1 } }).lean().exec(function(err, found) {
       if (err) {
         console.log(err);
         callback(err, null);

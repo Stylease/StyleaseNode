@@ -3,7 +3,7 @@ module.exports = {
 
   save: function(req, res) {
     if (req.body) {
-      Occasion.saveData(req.body, res.callback);
+      Subcategory.saveData(req.body, res.callback);
     } else {
       res.json({
         value: false,
@@ -14,7 +14,7 @@ module.exports = {
   getOne: function(req, res) {
 
     if (req.body) {
-      Occasion.getOne(req.body, res.callback);
+      Subcategory.getOne(req.body, res.callback);
     } else {
       res.json({
         value: false,
@@ -26,7 +26,7 @@ module.exports = {
   delete: function(req, res) {
     if (req.body) {
       console.log(req.body);
-      Occasion.deleteData(req.body, res.callback);
+      Subcategory.deleteData(req.body, res.callback);
     } else {
       res.json({
         value: false,
@@ -40,7 +40,20 @@ module.exports = {
       Global.response(err, data, res);
     }
     if (req.body) {
-      Occasion.getAll(req.body, res.callback);
+      Subcategory.getAll(req.body, res.callback);
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid Request"
+      });
+    }
+  },
+  getAllCat: function(req, res) {
+    function callback(err, data) {
+      Global.response(err, data, res);
+    }
+    if (req.body) {
+      Subcategory.getAllCat(req.body, res.callback);
     } else {
       res.json({
         value: false,
