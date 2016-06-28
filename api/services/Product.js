@@ -1,6 +1,16 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
+        index: true
+    },
+    subcategory: {
+        type: Schema.Types.ObjectId,
+        ref: 'Subcategory',
+        index: true
+    },
     name: {
         type: String,
         default: ""
@@ -101,6 +111,20 @@ var models = {
         this.find({}, {
             password: 0
         }).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (found && found.length > 0) {
+                callback(null, found);
+            } else {
+                callback(null, []);
+            }
+        });
+    },
+    getAllDetails: function(data, callback) {
+        this.find({}, {
+            password: 0
+        }).populate("category","_id  name", null, { sort: { "name": 1 } }).populate("subcategory","_id  name", null, { sort: { "name": 1 } }).lean().exec(function(err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
