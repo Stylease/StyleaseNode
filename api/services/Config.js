@@ -15,7 +15,7 @@ var gfs = Grid(mongoose.connections[0].db, mongoose);
 gfs.mongo = mongoose.mongo;
 
 module.exports = {
-    GlobalCallback: function(err, data, res) {
+    GlobalCallback: function (err, data, res) {
         if (err) {
             res.json({
                 error: err,
@@ -28,8 +28,8 @@ module.exports = {
             });
         }
     },
-    uploadFile: function(filename, callback) {
-        console.log(filename);
+    uploadFile: function (filename, callback) {
+
         var id = mongoose.Types.ObjectId();
         var extension = filename.split(".").pop();
         extension = extension.toLowerCase();
@@ -48,7 +48,7 @@ module.exports = {
                 filename: newFilename,
                 metadata: metaValue
             });
-            writestream2.on('finish', function() {
+            writestream2.on('finish', function () {
                 callback(null, {
                     name: newFilename
                 });
@@ -58,46 +58,42 @@ module.exports = {
         }
 
         if (extension == "png" || extension == "jpg" || extension == "gif") {
-            lwip.open(filename, extension, function(err, image) {
-                if (err) {
-                    callback(err, null);
-                } else {
-                    var upImage = {
-                        width: image.width(),
-                        height: image.height(),
-                        ratio: image.width() / image.height()
-                    };
+            lwip.open(filename, extension, function (err, image) {
+                var upImage = {
+                    width: image.width(),
+                    height: image.height(),
+                    ratio: image.width() / image.height()
+                };
 
-                    if (upImage.width > upImage.height) {
-                        if (upImage.width > MaxImageSize) {
-                            image.resize(MaxImageSize, MaxImageSize / (upImage.width / upImage.height), function(err, image2) {
-                                upImage = {
-                                    width: image2.width(),
-                                    height: image2.height(),
-                                    ratio: image2.width() / image2.height()
-                                };
-                                image2.writeFile(filename, function(err) {
-                                    writer2(upImage);
-                                });
+                if (upImage.width > upImage.height) {
+                    if (upImage.width > MaxImageSize) {
+                        image.resize(MaxImageSize, MaxImageSize / (upImage.width / upImage.height), function (err, image2) {
+                            upImage = {
+                                width: image2.width(),
+                                height: image2.height(),
+                                ratio: image2.width() / image2.height()
+                            };
+                            image2.writeFile(filename, function (err) {
+                                writer2(upImage);
                             });
-                        } else {
-                            writer2(upImage);
-                        }
+                        });
                     } else {
-                        if (upImage.height > MaxImageSize) {
-                            image.resize((upImage.width / upImage.height) * MaxImageSize, MaxImageSize, function(err, image2) {
-                                upImage = {
-                                    width: image2.width(),
-                                    height: image2.height(),
-                                    ratio: image2.width() / image2.height()
-                                };
-                                image2.writeFile(filename, function(err) {
-                                    writer2(upImage);
-                                });
+                        writer2(upImage);
+                    }
+                } else {
+                    if (upImage.height > MaxImageSize) {
+                        image.resize((upImage.width / upImage.height) * MaxImageSize, MaxImageSize, function (err, image2) {
+                            upImage = {
+                                width: image2.width(),
+                                height: image2.height(),
+                                ratio: image2.width() / image2.height()
+                            };
+                            image2.writeFile(filename, function (err) {
+                                writer2(upImage);
                             });
-                        } else {
-                            writer2(upImage);
-                        }
+                        });
+                    } else {
+                        writer2(upImage);
                     }
                 }
             });
@@ -105,18 +101,18 @@ module.exports = {
             imageStream.pipe(writestream);
         }
 
-        writestream.on('finish', function() {
+        writestream.on('finish', function () {
             callback(null, {
                 name: newFilename
             });
             fs.unlink(filename);
         });
     },
-    readUploaded: function(filename, width, height, style, res) {
+    readUploaded: function (filename, width, height, style, res) {
         var readstream = gfs.createReadStream({
             filename: filename
         });
-        readstream.on('error', function(err) {
+        readstream.on('error', function (err) {
             res.json({
                 value: false,
                 error: err
@@ -128,7 +124,7 @@ module.exports = {
                 filename: gridFSFilename,
                 metadata: metaValue
             });
-            writestream2.on('finish', function() {
+            writestream2.on('finish', function () {
                 fs.unlink(filename);
             });
             fs.createReadStream(filename).pipe(res);
@@ -139,7 +135,7 @@ module.exports = {
             var readstream2 = gfs.createReadStream({
                 filename: filename2
             });
-            readstream2.on('error', function(err) {
+            readstream2.on('error', function (err) {
                 res.json({
                     value: false,
                     error: err
@@ -170,7 +166,7 @@ module.exports = {
             var newNameExtire = newName + "." + extension;
             gfs.exist({
                 filename: newNameExtire
-            }, function(err, found) {
+            }, function (err, found) {
                 if (err) {
                     res.json({
                         value: false,
@@ -182,8 +178,8 @@ module.exports = {
                 } else {
                     var imageStream = fs.createWriteStream('./.tmp/uploads/' + filename);
                     readstream.pipe(imageStream);
-                    imageStream.on("finish", function() {
-                        lwip.open('./.tmp/uploads/' + filename, function(err, image) {
+                    imageStream.on("finish", function () {
+                        lwip.open('./.tmp/uploads/' + filename, function (err, image) {
                             ImageWidth = image.width();
                             ImageHeight = image.height();
                             var newWidth = 0;
@@ -220,8 +216,8 @@ module.exports = {
                                 newWidth = height * (ImageWidth / ImageHeight);
                                 newHeight = height;
                             }
-                            image.resize(parseInt(newWidth), parseInt(newHeight), function(err, image2) {
-                                image2.writeFile('./.tmp/uploads/' + filename, function(err) {
+                            image.resize(parseInt(newWidth), parseInt(newHeight), function (err, image2) {
+                                image2.writeFile('./.tmp/uploads/' + filename, function (err) {
                                     writer2('./.tmp/uploads/' + filename, newNameExtire, {
                                         width: newWidth,
                                         height: newHeight

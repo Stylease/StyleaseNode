@@ -6,9 +6,9 @@ var schema = new Schema({
     ref:'User',
     index:true
   },
-  description: {type:Number,default:""},
+  // description: {type:Number,default:""},
   testimonial: {type:String,default:""},
-  timestamp: {type:String,default:""},
+  timestamp: { type: Date, default: Date.now },
   order: {type:Number,default:""}
 
 });
@@ -33,7 +33,7 @@ var models = {
         }
       });
     } else {
-
+      // data.timestamp= new Date();
       testimonial.save(function(err, created) {
         if (err) {
           callback(err, null);
@@ -62,6 +62,20 @@ var models = {
     this.find({}, {
       password: 0
     }).exec(function(err, found) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (found && found.length > 0) {
+        callback(null, found);
+      } else {
+        callback(null, []);
+      }
+    });
+  },
+  getAllDetails: function(data, callback) {
+    this.find({}, {
+      password: 0
+    }).populate("user", "_id  name email", null, { sort: { "name": 1 } }).lean().exec(function(err, found) {
       if (err) {
         console.log(err);
         callback(err, null);

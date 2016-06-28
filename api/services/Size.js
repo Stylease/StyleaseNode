@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 var schema = new Schema({
   name: {type:String,default:""},
   order: {type:Number,default:""},
-  status: Boolean,
+  status: String,
   type: {type:String,default:""}
 
 });

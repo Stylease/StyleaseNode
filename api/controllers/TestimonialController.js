@@ -3,7 +3,7 @@ module.exports = {
 
   save: function(req, res) {
     if (req.body) {
-      Testimonials.saveData(req.body, res.callback);
+      Testimonial.saveData(req.body, res.callback);
     } else {
       res.json({
         value: false,
@@ -14,7 +14,7 @@ module.exports = {
   getOne: function(req, res) {
 
     if (req.body) {
-      Testimonials.getOne(req.body, res.callback);
+      Testimonial.getOne(req.body, res.callback);
     } else {
       res.json({
         value: false,
@@ -26,7 +26,7 @@ module.exports = {
   delete: function(req, res) {
     if (req.body) {
       console.log(req.body);
-      Testimonials.deleteData(req.body, res.callback);
+      Testimonial.deleteData(req.body, res.callback);
     } else {
       res.json({
         value: false,
@@ -40,7 +40,20 @@ module.exports = {
       Global.response(err, data, res);
     }
     if (req.body) {
-      Testimonials.getAll(req.body, res.callback);
+      Testimonial.getAll(req.body, res.callback);
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid Request"
+      });
+    }
+  },
+  getAllDetails: function(req, res) {
+    function callback(err, data) {
+      Global.response(err, data, res);
+    }
+    if (req.body) {
+      Testimonial.getAllDetails(req.body, res.callback);
     } else {
       res.json({
         value: false,
