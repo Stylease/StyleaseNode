@@ -92,6 +92,20 @@ var models = {
       }
     });
   },
+  getAllDetails: function(data, callback) {
+    this.find({}, {
+      password: 0
+    }).populate("user","_id  name", null, { sort: { "name": 1 } }).populate("product","_id  name", null, { sort: { "name": 1 } }).lean().exec(function(err, found) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (found && found.length > 0) {
+        callback(null, found);
+      } else {
+        callback(null, []);
+      }
+    });
+  },
   getOne: function(data, callback) {
     this.findOne({
       "_id": data._id

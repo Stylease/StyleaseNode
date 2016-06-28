@@ -20,7 +20,7 @@ module.exports = {
                         if (err) {
                             callback(err);
                         } else {
-                            console.log(value.name);
+                            // console.log(value.name);
                             fileNames.push(value.name);
                             callback(null);
                         }
