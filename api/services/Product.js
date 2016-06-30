@@ -48,9 +48,10 @@ var schema = new Schema({
         default: ""
     },
     size: {
-        type: String,
-        default: ""
-    },
+      type: Schema.Types.ObjectId,
+      ref: 'Size',
+      index: true
+     },
     rentalamount: {
         type: String,
         default: ""
@@ -124,7 +125,7 @@ var models = {
     getAllDetails: function(data, callback) {
         this.find({}, {
             password: 0
-        }).populate("category","_id  name", null, { sort: { "name": 1 } }).populate("subcategory","_id  name", null, { sort: { "name": 1 } }).lean().exec(function(err, found) {
+        }).populate("category","_id  name", null, { sort: { "name": 1 } }).populate("subcategory","_id  name", null, { sort: { "name": 1 } }).populate("size","_id  name", null, { sort: { "name": 1 } }).lean().exec(function(err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);

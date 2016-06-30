@@ -1,14 +1,17 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
-  product: {
-    type:Schema.Types.ObjectId,
-    ref:'Product',
-    index:true
-  },
-  timestampFrom: Date,
-  timestampTo: Date,
-  status: {type:String,default:""}
+  // product: {
+  //   type:Schema.Types.ObjectId,
+  //   ref:'Product',
+  //   index:true
+  // },
+  // timestampFrom: Date,
+  // timestampTo: Date,
+  delivery: String,
+  pickupTime: String,
+  deliveryTime: String,
+  status: String
 
 });
 
