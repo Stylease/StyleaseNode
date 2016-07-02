@@ -6,16 +6,80 @@ var schema = new Schema({
         ref: 'User',
         index: true
     },
+    firstname: {
+        type: String,
+        default: ""
+    },
+    lastname: {
+        type: String,
+        default: ""
+    },
+    mobile: {
+        type: String,
+        default: ""
+    },
+    email: {
+        type: String,
+        default: ""
+    },
     coupon: {
         type: String,
         default: ""
     },
     timestamp: Date,
-    email: {
+    billingaddressflat: {
         type: String,
         default: ""
     },
-    mobile: {
+    billingaddresslandmark: {
+        type: String,
+        default: ""
+    },
+    billingaddressstreet: {
+        type: String,
+        default: ""
+    },
+    billingaddresspin: {
+        type: String,
+        default: ""
+    },
+    billingaddresscity: {
+        type: String,
+        default: ""
+    },
+    billingaddressstate: {
+        type: String,
+        default: ""
+    },
+    billingaddresscountry: {
+        type: String,
+        default: ""
+    },
+    shippingaddressflat: {
+        type: String,
+        default: ""
+    },
+    shippingaddresslandmark: {
+        type: String,
+        default: ""
+    },
+    shippingaddressstreet: {
+        type: String,
+        default: ""
+    },
+    shippingaddresspin: {
+        type: String,
+        default: ""
+    },
+    shippingaddresscity: {
+        type: String,
+        default: ""
+    },
+    shippingaddressstate: {
+        type: String,
+        default: ""
+    },
+    shippingaddresscountry: {
         type: String,
         default: ""
     },
@@ -26,26 +90,32 @@ var schema = new Schema({
             index: true
         },
         quantity: Number,
-        price: Number
+        price: Number,
+        timeFrom: Date,
+        timeTo: Date,
     }],
-    // billingAddress: {
-    //   address:String,
-    //   zipcode:Number,
-    //   country:String,
-    //
-    // },
-    // shippingAddress:
+
     status: {
         type: String,
         default: ""
     },
-    tax: {
+    subtotal: Number,
+    servicetax: Number,
+    refundabledeposit: Number,
+    deliverycharge: Number,
+    total: Number,
+    transactionid: {
         type: String,
         default: ""
     },
-    timeFrom: Date,
-    timeTo: Date
-
+    paymentmode: {
+        type: String,
+        default: ""
+    },
+    orderstatus: {
+        type: String,
+        default: ""
+    }
 });
 
 module.exports = mongoose.model('Order', schema);
@@ -213,10 +283,14 @@ var models = {
                 console.log(err);
                 callback(err, null);
             } else if (found && Object.keys(found).length > 0) {
-                _.each(found.products, function(n) {
-                    n.productname = n.product.name;
-                    delete n.product
-                })
+                if (found.products && found.products.length > 0) {
+                    _.each(found.products, function(n) {
+                        if (n.product && n.product.name) {
+                            n.productname = n.product.name;
+                            delete n.product
+                        }
+                    })
+                }
                 callback(null, found);
             } else {
                 callback(null, {});
