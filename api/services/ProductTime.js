@@ -11,7 +11,7 @@ var schema = new Schema({
   delivery: String,
   pickupTime: String,
   deliveryTime: String,
-  status: String
+  status: Boolean
 
 });
 

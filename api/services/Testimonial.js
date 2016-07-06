@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
-  user: {
-    type:Schema.Types.ObjectId,
-    ref:'User',
-    index:true
-  },
+  // user: {
+  //   type:Schema.Types.ObjectId,
+  //   ref:'User',
+  //   index:true
+  // },
+  user: String,
   // description: {type:Number,default:""},
   testimonial: {type:String,default:""},
   timestamp: { type: Date, default: Date.now },
@@ -134,10 +135,6 @@ var models = {
               }
           }, {}).sort({
               name: 1
-          }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("user", "_id  name", null, {
-              sort: {
-                  "testimonial": 1
-              }
           }).lean().exec(function(err, data2) {
               if (err) {
                   console.log(err);

@@ -9,10 +9,7 @@ var schema = new Schema({
         type: Number,
         default: ""
     },
-    status: {
-        type: String,
-        default: ""
-    }
+    status: Boolean
 
 });
 

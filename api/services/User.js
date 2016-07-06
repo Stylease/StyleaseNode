@@ -24,7 +24,7 @@ var schema = new Schema({
     index: true
   },
   accesslevel: String,
-  status: String,
+  status: Boolean,
   image: String,
   timestamp: Date,
   // notification: {
