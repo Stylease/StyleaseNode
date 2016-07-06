@@ -9,6 +9,7 @@ var schema = new Schema({
     ref: 'Product',
     index: true
   },
+  order: Number,
   // description: {type:Number,default:""},
   // link: {type:String,default:""},
   by: {type:String,default:""},
