@@ -22,6 +22,17 @@ module.exports = {
       });
     }
   },
+  getCart: function(req, res) {
+
+    if (req.body) {
+      User.getCart(req.body, res.callback);
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid Request"
+      });
+    }
+  },
 
   delete: function(req, res) {
     if (req.body) {

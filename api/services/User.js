@@ -131,12 +131,40 @@ var models = {
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).populate("cart.product", "_id  name", null, {
+            sort: {}
+        }).lean().exec(function(err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
             } else if (found && Object.keys(found).length > 0) {
+              if (found.cart && found.cart.length > 0) {
+                  _.each(found.cart, function(n) {
+                      if (n.product && n.product.name) {
+                          n.productname = n.product.name;
+                          delete n.product
+                      }
+                  })
+              }
                 callback(null, found);
+            } else {
+                callback(null, {});
+            }
+        });
+    },
+    getCart: function(data, callback) {
+        this.findOne({
+            "_id": data._id
+        }, {
+            cart: 1
+        }).populate("cart.product", "_id  name", null, {
+            sort: {}
+        }).lean().exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (found && Object.keys(found).length > 0) {
+                callback(null, found.cart);
             } else {
                 callback(null, {});
             }
