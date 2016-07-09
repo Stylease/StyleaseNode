@@ -218,7 +218,7 @@ var models = {
                         $group: {
                             _id: "_id",
                             cart: {
-                                $addToSet: "$cart"
+                                $push: "$cart"
                             }
                         }
                     }, {
