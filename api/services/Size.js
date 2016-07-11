@@ -27,7 +27,7 @@ var models = {
                 order: num + 1
             }, function(err, respo) {
                 if (err) {
-                  console.log(err);
+                    console.log(err);
                     callback(err, null);
                 } else {
                     num++;
@@ -49,12 +49,13 @@ var models = {
     },
     saveData: function(data, callback) {
         //        delete data.password;
-        console.log(data);
         var size = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, {
+                $set: data
+            }).exec(function(err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -65,7 +66,6 @@ var models = {
                 }
             });
         } else {
-
             size.save(function(err, created) {
                 if (err) {
                     callback(err, null);
