@@ -57,7 +57,6 @@ var models = {
                 $set: data
             }).exec(function(err, updated) {
                 if (err) {
-                    console.log(err);
                     callback(err, null);
                 } else if (updated) {
                     callback(null, updated);

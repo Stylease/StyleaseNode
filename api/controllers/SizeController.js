@@ -5,7 +5,6 @@ module.exports = {
             Config.GlobalCallback(err, data, res);
         }
         if (req.body) {
-          console.log(req.body);
             Size.sort(req.body, callback);
         } else {
             res.json({
