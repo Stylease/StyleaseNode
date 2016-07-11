@@ -20,8 +20,36 @@ var schema = new Schema({
 module.exports = mongoose.model('Size', schema);
 
 var models = {
+    sort: function(data, callback) {
+        function callSave(num) {
+            Size.saveData({
+                _id: data[num],
+                order: num + 1
+            }, function(err, respo) {
+                if (err) {
+                  console.log(err);
+                    callback(err, null);
+                } else {
+                    num++;
+                    if (num == data.length) {
+                        callback(null, {
+                            comment: "Data sorted"
+                        });
+                    } else {
+                        callSave(num);
+                    }
+                }
+            });
+        }
+        if (data && data.length > 0) {
+            callSave(0);
+        } else {
+            callback(null, {});
+        }
+    },
     saveData: function(data, callback) {
         //        delete data.password;
+        console.log(data);
         var size = this(data);
         if (data._id) {
             this.findOneAndUpdate({
@@ -123,7 +151,7 @@ var models = {
                         "$regex": checkfor
                     }
                 }, {}).sort({
-                    name: 1
+                    order: 1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
