@@ -49,10 +49,10 @@ module.exports = {
     }
   },
 
-  findLimited: function(req, res) {
+  getLimited: function(req, res) {
     if (req.body) {
       if (req.body.pagenumber && req.body.pagenumber !== "" && req.body.pagesize && req.body.pagesize !== "") {
-        ConfigTwo.findLimited(req.body, res.callback);
+        ConfigTwo.getLimited(req.body, res.callback);
       } else {
         res.json({
           value: false,

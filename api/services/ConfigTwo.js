@@ -6,7 +6,7 @@ var schema = new Schema({
     type: String,
     default: ""
   },
-  tpe: {
+  type: {
     type: String,
     default: ""
   },
@@ -87,7 +87,7 @@ var models = {
       }
     });
   },
-  findLimited: function(data, callback) {
+  getLimited: function(data, callback) {
     var newreturns = {};
     newreturns.data = [];
     var check = new RegExp(data.search, "i");
