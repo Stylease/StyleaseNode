@@ -47,11 +47,11 @@ var schema = new Schema({
         type: Number,
         default: ""
     },
-    size: {
+    size: [{
         type: Schema.Types.ObjectId,
         ref: 'Size',
         index: true
-    },
+    }],
     rentalamount: {
         type: String,
         default: ""
@@ -59,13 +59,41 @@ var schema = new Schema({
     securitydeposit: {
         type: String,
         default: ""
-    }
+    },
+      status: Boolean
 
 });
 
 module.exports = mongoose.model('Product', schema);
 
 var models = {
+  sort: function(data, callback) {
+      function callSave(num) {
+          Product.saveData({
+              _id: data[num],
+              order: num + 1
+          }, function(err, respo) {
+              if (err) {
+                  console.log(err);
+                  callback(err, null);
+              } else {
+                  num++;
+                  if (num == data.length) {
+                      callback(null, {
+                          comment: "Data sorted"
+                      });
+                  } else {
+                      callSave(num);
+                  }
+              }
+          });
+      }
+      if (data && data.length > 0) {
+          callSave(0);
+      } else {
+          callback(null, {});
+      }
+  },
     saveData: function(data, callback) {
         //delete data.password;
         var product = this(data);

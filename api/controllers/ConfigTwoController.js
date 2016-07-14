@@ -1,5 +1,18 @@
 
 module.exports = {
+  sort: function(req, res) {
+      function callback(err, data) {
+          Config.GlobalCallback(err, data, res);
+      }
+      if (req.body) {
+          ConfigTwo.sort(req.body, callback);
+      } else {
+          res.json({
+              value: false,
+              data: "Invalid call"
+          });
+      }
+  },
 
   save: function(req, res) {
     if (req.body) {

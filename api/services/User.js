@@ -65,6 +65,33 @@ var schema = new Schema({
 module.exports = mongoose.model('User', schema);
 
 var models = {
+    sort: function(data, callback) {
+        function callSave(num) {
+            User.saveData({
+                _id: data[num],
+                order: num + 1
+            }, function(err, respo) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    num++;
+                    if (num == data.length) {
+                        callback(null, {
+                            comment: "Data sorted"
+                        });
+                    } else {
+                        callSave(num);
+                    }
+                }
+            });
+        }
+        if (data && data.length > 0) {
+            callSave(0);
+        } else {
+            callback(null, {});
+        }
+    },
     saveData: function(data, callback) {
         //        delete data.password;
         var user = this(data);
@@ -224,7 +251,9 @@ var models = {
                     }, {
                         $project: {
                             _id: 0,
-                            cart: { $slice: ["$cart", skip, data.pagesize] }
+                            cart: {
+                                $slice: ["$cart", skip, data.pagesize]
+                            }
                         }
                     }]).exec(function(err, found) {
                         console.log(found);

@@ -6,6 +6,7 @@ var schema = new Schema({
         ref: 'User',
         index: true
     },
+    orderid: Number,
     firstname: {
         type: String,
         default: ""
@@ -138,16 +139,15 @@ var models = {
                 }
             });
         } else {
-
-            order.save(function(err, created) {
-                if (err) {
-                    callback(err, null);
-                } else if (created) {
-                    callback(null, created);
-                } else {
-                    callback(null, {});
-                }
-            });
+          order.save(function(err, created) {
+              if (err) {
+                  callback(err, null);
+              } else if (created) {
+                  callback(null, created);
+              } else {
+                  callback(null, {});
+              }
+          });
         }
     },
     deleteData: function(data, callback) {
