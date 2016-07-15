@@ -139,13 +139,34 @@ var models = {
                 }
             });
         } else {
-            order.save(function(err, created) {
+            Order.findOne({}, {
+                _id: 0,
+                orderid: 1
+            }, {
+                sort: {
+                    '_id': -1
+                },
+            }).exec(function(err, found) {
                 if (err) {
+                    console.log(err);
                     callback(err, null);
-                } else if (created) {
-                    callback(null, created);
                 } else {
-                    callback(null, {});
+                    if (_.isEmpty(found)) {
+                        order.orderid = 1;
+                    } else {
+                        order.orderid = found.orderid + 1;
+                    }
+                    order.save(function(err, created) {
+                        if (err) {
+                            callback(err, null);
+                        } else if (created) {
+                            callback(null, created);
+                        } else {
+                            callback({
+                                message: "Not created"
+                            }, null);
+                        }
+                    });
                 }
             });
         }
@@ -300,19 +321,7 @@ var models = {
 
 
     getOrderId: function(data, callback) {
-        Order.findOne({}, {}, {
-            sort: {
-                'created_at': -1
-            },
-        }).exec(function(err, found) {
-            if (err) {
-                console.log(err);
-                callback(err, null);
-            } else {
-                callback(null, found);
-                console.log(found.data);
-            }
-        });
+
     },
 };
 

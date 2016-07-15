@@ -27,6 +27,7 @@ var models = {
             }, function(err, respo) {
                 if (err) {
                     console.log(err);
+                    
                     callback(err, null);
                 } else {
                     num++;
