@@ -12,6 +12,11 @@ var schema = new Schema({
         ref: 'Subcategory',
         index: true
     },
+    designer: {
+        type: Schema.Types.ObjectId,
+        ref: 'Designer',
+        index: true
+    },
     name: {
         type: String,
         default: ""

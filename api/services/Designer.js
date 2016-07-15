@@ -1,20 +1,23 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    product: {
-      type:Schema.Types.ObjectId,
-      ref:'Product',
-      index:true
+    name: {
+        type: String,
+        default: ""
     },
-    timestampFrom: Date,
-    timestampTo: Date,
-    status: String
-});
-module.exports = mongoose.model('ProductTime', schema);
+    order: {
+        type: Number,
+        default: ""
+    },
+    status: Boolean,
+  });
+
+module.exports = mongoose.model('Designer', schema);
+
 var models = {
     sort: function(data, callback) {
         function callSave(num) {
-            ProductTime.saveData({
+            Designer.saveData({
                 _id: data[num],
                 order: num + 1
             }, function(err, respo) {
@@ -41,13 +44,14 @@ var models = {
     },
     saveData: function(data, callback) {
         //        delete data.password;
-        var producttime = this(data);
+        var size = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, {
+                $set: data
+            }).exec(function(err, updated) {
                 if (err) {
-                    console.log(err);
                     callback(err, null);
                 } else if (updated) {
                     callback(null, updated);
@@ -56,8 +60,7 @@ var models = {
                 }
             });
         } else {
-
-            producttime.save(function(err, created) {
+            size.save(function(err, created) {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
@@ -119,7 +122,7 @@ var models = {
         newreturns.data = [];
         async.parallel([
             function(callback1) {
-                ProductTime.count({
+                Designer.count({
                     name: {
                         "$regex": checkfor
                     }
@@ -137,12 +140,12 @@ var models = {
                 });
             },
             function(callback1) {
-                ProductTime.find({
-                    delivery: {
+                Designer.find({
+                    name: {
                         "$regex": checkfor
                     }
                 }, {}).sort({
-                    name: 1
+                    order: 1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);

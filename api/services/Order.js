@@ -94,6 +94,11 @@ var schema = new Schema({
         price: Number,
         timeFrom: Date,
         timeTo: Date,
+        size: {
+            type: Schema.Types.ObjectId,
+            ref: 'Size'
+        },
+
     }],
 
     status: {
@@ -115,7 +120,7 @@ var schema = new Schema({
     },
     orderstatus: {
         type: String,
-        default: ""
+        default: "Pending"
     }
 });
 
