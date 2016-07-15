@@ -13,9 +13,11 @@ var schema = new Schema({
     content: {
         type: String,
         default: ""
+    },
+    order: {
+        type: Number,
+        default: ""
     }
-
-
 });
 
 module.exports = mongoose.model('ConfigTwo', schema);
@@ -144,6 +146,8 @@ var models = {
                         name: {
                             '$regex': check
                         }
+                    }, {}).sort({
+                        order: 1
                     }).skip(data.pagesize * (data.pagenumber - 1)).limit(data.pagesize).populate("city", "_id  name", null, {
                         sort: {}
                     }).lean().exec(function(err, data2) {

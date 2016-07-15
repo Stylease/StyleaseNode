@@ -139,15 +139,15 @@ var models = {
                 }
             });
         } else {
-          order.save(function(err, created) {
-              if (err) {
-                  callback(err, null);
-              } else if (created) {
-                  callback(null, created);
-              } else {
-                  callback(null, {});
-              }
-          });
+            order.save(function(err, created) {
+                if (err) {
+                    callback(err, null);
+                } else if (created) {
+                    callback(null, created);
+                } else {
+                    callback(null, {});
+                }
+            });
         }
     },
     deleteData: function(data, callback) {
@@ -294,6 +294,23 @@ var models = {
                 callback(null, found);
             } else {
                 callback(null, {});
+            }
+        });
+    },
+
+
+    getOrderId: function(data, callback) {
+        Order.findOne({}, {}, {
+            sort: {
+                'created_at': -1
+            },
+        }).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, found);
+                console.log(found.data);
             }
         });
     },

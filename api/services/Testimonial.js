@@ -174,7 +174,7 @@ var models = {
                         "$regex": checkfor
                     }
                 }, {}).sort({
-                    name: 1
+                    order: 1
                 }).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);

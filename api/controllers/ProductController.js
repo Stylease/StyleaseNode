@@ -93,4 +93,90 @@ module.exports = {
         }
     },
 
+    findSize: function(req, res) {
+      if (req.body) {
+        Product.findSize(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      } else {
+        res.json({
+          value: false,
+          data: "Invalid call"
+        });
+      }
+    },
+    findOneSize: function(req, res) {
+      if (req.body) {
+        Product.findOneSize(req.body, res.callback);
+      } else {
+        res.json({
+          value: false,
+          data: "Invalid Request"
+        });
+      }
+    },
+
+    deleteSize: function(req, res) {
+      if (req.body) {
+        if (req.body._id && req.body._id !== "") {
+          //	console.log("not valid");
+          Product.deleteSize(req.body, function(err, respo) {
+            if (err) {
+              res.json({
+                value: false,
+                data: err
+              });
+            } else {
+              res.json({
+                value: true,
+                data: respo
+              });
+            }
+          });
+        } else {
+          res.json({
+            value: false,
+            data: "Invalid Id"
+          });
+        }
+      } else {
+        res.json({
+          value: false,
+          data: "Invalid call"
+        });
+      }
+    },
+    saveSize: function(req, res) {
+      if (req.body) {
+        Product.saveSize(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      } else {
+        res.json({
+          value: false,
+          data: "Invalid call"
+        });
+      }
+    },
+
 };
