@@ -90,15 +90,17 @@ var schema = new Schema({
             ref: 'Product',
             index: true
         },
-        quantity: Number,
-        price: Number,
+        // quantity: Number,
+        // price: Number,
         timeFrom: Date,
         timeTo: Date,
+        deliveryTime: String,
+        pickupTime: String,
         size: {
             type: Schema.Types.ObjectId,
-            ref: 'Size'
-        },
-
+            ref: 'Size',
+            index: true
+        }
     }],
 
     status: {
@@ -300,10 +302,12 @@ var models = {
             sort: {
                 "name": 1
             }
-        }).populate("products.product", "_id  name", null, {
+        }).populate("products.product", "_id  name rentalamount", null, {
             sort: {
                 "name": 1
             }
+        }).populate("products.size", "_id  name", null, {
+            sort: {}
         }).lean().exec(function(err, found) {
             if (err) {
                 console.log(err);
@@ -313,7 +317,12 @@ var models = {
                     _.each(found.products, function(n) {
                         if (n.product && n.product.name) {
                             n.productname = n.product.name;
+                            n.productprice = n.product.rentalamount;
                             delete n.product
+                        }
+                        if (n.size && n.size.name) {
+                            n.sizename = n.size.name;
+                            delete n.size
                         }
                     })
                 }

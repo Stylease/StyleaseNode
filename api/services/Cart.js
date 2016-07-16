@@ -12,7 +12,11 @@ var schema = new Schema({
         ref: 'User',
         index: true
     },
-    size: String,
+    size: {
+        type: Schema.Types.ObjectId,
+        ref: 'Size',
+        index: true
+    },
     timeFrom: Date,
     timeTo: Date,
     deliveryTime: String,
