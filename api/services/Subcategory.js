@@ -14,6 +14,10 @@ var schema = new Schema({
         type: Number,
         default: ""
     },
+    image: {
+      type: String,
+      default: ""
+    },
     status: Boolean
 });
 module.exports = mongoose.model('Subcategory', schema);
@@ -27,7 +31,7 @@ var models = {
             }, function(err, respo) {
                 if (err) {
                     console.log(err);
-                    
+
                     callback(err, null);
                 } else {
                     num++;

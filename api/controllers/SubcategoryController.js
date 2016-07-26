@@ -61,6 +61,19 @@ module.exports = {
             });
         }
     },
+    getAllCat: function(req, res) {
+        function callback(err, data) {
+            Global.response(err, data, res);
+        }
+        if (req.body) {
+            Subcategory.getAllCat(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
     getLimited: function(req, res) {
         function callback(err, data) {
             Global.response(err, data, res);

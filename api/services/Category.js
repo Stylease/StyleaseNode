@@ -60,7 +60,6 @@ var models = {
                 }
             });
         } else {
-
             category.save(function(err, created) {
                 if (err) {
                     callback(err, null);

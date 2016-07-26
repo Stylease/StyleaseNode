@@ -72,26 +72,26 @@ var schema = new Schema({
     },
     status: Boolean,
     size: [{
-      name: {
-        type: String,
-        default: ""
-      },
-      text1: {
-        type: String,
-        default: ""
-      },
-      text2: {
-        type: String,
-        default: ""
-      },
-      text3: {
-        type: String,
-        default: ""
-      },
-      text4: {
-        type: String,
-        default: ""
-      }
+        name: {
+            type: String,
+            default: ""
+        },
+        text1: {
+            type: String,
+            default: ""
+        },
+        text2: {
+            type: String,
+            default: ""
+        },
+        text3: {
+            type: String,
+            default: ""
+        },
+        text4: {
+            type: String,
+            default: ""
+        }
     }],
 
 });
@@ -224,6 +224,20 @@ var models = {
             }
         });
     },
+
+    getProductByCat: function(data, callback) {
+        this.find({
+            "category": data.category,
+            "subcategory": data.subcategory
+        }).select('_id name rentalamount images').exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, found);
+            }
+        });
+    },
     getLimited: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
@@ -296,181 +310,181 @@ var models = {
     },
 
     findSize: function(data, callback) {
-      var newreturns = {};
-      newreturns.data = [];
-      var check = new RegExp(data.search, "i");
-      data.pagenumber = parseInt(data.pagenumber);
-      data.pagesize = parseInt(data.pagesize);
-      var skip = parseInt(data.pagesize * (data.pagenumber - 1));
-      async.parallel([
-          function(callback) {
-            Product.aggregate([{
-              $match: {
-                _id: objectid(data._id)
-              }
-            }, {
-              $unwind: "$size"
-            }, {
-              $group: {
-                _id: null,
-                count: {
-                  $sum: 1
+        var newreturns = {};
+        newreturns.data = [];
+        var check = new RegExp(data.search, "i");
+        data.pagenumber = parseInt(data.pagenumber);
+        data.pagesize = parseInt(data.pagesize);
+        var skip = parseInt(data.pagesize * (data.pagenumber - 1));
+        async.parallel([
+                function(callback) {
+                    Product.aggregate([{
+                        $match: {
+                            _id: objectid(data._id)
+                        }
+                    }, {
+                        $unwind: "$size"
+                    }, {
+                        $group: {
+                            _id: null,
+                            count: {
+                                $sum: 1
+                            }
+                        }
+                    }, {
+                        $project: {
+                            count: 1
+                        }
+                    }]).exec(function(err, result) {
+                        console.log(result);
+                        if (result && result[0]) {
+                            newreturns.total = result[0].count;
+                            newreturns.totalpages = Math.ceil(result[0].count / data.pagesize);
+                            callback(null, newreturns);
+                        } else if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            callback({
+                                message: "Count of null"
+                            }, null);
+                        }
+                    });
+                },
+                function(callback) {
+                    Product.aggregate([{
+                        $match: {
+                            _id: objectid(data._id)
+                        }
+                    }, {
+                        $unwind: "$size"
+                    }, {
+                        $group: {
+                            _id: "_id",
+                            size: {
+                                $push: "$size"
+                            }
+                        }
+                    }, {
+                        $project: {
+                            _id: 0,
+                            size: {
+                                $slice: ["$size", skip, data.pagesize]
+                            }
+                        }
+                    }]).exec(function(err, found) {
+                        console.log(found);
+                        if (found && found.length > 0) {
+                            newreturns.data = found[0].size;
+                            callback(null, newreturns);
+                        } else if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            callback({
+                                message: "Count of null"
+                            }, null);
+                        }
+                    });
                 }
-              }
-            }, {
-              $project: {
-                count: 1
-              }
-            }]).exec(function(err, result) {
-              console.log(result);
-              if (result && result[0]) {
-                newreturns.total = result[0].count;
-                newreturns.totalpages = Math.ceil(result[0].count / data.pagesize);
-                callback(null, newreturns);
-              } else if (err) {
-                console.log(err);
-                callback(err, null);
-              } else {
-                callback({
-                  message: "Count of null"
-                }, null);
-              }
+            ],
+            function(err, data4) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else if (data4) {
+                    callback(null, newreturns);
+                } else {
+                    callback(null, newreturns);
+                }
             });
-          },
-          function(callback) {
-            Product.aggregate([{
-              $match: {
-                _id: objectid(data._id)
-              }
-            }, {
-              $unwind: "$size"
-            }, {
-              $group: {
-                _id: "_id",
-                size: {
-                  $push: "$size"
-                }
-              }
-            }, {
-              $project: {
-                _id: 0,
-                size: {
-                  $slice: ["$size", skip, data.pagesize]
-                }
-              }
-            }]).exec(function(err, found) {
-              console.log(found);
-              if (found && found.length > 0) {
-                newreturns.data = found[0].size;
-                callback(null, newreturns);
-              } else if (err) {
-                console.log(err);
-                callback(err, null);
-              } else {
-                callback({
-                  message: "Count of null"
-                }, null);
-              }
-            });
-          }
-        ],
-        function(err, data4) {
-          if (err) {
-            console.log(err);
-            callback(err, null);
-          } else if (data4) {
-            callback(null, newreturns);
-          } else {
-            callback(null, newreturns);
-          }
-        });
     },
 
     deleteSize: function(data, callback) {
-      Product.update({
-        "size._id": data._id
-      }, {
-        $pull: {
-          "size": {
-            "_id": objectid(data._id)
-          }
-        }
-      }, function(err, updated) {
-        console.log(updated);
-        if (err) {
-          console.log(err);
-          callback(err, null);
-        } else {
-          callback(null, updated);
-        }
-      });
+        Product.update({
+            "size._id": data._id
+        }, {
+            $pull: {
+                "size": {
+                    "_id": objectid(data._id)
+                }
+            }
+        }, function(err, updated) {
+            console.log(updated);
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, updated);
+            }
+        });
 
     },
 
     saveSize: function(data, callback) {
-      var product = data.product;
-      console.log(product);
-      if (!data._id) {
-        Product.update({
-          _id: product
-        }, {
-          $push: {
-            size: data
-          }
-        }, function(err, updated) {
-          if (err) {
-            console.log(err);
-            callback(err, null);
-          } else {
-            callback(null, updated);
-          }
-        });
-      } else {
-        data._id = objectid(data._id);
-        tobechanged = {};
-        var attribute = "size.$.";
-        _.forIn(data, function(value, key) {
-          tobechanged[attribute + key] = value;
-        });
-        Product.update({
-          "size._id": data._id
-        }, {
-          $set: tobechanged
-        }, function(err, updated) {
-          if (err) {
-            console.log(err);
-            callback(err, null);
-          } else {
-            callback(null, updated);
-          }
-        });
-      }
+        var product = data.product;
+        console.log(product);
+        if (!data._id) {
+            Product.update({
+                _id: product
+            }, {
+                $push: {
+                    size: data
+                }
+            }, function(err, updated) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    callback(null, updated);
+                }
+            });
+        } else {
+            data._id = objectid(data._id);
+            tobechanged = {};
+            var attribute = "size.$.";
+            _.forIn(data, function(value, key) {
+                tobechanged[attribute + key] = value;
+            });
+            Product.update({
+                "size._id": data._id
+            }, {
+                $set: tobechanged
+            }, function(err, updated) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    callback(null, updated);
+                }
+            });
+        }
     },
     findOneSize: function(data, callback) {
-      // aggregate query
-      Product.aggregate([{
-        $unwind: "$size"
-      }, {
-        $match: {
-          "size._id": objectid(data._id)
-        }
-      }, {
-        $project: {
-          size: 1
-        }
-      }]).exec(function(err, respo) {
-        if (err) {
-          console.log(err);
-          callback(err, null);
-        } else if (respo && respo.length > 0 && respo[0].size) {
-          callback(null, respo[0].size);
-        } else {
-          callback({
-            message: "No data found"
-          }, null);
-        }
-      });
+        // aggregate query
+        Product.aggregate([{
+            $unwind: "$size"
+        }, {
+            $match: {
+                "size._id": objectid(data._id)
+            }
+        }, {
+            $project: {
+                size: 1
+            }
+        }]).exec(function(err, respo) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (respo && respo.length > 0 && respo[0].size) {
+                callback(null, respo[0].size);
+            } else {
+                callback({
+                    message: "No data found"
+                }, null);
+            }
+        });
     },
-  };
+};
 
 module.exports = _.assign(module.exports, models);
