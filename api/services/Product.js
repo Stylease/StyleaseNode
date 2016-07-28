@@ -250,16 +250,20 @@ var models = {
     getProductByCat: function(data, callback) {
         console.log(data);
         this.find({
-            // "category": data.category,
-            // "subcategory": data.subcategory
             subcategory: {
                 $in: data.subcategory
             },
-            rentalamount: {
-                $gte: data.pricefrom,
-                $lt: data.priceto
+            // rentalamount: {
+            //     $gte: data.pricefrom,
+            //     $lt: data.priceto
+            // }
+            // ,
+            size: {
+                $elemMatch: {
+                    name: data.size
+                }
             }
-        }).select('_id name rentalamount images').exec(function(err, found) {
+        }).select('_id name rentalamount images subcategory').exec(function(err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
