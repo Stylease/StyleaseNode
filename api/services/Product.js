@@ -50,7 +50,7 @@ var schema = new Schema({
         default: ""
     },
     price: {
-        type: Number,
+        type: String,
         default: ""
     },
     // size: [{
@@ -127,7 +127,14 @@ var models = {
         }
     },
     saveData: function(data, callback) {
+        console.log(data.suggestedProduct);
         //delete data.password;
+        if (data.suggestedProduct.length <= 0 || data.suggestedProduct === "") {
+            console.log("inn");
+            delete data.suggestedProduct;
+        } else {
+            console.log("ou=");
+        }
         var product = this(data);
         if (data._id) {
             this.findOneAndUpdate({
@@ -143,7 +150,6 @@ var models = {
                 }
             });
         } else {
-
             product.save(function(err, created) {
                 if (err) {
                     callback(err, null);
@@ -225,36 +231,16 @@ var models = {
         });
     },
     getProductById: function(data, callback) {
-        var newreturns = {};
-        newreturns.productdetails = [];
-        newreturns.relatedproducts = [];
         this.findOne({
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
             } else if (found && Object.keys(found).length > 0) {
-                newreturns.productdetails = found;
-                Product.find({
-                    "_id": {
-                        $ne: data._id
-                    },
-                    "subcategory": found.subcategory
-                }).select('_id name rentalamount images').exec(function(err, related) {
-                    if (err) {
-                        console.log(err);
-                        callback(err, null);
-                    } else {
-                        // console.log(related);
-                        newreturns.relatedproducts = related;
-                        callback(null, newreturns);
-                    }
-
-                });
-                // callback(null, found);
+                callback(null, found);
             } else {
                 callback(null, {});
             }
@@ -262,9 +248,17 @@ var models = {
     },
 
     getProductByCat: function(data, callback) {
+        console.log(data);
         this.find({
-            "category": data.category,
-            "subcategory": data.subcategory
+            // "category": data.category,
+            // "subcategory": data.subcategory
+            subcategory: {
+                $in: data.subcategory
+            },
+            rentalamount: {
+                $gte: data.pricefrom,
+                $lt: data.priceto
+            }
         }).select('_id name rentalamount images').exec(function(err, found) {
             if (err) {
                 console.log(err);
