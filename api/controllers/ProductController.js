@@ -34,6 +34,16 @@ module.exports = {
             });
         }
     },
+    getProductById: function(req, res) {
+        if (req.body) {
+            Product.getProductById(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
 
     getProductByCat: function(req, res) {
         if (req.body) {

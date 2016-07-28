@@ -2,16 +2,16 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var objectid = require("mongodb").ObjectId;
 var schema = new Schema({
-    category: {
+    category: [{
         type: Schema.Types.ObjectId,
         ref: 'Category',
         index: true
-    },
-    subcategory: {
+    }],
+    subcategory: [{
         type: Schema.Types.ObjectId,
         ref: 'Subcategory',
         index: true
-    },
+    }],
     designer: {
         type: Schema.Types.ObjectId,
         ref: 'Designer',
@@ -219,6 +219,42 @@ var models = {
                 callback(err, null);
             } else if (found && Object.keys(found).length > 0) {
                 callback(null, found);
+            } else {
+                callback(null, {});
+            }
+        });
+    },
+    getProductById: function(data, callback) {
+        var newreturns = {};
+        newreturns.productdetails = [];
+        newreturns.relatedproducts = [];
+        this.findOne({
+            "_id": data._id
+        }, {
+            password: 0
+        }).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (found && Object.keys(found).length > 0) {
+                newreturns.productdetails = found;
+                Product.find({
+                    "_id": {
+                        $ne: data._id
+                    },
+                    "subcategory": found.subcategory
+                }).select('_id name rentalamount images').exec(function(err, related) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        // console.log(related);
+                        newreturns.relatedproducts = related;
+                        callback(null, newreturns);
+                    }
+
+                });
+                // callback(null, found);
             } else {
                 callback(null, {});
             }
