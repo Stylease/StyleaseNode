@@ -14,6 +14,10 @@ var schema = new Schema({
         type: Number,
         default: ""
     },
+    imagetype: {
+        type: String,
+        default: ""
+    },
     image: {
       type: String,
       default: ""
