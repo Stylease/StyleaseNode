@@ -59,7 +59,7 @@ var schema = new Schema({
     //     index: true
     // }],
     rentalamount: {
-        type: String,
+        type: Number,
         default: ""
     },
     securitydeposit: {
@@ -248,22 +248,24 @@ var models = {
     },
 
     getProductByCat: function(data, callback) {
-        console.log(data);
-        this.find({
+        var matchobj = {
             subcategory: {
                 $in: data.subcategory
             },
-            // rentalamount: {
-            //     $gte: data.pricefrom,
-            //     $lt: data.priceto
-            // }
-            // ,
+            rentalamount: {
+                $gte: data.pricefrom,
+                $lt: data.priceto
+            },
             size: {
                 $elemMatch: {
                     name: data.size
                 }
             }
-        }).select('_id name rentalamount images subcategory').exec(function(err, found) {
+        };
+        if (!data.size || data.size == "") {
+            delete matchobj.size;
+        }
+        this.find(matchobj).select('_id name rentalamount images subcategory').exec(function(err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
