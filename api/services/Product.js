@@ -274,6 +274,112 @@ var models = {
             }
         });
     },
+    getProductByCatName: function(data, callback) {
+        var newreturns = {};
+        newreturns.data = [];
+        data.pagesize = parseInt(data.pagesize);
+        data.pagenumber = parseInt(data.pagenumber);
+        async.parallel([
+            function(callback) {
+                Product.aggregate([{
+                    $unwind: "$subcategory"
+                }, {
+                    $lookup: {
+                        from: "subcategories",
+                        localField: "subcategory",
+                        foreignField: "_id",
+                        as: "subcategory"
+                    }
+                }, {
+                    $unwind: "$subcategory"
+                }, {
+                    $match: {
+                        "subcategory.name": data.name
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        count: {
+                            $sum: 1
+                        }
+                    }
+                }]).exec(function(err, found) {
+                    console.log(found[0].count);
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else if (found && found.length > 0) {
+                        newreturns.totalpages = Math.ceil(found[0].count / data.pagesize);
+                        callback(null, newreturns);
+                    }
+                });
+            },
+            function(callback) {
+                Product.aggregate([{
+                    $unwind: "$subcategory"
+                }, {
+                    $lookup: {
+                        from: "subcategories",
+                        localField: "subcategory",
+                        foreignField: "_id",
+                        as: "subcategory"
+                    }
+                }, {
+                    $unwind: "$subcategory"
+                }, {
+                    $match: {
+                        "subcategory.name": data.name
+                    }
+                }, {
+                    $group: {
+                        _id: "$_id",
+                        subcategory: {
+                            $addToSet: "$subcategory"
+                        },
+                        images: {
+                            $addToSet: "$images"
+                        },
+                        name: {
+                            $addToSet: "$name"
+                        },
+                        rentalamount: {
+                            $addToSet: "$rentalamount"
+                        }
+                    }
+                }, {
+                    $unwind: "$name"
+                }, {
+                    $unwind: "$images"
+                }, {
+                    $unwind: "$subcategory"
+                }, {
+                    $unwind: "$rentalamount"
+                }, {
+                    $project: {
+                        images: 1,
+                        name: 1,
+                        rentalamount: 1,
+                        subcategory: 1
+                    }
+                }]).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        newreturns.data = found;
+                        callback(null, newreturns);
+                    }
+                });
+            }
+        ], function(err, data3) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, newreturns);
+            }
+        });
+    },
     getLimited: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);

@@ -45,6 +45,16 @@ module.exports = {
         }
     },
 
+    getProductByCatName: function(req, res) {
+        if (req.body) {
+            Product.getProductByCatName(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
     getProductByCat: function(req, res) {
         if (req.body) {
             Product.getProductByCat(req.body, res.callback);
