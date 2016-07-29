@@ -19,8 +19,8 @@ var schema = new Schema({
         default: ""
     },
     image: {
-      type: String,
-      default: ""
+        type: String,
+        default: ""
     },
     status: Boolean
 });
@@ -112,12 +112,14 @@ var models = {
         });
     },
     getAllCat: function(data, callback) {
-        this.find({}, {
+        this.find({
+            status: true
+        }, {
             password: 0
+        }).sort({
+            order: 1
         }).populate("category", "_id  name", null, {
-            sort: {
-                "name": 1
-            }
+            sort: {}
         }).lean().exec(function(err, found) {
             if (err) {
                 console.log(err);
