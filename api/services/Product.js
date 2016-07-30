@@ -304,13 +304,17 @@ var models = {
                         }
                     }
                 }]).exec(function(err, found) {
-                    console.log(found[0].count);
+                    // console.log(found[0].count);
                     if (err) {
                         console.log(err);
                         callback(err, null);
                     } else if (found && found.length > 0) {
                         newreturns.totalpages = Math.ceil(found[0].count / data.pagesize);
                         callback(null, newreturns);
+                    }
+                    else {
+                      newreturns.totalpages = 0;
+                      callback(null, newreturns);
                     }
                 });
             },
