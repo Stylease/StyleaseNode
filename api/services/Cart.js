@@ -29,7 +29,7 @@ module.exports = mongoose.model('Cart', schema);
 var models = {
     saveData: function(data, callback) {
         //        delete data.password;
-        var wishlist = this(data);
+        var cart = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
@@ -45,7 +45,7 @@ var models = {
             });
         } else {
 
-            wishlist.save(function(err, created) {
+            cart.save(function(err, created) {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
@@ -161,7 +161,7 @@ var models = {
     },
     getLimited: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
-        data.pagewishlist = parseInt(data.pagewishlist);
+        data.pagecart = parseInt(data.pagecart);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
@@ -176,7 +176,7 @@ var models = {
                         console.log(err);
                         callback1(err, null);
                     } else if (number) {
-                        newreturns.totalpages = Math.ceil(number / data.pagewishlist);
+                        newreturns.totalpages = Math.ceil(number / data.pagecart);
                         callback1(null, newreturns);
                     } else {
                         newreturns.totalpages = 0;
@@ -191,7 +191,7 @@ var models = {
                     }
                 }, {}).sort({
                     name: 1
-                }).skip((data.pagenumber - 1) * data.pagewishlist).limit(data.pagewishlist).lean().exec(function(err, data2) {
+                }).skip((data.pagenumber - 1) * data.pagecart).limit(data.pagecart).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);

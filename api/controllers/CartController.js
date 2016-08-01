@@ -5,23 +5,36 @@ module.exports = {
     save: function(req, res) {
         if (req.body) {
             if (req.session.user) {
-                console.log("logged in");
+                // console.log("logged in");
                 Cart.saveData(req.body, res.callback);
             } else {
-                console.log("Not logged");
+                // console.log("Not logged");
                 if (req.session.cart && req.session.cart.length > 0) {
-                    req.session.cart.push(req.body);
+                    console.log("in cart", req.session.cart);
+                    var abc = _.findIndex(req.session.cart, function(o) {
+                        return o.product == req.body.product;
+                    });
+                    if (abc === -1) {
+                        req.session.cart.push(req.body);
+                    } else {
+                        // console.log("already in cart");
+                        res.json({
+                            value: false,
+                            data: req.session.cart,
+                            message: "already in cart"
+                        });
+                    }
                 } else {
                     req.session.cart = [];
                     req.session.cart.push(req.body);
                 }
-                console.log(req.session.cart);
+                // console.log(req.session.cart);
                 res.json({
-                    value: false,
-                    data: req.session.cart
+                    value: true,
+                    data: req.session.cart,
+                    message: "Offline cart"
                 });
             }
-
         } else {
             res.json({
                 value: false,
@@ -92,13 +105,22 @@ module.exports = {
             Global.response(err, data, res);
         }
         if (req.body) {
-            console.log(req.body);
-            if (req.body.pagesize && req.body.pagenumber) {
-                Cart.getCart(req.body, res.callback);
+            if (req.session.user) {
+                console.log(req.body);
+                if (req.body.pagesize && req.body.pagenumber) {
+                    Cart.getCart(req.body, res.callback);
+                } else {
+                    res.json({
+                        value: false,
+                        data: "Invalid Params"
+                    });
+                }
             } else {
+                console.log("not logged in");
                 res.json({
-                    value: false,
-                    data: "Invalid Params"
+                    value: true,
+                    data: req.session.cart,
+                    message: "Offline cart"
                 });
             }
         } else {
