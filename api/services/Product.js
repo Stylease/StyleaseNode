@@ -265,15 +265,46 @@ var models = {
         if (!data.size || data.size == "") {
             delete matchobj.size;
         }
-        this.find(matchobj).select('_id name rentalamount images subcategory').exec(function(err, found) {
+        var newreturns = {};
+        newreturns.data = [];
+        data.pagesize = parseInt(data.pagesize);
+        data.pagenumber = parseInt(data.pagenumber);
+        async.parallel([
+            function(callback) {
+                Product.find(matchobj).select('_id name rentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                      newreturns.data = found;
+                      callback(null, newreturns);
+                    }
+                });
+            },
+            function(callback) {
+                Product.find(matchobj).count(function(err, count) {
+                  if(err){
+                    console.log(err);
+                    callback(err, null);
+                  }
+                  else {
+                    console.log("Number of docs: ", count);
+                    newreturns.totalpages = Math.ceil(count / data.pagesize);
+                    callback(null, newreturns);
+                  }
+
+                });
+            }
+        ], function(err, data3) {
             if (err) {
                 console.log(err);
                 callback(err, null);
             } else {
-                callback(null, found);
+                callback(null, newreturns);
             }
         });
     },
+
     getProductByCatName: function(data, callback) {
         var newreturns = {};
         newreturns.data = [];
@@ -311,10 +342,9 @@ var models = {
                     } else if (found && found.length > 0) {
                         newreturns.totalpages = Math.ceil(found[0].count / data.pagesize);
                         callback(null, newreturns);
-                    }
-                    else {
-                      newreturns.totalpages = 0;
-                      callback(null, newreturns);
+                    } else {
+                        newreturns.totalpages = 0;
+                        callback(null, newreturns);
                     }
                 });
             },
