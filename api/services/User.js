@@ -292,7 +292,14 @@ var models = {
                 console.log(err);
                 callback(err, null);
             } else {
-                callback(null, data2)
+                if (_.isEmpty(data2)) {
+                    callback(null, {
+                        message: "User not found"
+                    });
+                }
+                else {
+                  callback(null, data2);
+                }
             }
         });
     },
