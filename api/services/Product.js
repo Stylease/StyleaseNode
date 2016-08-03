@@ -41,6 +41,11 @@ var schema = new Schema({
         ref: 'Product',
         index: true
     }],
+    color: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Color',
+        index: true
+    }],
     notes: {
         type: String,
         default: ""
@@ -127,13 +132,15 @@ var models = {
         }
     },
     saveData: function(data, callback) {
-        console.log(data.suggestedProduct);
+        console.log("pro", data.suggestedProduct);
         //delete data.password;
-        if (data.suggestedProduct.length <= 0 || data.suggestedProduct === "") {
-            console.log("inn");
-            delete data.suggestedProduct;
-        } else {
-            console.log("ou=");
+        if (data.suggestedProduct != undefined) {
+            if (data.suggestedProduct.length <= 0 || data.suggestedProduct === "") {
+                console.log("inn");
+                delete data.suggestedProduct;
+            } else {
+                console.log("ou=");
+            }
         }
         var product = this(data);
         if (data._id) {
@@ -276,22 +283,21 @@ var models = {
                         console.log(err);
                         callback(err, null);
                     } else {
-                      newreturns.data = found;
-                      callback(null, newreturns);
+                        newreturns.data = found;
+                        callback(null, newreturns);
                     }
                 });
             },
             function(callback) {
                 Product.find(matchobj).count(function(err, count) {
-                  if(err){
-                    console.log(err);
-                    callback(err, null);
-                  }
-                  else {
-                    console.log("Number of docs: ", count);
-                    newreturns.totalpages = Math.ceil(count / data.pagesize);
-                    callback(null, newreturns);
-                  }
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        console.log("Number of docs: ", count);
+                        newreturns.totalpages = Math.ceil(count / data.pagesize);
+                        callback(null, newreturns);
+                    }
 
                 });
             }
