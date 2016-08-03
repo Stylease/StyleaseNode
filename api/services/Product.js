@@ -50,6 +50,10 @@ var schema = new Schema({
         type: String,
         default: ""
     },
+    additionalnotes: {
+        type: String,
+        default: ""
+    },
     quantity: {
         type: String,
         default: ""
@@ -267,10 +271,16 @@ var models = {
                 $elemMatch: {
                     name: data.size
                 }
+            },
+            color: {
+                $in: data.color
             }
         };
         if (!data.size || data.size == "") {
             delete matchobj.size;
+        }
+        if (!data.color || data.color == "") {
+            delete matchobj.color;
         }
         var newreturns = {};
         newreturns.data = [];
