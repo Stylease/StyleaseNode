@@ -16,6 +16,8 @@ var schema = new Schema({
         type: String,
         default: ""
     },
+    facebook: String,
+    google: String,
     oauthLogin: {
         type: [{
             socialProvider: String,
@@ -296,9 +298,8 @@ var models = {
                     callback(null, {
                         message: "User not found"
                     });
-                }
-                else {
-                  callback(null, data2);
+                } else {
+                    callback(null, data2);
                 }
             }
         });
