@@ -43,8 +43,9 @@ module.exports = {
           }
       };
       if (req.body) {
+        console.log(req.body);
           if (req.body.email && req.body.email !== "" && req.body.password && req.body.password !== "") {
-              TempUser.register(req.body, callback);
+              User.register(req.body, callback);
           } else {
               res.json({
                   value: false,
