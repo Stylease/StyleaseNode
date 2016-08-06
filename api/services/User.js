@@ -12,6 +12,10 @@ var schema = new Schema({
         type: String,
         default: ""
     },
+    forgotpassword: {
+      type:String,
+      default: ""
+    },
     mobile: {
         type: String,
         default: ""
@@ -94,6 +98,33 @@ var models = {
             callback(null, {});
         }
     },
+    register: function(data, callback) {
+      if (data.password && data.password !== "") {
+        data.password = md5(data.password);
+      }
+      var user = this(data);
+      user.email = data.email;
+      this.count({
+        "email": user.email
+      }).exec(function(err, data2) {
+        if (err) {
+          callback(err, data);
+        } else {
+          if (data2 === 0) {
+                user.save(function(err, data3) {
+                  data3.password = '';
+                  if (err) {
+                    callback(err, null);
+                  } else {
+                    callback(null, data3);
+                  }
+                });
+          } else {
+            callback("User already Exists", false);
+          }
+        }
+      });
+    },
     saveData: function(data, callback) {
         //        delete data.password;
         var user = this(data);
@@ -172,13 +203,73 @@ var models = {
                     _.each(found.cart, function(n) {
                         if (n.product && n.product.name) {
                             n.productname = n.product.name;
-                            delete n.product
+                            delete n.product;
                         }
-                    })
+                    });
                 }
                 callback(null, found);
             } else {
                 callback(null, {});
+            }
+        });
+    },
+    forgotPassword: function(data, callback) {
+        this.findOne({
+            email: data.email
+        }, {
+            password: 0,
+            forgotpassword: 0
+        }, function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                if (found) {
+                    if (!found.oauthLogin || (found.oauthLogin && found.oauthLogin.length <= 0)) {
+                        var text = "";
+                        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                        for (var i = 0; i < 8; i++) {
+                            text += possible.charAt(Math.floor(Math.random() * possible.length));
+                        }
+                        var encrypttext = md5(text);
+                        User.findOneAndUpdate({
+                            _id: found._id
+                        }, {
+                            forgotpassword: encrypttext
+                        }, function(err, data2) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                var emailData = {};
+                                emailData.email = data.email;
+                                console.log('data.email', data.email);
+                                emailData.content = "Your new password for the Stylease website is: " + text + ".Please note that this is a system generated password which will remain valid for 3 hours only. Kindly change it to something you would be more comfortable remembering at the earliest.";
+                                emailData.filename = "forgotpassword.ejs";
+                                emailData.subject = "Forgot Password";
+                                Config.email(emailData, function(err, emailRespo) {
+                                    if (err) {
+                                        console.log(err);
+                                        callback(err, null);
+                                    } else {
+                                        console.log(emailRespo);
+                                        callback(null, {
+                                            comment: "Mail Sent"
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        callback(null, {
+                            comment: "User logged in through social login"
+                        });
+                    }
+                } else {
+                    callback(null, {
+                        comment: "User not found"
+                    });
+                }
             }
         });
     },
@@ -285,24 +376,65 @@ var models = {
             });
     },
     login: function(data, callback) {
-        data.password = md5(data.password);
-        User.findOne({
-            email: data.email,
-            password: data.password
-        }, function(err, data2) {
-            if (err) {
-                console.log(err);
-                callback(err, null);
-            } else {
-                if (_.isEmpty(data2)) {
-                    callback(null, {
-                        message: "User not found"
-                    });
-                } else {
-                    callback(null, data2);
-                }
-            }
-        });
+      data.password = md5(data.password);
+      User.findOne({
+          email: data.email,
+          password: data.password
+      }, function(err, data2) {
+          if (err) {
+              console.log(err);
+              callback(er, null);
+          } else {
+              if (_.isEmpty(data2)) {
+                  User.findOne({
+                      email: data.email,
+                      forgotpassword: data.password
+                  }, function(err, data4) {
+                      if (err) {
+                          console.log(err);
+                          callback(err, null);
+                      } else {
+                          if (_.isEmpty(data4)) {
+                              callback(null, {
+                                  comment: "User Not Found"
+                              });
+                          } else {
+                              User.findOneAndUpdate({
+                                  _id: data4._id
+                              }, {
+                                  password: data.password,
+                                  forgotpassword: ""
+                              }, function(err, data5) {
+                                  if (err) {
+                                      console.log(err);
+                                      callback(err, null);
+                                  } else {
+                                      data5.password = "";
+                                      data5.forgotpassword = "";
+                                      callback(null, data5);
+                                  }
+                              });
+                          }
+                      }
+                  });
+              } else {
+                  User.findOneAndUpdate({
+                      _id: data2._id
+                  }, {
+                      forgotpassword: ""
+                  }, function(err, data3) {
+                      if (err) {
+                          console.log(err);
+                          callback(err, null);
+                      } else {
+                          data3.password = "";
+                          data3.forgotpassword = "";
+                          callback(null, data3);
+                      }
+                  });
+              }
+          }
+      });
     },
     getLimited: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);

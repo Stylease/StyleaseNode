@@ -25,6 +25,39 @@ module.exports = {
             });
         }
     },
+    register: function(req, res) {
+      var callback = function(err, data) {
+          if (err || _.isEmpty(data)) {
+              res.json({
+                  error: err,
+                  value: false
+              });
+          } else {
+              req.session.user = data;
+
+              res.json({
+                  data: "User Registered",
+                  value: true
+              });
+
+          }
+      };
+      if (req.body) {
+          if (req.body.email && req.body.email !== "" && req.body.password && req.body.password !== "") {
+              TempUser.register(req.body, callback);
+          } else {
+              res.json({
+                  value: false,
+                  data: "Invalid params"
+              });
+          }
+      } else {
+          res.json({
+              value: false,
+              data: "Invalid call"
+          });
+      }
+    },
     getOne: function(req, res) {
 
         if (req.body) {
@@ -99,7 +132,16 @@ module.exports = {
             });
         }
     },
-
+    forgotPassword :  function (req,res) {
+      if (req.body) {
+          User.forgotPassword(req.body, res.callback);
+      } else {
+          res.json({
+              value: false,
+              data: "Invalid Request"
+          });
+      }
+    },
     login: function(req, res) {
         if (req.body) {
             if (req.body.email && req.body.email !== "" && req.body.password && req.body.password !== "") {
