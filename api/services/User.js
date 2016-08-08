@@ -244,7 +244,7 @@ var models = {
                                 var emailData = {};
                                 emailData.email = data.email;
                                 console.log('data.email', data.email);
-                                emailData.content = "Your new password for the Stylease website is: " + text + ".Please note that this is a system generated password which will remain valid for 3 hours only. Kindly change it to something you would be more comfortable remembering at the earliest.";
+                                emailData.content = text;
                                 emailData.filename = "forgotpassword.ejs";
                                 emailData.subject = "Forgot Password";
                                 Config.email(emailData, function(err, emailRespo) {
