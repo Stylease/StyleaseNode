@@ -2,25 +2,37 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
     timestamp: Date,
-    product: {
-        type: Schema.Types.ObjectId,
-        ref: 'Product',
-        index: true
-    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         index: true
     },
-    size: {
-        type: Schema.Types.ObjectId,
-        ref: 'Size',
-        index: true
-    },
-    timeFrom: Date,
-    timeTo: Date,
-    deliveryTime: String,
-    pickupTime: String
+    cartproduct: [{
+            product: {
+                type: Schema.Types.ObjectId,
+                ref: 'Product',
+                index: true
+            },
+            size: {
+                type: Schema.Types.ObjectId,
+                ref: 'Size',
+                index: true
+            },
+            timeFrom: Date,
+            timeTo: Date,
+            deliveryTime: String,
+            pickupTime: String
+        }]
+        // ,
+        // size: {
+        //     type: Schema.Types.ObjectId,
+        //     ref: 'Size',
+        //     index: true
+        // },
+        // timeFrom: Date,
+        // timeTo: Date,
+        // deliveryTime: String,
+        // pickupTime: String
 
 });
 
@@ -29,6 +41,18 @@ module.exports = mongoose.model('Cart', schema);
 var models = {
     saveData: function(data, callback) {
         //        delete data.password;
+        if (data.fromsession == true) {
+            var upobj = {
+                $push: {
+                    cartproduct: data.cartproduct
+                }
+            };
+        } else {
+            var upobj = {
+                cartproduct: data.cartproduct
+            };
+        }
+        console.log(data);
         var cart = this(data);
         if (data._id) {
             this.findOneAndUpdate({
@@ -44,16 +68,33 @@ var models = {
                 }
             });
         } else {
+Cart.find({})
 
-            cart.save(function(err, created) {
+            Cart.findOneAndUpdate({
+                user: data.user
+            }, upobj, {
+                upsert: true,
+                returnNewDocument: true
+            }).exec(function(err, respo) {
                 if (err) {
-                    callback(err, null);
-                } else if (created) {
-                    callback(null, created);
+                    console.log(err);
+                    callback(err, null)
                 } else {
-                    callback(null, {});
+                    console.log(respo);
+                    callback(null, respo)
                 }
             });
+
+            // cart.save(function(err, created) {
+            //     if (err) {
+            //         callback(err, null);
+            //     } else if (created) {
+            //         callback(null, created);
+            //     } else {
+            //         callback(null, {});
+            //     }
+            // });
+
         }
     },
     deleteData: function(data, callback) {

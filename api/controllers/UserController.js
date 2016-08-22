@@ -158,13 +158,25 @@ module.exports = {
                         });
                     } else {
                         if (data._id) {
+                            var sendcart = {};
                             req.session.user = data;
-                            res.json({
-                                value: true,
-                                data: {
-                                    message: "login success"
+                            sendcart.user = req.session.user._id;
+                            sendcart.cartproduct = req.session.cart;
+                            Cart.saveData(sendcart, function(err, data) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                  req.session.cart = "";
+                                    res.json({
+                                        value: true,
+                                        data: {
+                                            message: "login success"
+                                        }
+                                    });
                                 }
                             });
+
                         } else {
                             res.json({
                                 value: false,

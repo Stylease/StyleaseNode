@@ -5,8 +5,11 @@ module.exports = {
     save: function(req, res) {
         if (req.body) {
             if (req.session.user) {
-                // console.log("logged in");
-                Cart.saveData(req.body, res.callback);
+                var sendcart = {};
+                sendcart.fromsession = true;
+                sendcart.user = req.session.user._id;
+                // sendcart.cartproduct = req.body;
+                Cart.saveData(sendcart, res.callback);
             } else {
                 // console.log("Not logged");
                 if (req.session.cart && req.session.cart.length > 0) {

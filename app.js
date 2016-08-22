@@ -27,7 +27,7 @@ mongoose.connect('mongodb://localhost:27017/stylease', function (err) {
     if (err) {
         console.log(err);
     }else{
-      console.log("Connected");
+      console.log("Connected to stylease");
     }
 });
 // Ensure a "sails" can be located:
