@@ -10,7 +10,6 @@ module.exports = {
             } else {
                 // console.log("Not logged");
                 if (req.session.cart && req.session.cart.length > 0) {
-                    console.log("in cart", req.session.cart);
                     var abc = _.findIndex(req.session.cart, function(o) {
                         return o.product == req.body.product;
                     });
