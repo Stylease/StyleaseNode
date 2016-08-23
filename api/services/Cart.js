@@ -140,6 +140,7 @@ var models = {
     },
 
     getCart: function(data, callback) {
+      console.log("inn", data);
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         console.log(data);
@@ -165,14 +166,8 @@ var models = {
             },
             function(callback1) {
                 Cart.find({
-                    user: data._id
-                }, {}).sort({
-                    name: 1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id  name", null, {
-                    sort: {
-                        "name": 1
-                    }
-                }).lean().exec(function(err, data2) {
+                    user: data.user
+                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product").exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);

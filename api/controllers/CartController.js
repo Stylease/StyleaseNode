@@ -72,7 +72,7 @@ module.exports = {
     removeCart: function(req, res) {
         if (req.body) {
             if (req.session.user) {
-              // Remove product from online cart
+                // Remove product from online cart
                 if (req.body.product) {
                     req.body.user = req.session.user._id;
                     Cart.removeCart(req.body, res.callback);
@@ -84,30 +84,24 @@ module.exports = {
                 }
             } else {
                 // Remove product from offline cart
-                  var id = req.body.product;
+                console.log('before', req.session.cart);
+                var id = req.body.product;
                 if (req.session.cart.length > 0) {
-                    for (var i = 0; i < req.session.cart.length; i++) {
-                        if (req.session.cart[i].product == id) {
-                            req.session.cart.splice(i, 1);
-                            res.json({
-                                value: true,
-                                data: "Product Removed"
-                            });
-                            break;
-                        }else {
-                          res.json({
-                              value: false,
-                              data: "Invalid Product"
-                          });
-                        }
-                    }
+                    _.remove(req.session.cart, function(n) {
+                        return n.product === id;
+                    });
+                    res.json({
+                        value: true,
+                        message: "Product Removed",
+                        data: req.session.cart
+                    });
                 } else {
                     res.json({
                         value: false,
                         data: "Cart is Empty"
                     });
                 }
-              }
+            }
         } else {
             res.json({
                 value: false,
@@ -155,7 +149,7 @@ module.exports = {
         }
         if (req.body) {
             if (req.session.user) {
-                console.log(req.body);
+                req.body.user= req.session.user._id;
                 if (req.body.pagesize && req.body.pagenumber) {
                     Cart.getCart(req.body, res.callback);
                 } else {
@@ -179,6 +173,8 @@ module.exports = {
             });
         }
     },
+
+
 
 
 };

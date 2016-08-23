@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
     product: {
-      type:Schema.Types.ObjectId,
-      ref:'Product',
-      index:true
+        type: Schema.Types.ObjectId,
+        ref: 'Product',
+        index: true
     },
     timestampFrom: Date,
     timestampTo: Date,
@@ -40,7 +40,6 @@ var models = {
         }
     },
     saveData: function(data, callback) {
-        //        delete data.password;
         var producttime = this(data);
         if (data._id) {
             this.findOneAndUpdate({
