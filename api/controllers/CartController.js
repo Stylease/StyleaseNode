@@ -8,7 +8,7 @@ module.exports = {
                 var sendcart = {};
                 sendcart.fromsession = true;
                 sendcart.user = req.session.user._id;
-                // sendcart.cartproduct = req.body;
+                sendcart.cartproduct = req.body;
                 Cart.saveData(sendcart, res.callback);
             } else {
                 // console.log("Not logged");
@@ -61,6 +61,53 @@ module.exports = {
         if (req.body) {
             console.log(req.body);
             Cart.deleteData(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+
+    removeCart: function(req, res) {
+        if (req.body) {
+            if (req.session.user) {
+              // Remove product from online cart
+                if (req.body.product) {
+                    req.body.user = req.session.user._id;
+                    Cart.removeCart(req.body, res.callback);
+                } else {
+                    res.json({
+                        value: false,
+                        data: "Please Enter Product ID to Remove"
+                    });
+                }
+            } else {
+                // Remove product from offline cart
+                  var id = req.body.product;
+                if (req.session.cart.length > 0) {
+                    for (var i = 0; i < req.session.cart.length; i++) {
+                        if (req.session.cart[i].product == id) {
+                            req.session.cart.splice(i, 1);
+                            res.json({
+                                value: true,
+                                data: "Product Removed"
+                            });
+                            break;
+                        }else {
+                          res.json({
+                              value: false,
+                              data: "Invalid Product"
+                          });
+                        }
+                    }
+                } else {
+                    res.json({
+                        value: false,
+                        data: "Cart is Empty"
+                    });
+                }
+              }
         } else {
             res.json({
                 value: false,

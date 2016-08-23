@@ -52,7 +52,7 @@ var models = {
                 cartproduct: data.cartproduct
             };
         }
-        console.log(data);
+        // console.log(data);
         var cart = this(data);
         if (data._id) {
             this.findOneAndUpdate({
@@ -68,8 +68,6 @@ var models = {
                 }
             });
         } else {
-Cart.find({})
-
             Cart.findOneAndUpdate({
                 user: data.user
             }, upobj, {
@@ -255,6 +253,26 @@ Cart.find({})
                 callback(err, null);
             } else {
                 callback(null, newreturns);
+            }
+        });
+    },
+
+    removeCart: function(data, callback) {
+        console.log("in remove", data);
+        Cart.update({
+            user: data.user
+        }, {
+            $pull: {
+                "cartproduct": {
+                    "product": data.product
+                }
+            }
+        }).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null)
+            } else {
+                callback(null, found)
             }
         });
     },
