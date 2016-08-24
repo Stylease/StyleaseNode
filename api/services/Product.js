@@ -242,20 +242,58 @@ var models = {
         });
     },
     getProductById: function(data, callback) {
-        this.findOne({
-            "_id": data._id
-        }, {
-            password: 0
-        }).populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
+        var newreturns = {};
+        async.parallel([
+            function(callback) {
+                Product.findOne({
+                    _id: data._id
+                }).exec(function(err, found) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null)
+                    } else {
+                        newreturns.product = found;
+                        callback(null, newreturns);
+                    }
+                });
+            },
+            function(callback) {
+                ProductTime.find({
+                    product: data._id
+                }).exec(function(err, data1) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null)
+                    } else {
+                        console.log("ddd", data1);
+                        newreturns.producttime = data1;
+                        callback(null, newreturns);
+                    }
+                });
+            }
+
+        ], function(err, data3) {
             if (err) {
                 console.log(err);
                 callback(err, null);
-            } else if (found && Object.keys(found).length > 0) {
-                callback(null, found);
             } else {
-                callback(null, {});
+                callback(null, newreturns);
             }
         });
+        // this.findOne({
+        //     "_id": data._id
+        // }, {
+        //     password: 0
+        // }).populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
+        //     if (err) {
+        //         console.log(err);
+        //         callback(err, null);
+        //     } else if (found && Object.keys(found).length > 0) {
+        //         callback(null, found);
+        //     } else {
+        //         callback(null, {});
+        //     }
+        // });
     },
 
     getProductByCat: function(data, callback) {
