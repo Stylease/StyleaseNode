@@ -21,7 +21,7 @@ var schema = new Schema({
             timeFrom: Date,
             timeTo: Date,
             deliveryTime: String,
-            pickupTime: String
+            pickupTime: String,
         }]
         // ,
         // size: {
@@ -40,7 +40,7 @@ module.exports = mongoose.model('Cart', schema);
 
 var models = {
     saveData: function(data, callback) {
-        //        delete data.password;
+        //online cart insert;
         if (data.fromsession == true) {
             var upobj = {
                 $push: {
@@ -48,10 +48,26 @@ var models = {
                 }
             };
         } else {
-            var upobj = {
-                cartproduct: data.cartproduct
-            };
+          //check offline cart insert
+            if (data.cartproduct) {
+                if (data.cartproduct.length > 1) {
+                    var upobj = {
+                        $pushAll: {
+                            cartproduct: data.cartproduct
+                        }
+                    };
+                } else if (data.cartproduct.length < 2) {
+                    var upobj = {
+                        $push: {
+                            cartproduct: data.cartproduct[0]
+                        }
+                    };
+                }
+            } else {
+                var upobj = {};
+            }
         }
+
         // console.log(data);
         var cart = this(data);
         if (data._id) {
@@ -68,6 +84,7 @@ var models = {
                 }
             });
         } else {
+            // console.log("in save else");
             Cart.findOneAndUpdate({
                 user: data.user
             }, upobj, {
@@ -78,7 +95,8 @@ var models = {
                     console.log(err);
                     callback(err, null)
                 } else {
-                    console.log(respo);
+                  console.log("save data log");
+                    // console.log(respo);
                     callback(null, respo)
                 }
             });
@@ -140,7 +158,7 @@ var models = {
     },
 
     getCart: function(data, callback) {
-      console.log("inn", data);
+        console.log("inn", data);
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         console.log(data);
@@ -167,7 +185,7 @@ var models = {
             function(callback1) {
                 Cart.find({
                     user: data.user
-                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product").exec(function(err, data2) {
+                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name rentalamount images").lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);

@@ -167,7 +167,7 @@ module.exports = {
                                     console.log(err);
                                     callback(err, null);
                                 } else {
-                                  req.session.cart = "";
+                                    req.session.cart = "";
                                     res.json({
                                         value: true,
                                         data: {
