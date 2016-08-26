@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var objectid = require("mongodb").ObjectId;
 var Schema = mongoose.Schema;
 var schema = new Schema({
     timestamp: Date,
@@ -41,14 +42,73 @@ module.exports = mongoose.model('Cart', schema);
 var models = {
     saveData: function(data, callback) {
         //online cart insert;
+        // console.log(data);
         if (data.fromsession == true) {
-            var upobj = {
-                $push: {
-                    cartproduct: data.cartproduct
+            console.log("console ", data.user);
+            console.log("product", data.cartproduct.product);
+            Cart.find({
+                user: data.user,
+                cartproduct: {
+                    $elemMatch: {
+                        product: data.cartproduct.product
+                    }
                 }
-            };
+            }).exec(function(err, data4) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    console.log("aaaa", data4);
+                    if (data4 && data4.length > 0) {
+                        console.log("product found", data4[0].cartproduct);
+                        console.log('ttt', data4[0].cartproduct.product);
+                        data._id = objectid(data4[0].cartproduct._id);
+                        // data._id = objectid(data._id);
+                        tobechanged = {};
+                        var attribute = "cartproduct.$.";
+                        _.forIn(data, function(value, key) {
+                            tobechanged[attribute + key] = value;
+                        });
+                        Cart.update({
+                            "cartproduct._id": data._id
+                        }, {
+                            $set: tobechanged
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                callback(null, updated);
+                            }
+                        });
+                    } else {
+
+                        Cart.update({
+                            user: data.user
+                        }, {
+                            $push: {
+                                cartproduct: data.cartproduct
+                            }
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                callback(null, updated);
+                            }
+                        });
+
+                    }
+                }
+            });
+            // var upobj = {
+            //     $push: {
+            //         cartproduct: data.cartproduct
+            //     }
+            // };
+
         } else {
-          //check offline cart insert
+            //check offline cart insert
             if (data.cartproduct) {
                 if (data.cartproduct.length > 1) {
                     var upobj = {
@@ -66,52 +126,27 @@ var models = {
             } else {
                 var upobj = {};
             }
-        }
 
-        // console.log(data);
-        var cart = this(data);
-        if (data._id) {
-            this.findOneAndUpdate({
-                _id: data._id
-            }, data).exec(function(err, updated) {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                } else if (updated) {
-                    callback(null, updated);
-                } else {
-                    callback(null, {});
-                }
-            });
-        } else {
             // console.log("in save else");
             Cart.findOneAndUpdate({
                 user: data.user
             }, upobj, {
-                upsert: true,
-                returnNewDocument: true
+                upsert: true
             }).exec(function(err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null)
                 } else {
-                  console.log("save data log");
+                    console.log("save data log");
                     // console.log(respo);
                     callback(null, respo)
                 }
             });
-
-            // cart.save(function(err, created) {
-            //     if (err) {
-            //         callback(err, null);
-            //     } else if (created) {
-            //         callback(null, created);
-            //     } else {
-            //         callback(null, {});
-            //     }
-            // });
-
         }
+
+        // console.log(data);
+        var cart = this(data);
+
     },
     deleteData: function(data, callback) {
         this.findOneAndRemove({

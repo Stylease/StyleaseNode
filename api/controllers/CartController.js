@@ -114,8 +114,8 @@ module.exports = {
         function callback(err, data) {
             Global.response(err, data, res);
         }
-        if (req.body) {
-            Cart.getAll(req.body, res.callback);
+        if (req.query) {
+            Cart.getAll(req.query, res.callback);
         } else {
             res.json({
                 value: false,
