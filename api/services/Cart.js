@@ -246,6 +246,44 @@ var models = {
             }
         });
     },
+
+    getCartOffline: function(data, callback) {
+        var newdata = {};
+        var finalcart = [];
+        if (data && data.length > 0) {
+          setTimeout();
+            _.each(data, function(pro) {
+                console.log(pro.product);
+                Product.findOne({
+                    _id: pro.product
+                }).select("name rentalamount securitydeposit images").exec(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        newdata = pro;
+                        newdata.product = data2;
+                        console.log("ddd", newdata);
+                        // // var test= newdata.product.concat(newdata.data);
+                        // console.log("aaa", test);
+                        finalcart.push(newdata);
+                        // callback(null, newdata);
+                        console.log("finalcart", finalcart);
+                    }
+                });
+            });
+            setTimeout(function() {
+                callback(null, finalcart);
+            }, 300);
+
+
+        } else {
+            callback(null, {
+                message: "No products"
+            })
+        }
+
+    },
     getLimited: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagecart = parseInt(data.pagecart);

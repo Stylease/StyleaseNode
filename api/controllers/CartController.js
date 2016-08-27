@@ -19,19 +19,15 @@ module.exports = {
                         return o.product == req.body.product;
                     });
                     if (abc === -1) {
+                      //add new product
                         req.session.cart.push(req.body);
                     } else {
+                      //edit cart product
                         var index = _.indexOf(req.session.cart, _.find(req.session.cart, {
                             product: req.body.product
                         }));
                         req.session.cart.splice(index, 1, req.body);
-                        // console.log("already in cart");
-                        // res.json({
-                        //     value: false,
-                        //     data: req.session.cart,
-                        //     message: "already in cart"
-                        // });
-                    }
+                      }
                 } else {
                     req.session.cart = [];
                     req.session.cart.push(req.body);
@@ -165,12 +161,13 @@ module.exports = {
                     });
                 }
             } else {
-                console.log("not logged in");
-                res.json({
-                    value: true,
-                    data: req.session.cart,
-                    message: "Offline cart"
-                });
+                // console.log("not logged in");
+                // res.json({
+                //     value: true,
+                //     data: req.session.cart,
+                //     message: "Offline cart"
+                // });
+                Cart.getCartOffline(req.session.cart, res.callback);
             }
         } else {
             res.json({
