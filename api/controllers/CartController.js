@@ -12,19 +12,25 @@ module.exports = {
                 Cart.saveData(sendcart, res.callback);
             } else {
                 // console.log("Not logged");
+                var newpro = {};
                 if (req.session.cart && req.session.cart.length > 0) {
                     var abc = _.findIndex(req.session.cart, function(o) {
+                        newpro = req.body.product;
                         return o.product == req.body.product;
                     });
                     if (abc === -1) {
                         req.session.cart.push(req.body);
                     } else {
+                        var index = _.indexOf(req.session.cart, _.find(req.session.cart, {
+                            product: req.body.product
+                        }));
+                        req.session.cart.splice(index, 1, req.body);
                         // console.log("already in cart");
-                        res.json({
-                            value: false,
-                            data: req.session.cart,
-                            message: "already in cart"
-                        });
+                        // res.json({
+                        //     value: false,
+                        //     data: req.session.cart,
+                        //     message: "already in cart"
+                        // });
                     }
                 } else {
                     req.session.cart = [];
@@ -149,7 +155,7 @@ module.exports = {
         }
         if (req.body) {
             if (req.session.user) {
-                req.body.user= req.session.user._id;
+                req.body.user = req.session.user._id;
                 if (req.body.pagesize && req.body.pagenumber) {
                     Cart.getCart(req.body, res.callback);
                 } else {

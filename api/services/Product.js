@@ -55,12 +55,12 @@ var schema = new Schema({
         default: ""
     },
     quantity: {
-        type: String,
-        default: ""
+        type: Number,
+        default: 0
     },
     price: {
-        type: String,
-        default: ""
+        type: Number,
+        default: 0
     },
     // size: [{
     //     type: Schema.Types.ObjectId,
@@ -69,15 +69,15 @@ var schema = new Schema({
     // }],
     rentalamount: {
         type: Number,
-        default: ""
+        default: 0
     },
     securitydeposit: {
-        type: String,
-        default: ""
+        type: Number,
+        default: 0
     },
     order: {
         type: Number,
-        default: ""
+        default: 0
     },
     status: Boolean,
     size: [{

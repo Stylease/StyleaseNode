@@ -9,32 +9,23 @@ var schema = new Schema({
         index: true
     },
     cartproduct: [{
-            product: {
-                type: Schema.Types.ObjectId,
-                ref: 'Product',
-                index: true
-            },
-            size: {
-                type: Schema.Types.ObjectId,
-                ref: 'Size',
-                index: true
-            },
-            timeFrom: Date,
-            timeTo: Date,
-            deliveryTime: String,
-            pickupTime: String,
-        }]
-        // ,
+        product: {
+            type: Schema.Types.ObjectId,
+            ref: 'Product',
+            index: true
+        },
+        size: String,
+        by: String,
         // size: {
         //     type: Schema.Types.ObjectId,
         //     ref: 'Size',
         //     index: true
         // },
-        // timeFrom: Date,
-        // timeTo: Date,
-        // deliveryTime: String,
-        // pickupTime: String
-
+        timeFrom: Date,
+        timeTo: Date,
+        deliveryTime: String,
+        pickupTime: String,
+    }]
 });
 
 module.exports = mongoose.model('Cart', schema);
@@ -44,69 +35,80 @@ var models = {
         //online cart insert;
         // console.log(data);
         if (data.fromsession == true) {
-            console.log("console ", data.user);
-            console.log("product", data.cartproduct.product);
-            Cart.find({
-                user: data.user,
-                cartproduct: {
-                    $elemMatch: {
-                        product: data.cartproduct.product
+            // Cart.find({
+            //     user: data.user,
+            //     // cartproduct: {
+            //     //     $elemMatch: {
+            //     //         product: data.cartproduct.product
+            //     //     }
+            //     // }
+            // })
+            Cart.aggregate([{
+                    $match: {
+                        user: objectid(data.user)
                     }
-                }
-            }).exec(function(err, data4) {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                } else {
-                    console.log("aaaa", data4);
-                    if (data4 && data4.length > 0) {
-                        console.log("product found", data4[0].cartproduct);
-                        console.log('ttt', data4[0].cartproduct.product);
-                        data._id = objectid(data4[0].cartproduct._id);
-                        // data._id = objectid(data._id);
-                        tobechanged = {};
-                        var attribute = "cartproduct.$.";
-                        _.forIn(data, function(value, key) {
-                            tobechanged[attribute + key] = value;
-                        });
-                        Cart.update({
-                            "cartproduct._id": data._id
-                        }, {
-                            $set: tobechanged
-                        }, function(err, updated) {
-                            if (err) {
-                                console.log(err);
-                                callback(err, null);
-                            } else {
-                                callback(null, updated);
-                            }
-                        });
+                }, {
+                    $unwind: {
+                        path: "$cartproduct",
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $project: {
+                        "cartproduct": 1
+                    }
+                }, {
+                    $match: {
+                        "cartproduct.product": objectid(data.cartproduct.product)
+                    }
+                }])
+                .exec(function(err, data4) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
                     } else {
+                        if (data4 && data4.length > 0) {
+                            //update existing product
+                            data4._id = objectid(data4[0].cartproduct._id);
+                            //assign id to cart product sent by user
+                            data.cartproduct._id = data4._id;
+                            Cart.update({
+                                "cartproduct._id": data4._id
+                            }, {
+                                $set: {
+                                    "cartproduct.$": data.cartproduct
+                                }
+                            }, function(err, updated) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    callback(null, {
+                                        message: "Product updated"
+                                    });
+                                }
+                            });
+                        } else {
+                            //add new product
+                            Cart.update({
+                                user: data.user
+                            }, {
+                                $push: {
+                                    cartproduct: data.cartproduct
+                                }
+                            }, function(err, updated) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    callback(null, {
+                                        message: "Product added"
+                                    });
+                                }
+                            });
 
-                        Cart.update({
-                            user: data.user
-                        }, {
-                            $push: {
-                                cartproduct: data.cartproduct
-                            }
-                        }, function(err, updated) {
-                            if (err) {
-                                console.log(err);
-                                callback(err, null);
-                            } else {
-                                callback(null, updated);
-                            }
-                        });
-
+                        }
                     }
-                }
-            });
-            // var upobj = {
-            //     $push: {
-            //         cartproduct: data.cartproduct
-            //     }
-            // };
-
+                });
         } else {
             //check offline cart insert
             if (data.cartproduct) {
@@ -126,7 +128,6 @@ var models = {
             } else {
                 var upobj = {};
             }
-
             // console.log("in save else");
             Cart.findOneAndUpdate({
                 user: data.user
@@ -193,7 +194,6 @@ var models = {
     },
 
     getCart: function(data, callback) {
-        console.log("inn", data);
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         console.log(data);
@@ -220,7 +220,7 @@ var models = {
             function(callback1) {
                 Cart.find({
                     user: data.user
-                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name rentalamount images").lean().exec(function(err, data2) {
+                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name rentalamount securitydeposit images").lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
