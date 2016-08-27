@@ -15,6 +15,7 @@ var schema = new Schema({
             index: true
         },
         size: String,
+        duration: String,
         by: String,
         // size: {
         //     type: Schema.Types.ObjectId,
@@ -251,9 +252,9 @@ var models = {
         var newdata = {};
         var finalcart = [];
         if (data && data.length > 0) {
-          setTimeout();
+            setTimeout();
             _.each(data, function(pro) {
-                console.log(pro.product);
+                // console.log(pro.product);
                 Product.findOne({
                     _id: pro.product
                 }).select("name rentalamount securitydeposit images").exec(function(err, data2) {
@@ -263,12 +264,8 @@ var models = {
                     } else {
                         newdata = pro;
                         newdata.product = data2;
-                        console.log("ddd", newdata);
-                        // // var test= newdata.product.concat(newdata.data);
-                        // console.log("aaa", test);
                         finalcart.push(newdata);
                         // callback(null, newdata);
-                        console.log("finalcart", finalcart);
                     }
                 });
             });
