@@ -19,16 +19,19 @@ module.exports = {
                         return o.product == req.body.product;
                     });
                     if (abc === -1) {
-                      //add new product
+                      console.log("new");
+                        //add new product
                         req.session.cart.push(req.body);
                     } else {
-                      //edit cart product
+                      console.log("edit");
+                        //edit cart product
                         var index = _.indexOf(req.session.cart, _.find(req.session.cart, {
                             product: req.body.product
                         }));
                         req.session.cart.splice(index, 1, req.body);
-                      }
+                    }
                 } else {
+                  console.log("first new");
                     req.session.cart = [];
                     req.session.cart.push(req.body);
                 }
@@ -152,22 +155,11 @@ module.exports = {
         if (req.body) {
             if (req.session.user) {
                 req.body.user = req.session.user._id;
-                if (req.body.pagesize && req.body.pagenumber) {
-                    Cart.getCart(req.body, res.callback);
-                } else {
-                    res.json({
-                        value: false,
-                        data: "Invalid Params"
-                    });
-                }
+                Cart.getCart(req.body, res.callback);
             } else {
                 // console.log("not logged in");
-                // res.json({
-                //     value: true,
-                //     data: req.session.cart,
-                //     message: "Offline cart"
-                // });
-                Cart.getCartOffline(req.session.cart, res.callback);
+                var sendcartoffline = req.session.cart;
+                Cart.getCartOffline(sendcartoffline, res.callback);
             }
         } else {
             res.json({

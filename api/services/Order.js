@@ -84,23 +84,24 @@ var schema = new Schema({
         type: String,
         default: ""
     },
-    products: [{
+    products:  [{
         product: {
             type: Schema.Types.ObjectId,
             ref: 'Product',
             index: true
         },
-        // quantity: Number,
-        // price: Number,
+        size: String,
+        duration: String,
+        by: String,
+        // size: {
+        //     type: Schema.Types.ObjectId,
+        //     ref: 'Size',
+        //     index: true
+        // },
         timeFrom: Date,
         timeTo: Date,
         deliveryTime: String,
         pickupTime: String,
-        size: {
-            type: Schema.Types.ObjectId,
-            ref: 'Size',
-            index: true
-        }
     }],
 
     status: {

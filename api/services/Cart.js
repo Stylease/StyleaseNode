@@ -195,25 +195,74 @@ var models = {
     },
 
     getCart: function(data, callback) {
-        data.pagenumber = parseInt(data.pagenumber);
-        data.pagesize = parseInt(data.pagesize);
-        console.log(data);
-        var checkfor = new RegExp(data.search, "i");
+        // data.pagenumber = parseInt(data.pagenumber);
+        // data.pagesize = parseInt(data.pagesize);
+        // var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
+            // function(callback1) {
+            //     Cart.count({
+            //         user: data.user
+            //     }).exec(function(err, number) {
+            //         if (err) {
+            //             console.log(err);
+            //             callback1(err, null);
+            //         } else if (number) {
+            //             newreturns.cartcount = number;
+            //             newreturns.totalpages = Math.ceil(number / data.pagesize);
+            //             callback1(null, newreturns);
+            //         } else {
+            //             newreturns.totalpages = 0;
+            //             callback1(null, newreturns);
+            //         }
+            //     });
+            // },
             function(callback1) {
-                Cart.count({
-                    user: data.user
-                }).exec(function(err, number) {
+                console.log("logged user", data.user);
+                Cart.aggregate([{
+                        $match: {
+                            user: objectid(data.user)
+                        }
+                    }, {
+                        $unwind: "$cartproduct"
+                    }, {
+                        $lookup: {
+                            from: "products",
+                            localField: "cartproduct.product",
+                            foreignField: "_id",
+                            as: "product"
+                        }
+                    }, {
+                        $unwind: "$product"
+                    }, {
+                        $project: {
+                            "product.name": 1,
+                            "product.rentalamount": 1,
+                            "product.securitydeposit": 1
+                        }
+                    }, {
+                        $group: {
+                            "_id": null,
+                            "totalrentalamount": {
+                                $sum: "$product.rentalamount"
+                            },
+                            "totalsecuritydeposit": {
+                                $sum: "$product.securitydeposit"
+                            },
+                            count: {
+                                $sum: 1
+                            }
+                        }
+                    }
+
+                ], function(err, cartco) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
-                    } else if (number) {
-                        newreturns.totalpages = Math.ceil(number / data.pagesize);
-                        callback1(null, newreturns);
                     } else {
-                        newreturns.totalpages = 0;
+                        newreturns.cartcount = cartco[0];
+                        console.log("cartcount", cartco);
                         callback1(null, newreturns);
                     }
                 });
@@ -249,31 +298,35 @@ var models = {
     },
 
     getCartOffline: function(data, callback) {
+        var newcartdata = _.cloneDeep(data);
         var newdata = {};
-        var finalcart = [];
-        if (data && data.length > 0) {
-            setTimeout();
-            _.each(data, function(pro) {
-                // console.log(pro.product);
-                Product.findOne({
-                    _id: pro.product
-                }).select("name rentalamount securitydeposit images").exec(function(err, data2) {
-                    if (err) {
-                        console.log(err);
-                        callback(err, null);
-                    } else {
-                        newdata = pro;
-                        newdata.product = data2;
-                        finalcart.push(newdata);
-                        // callback(null, newdata);
-                    }
-                });
+        var cartcount = {};
+        if (newcartdata && newcartdata.length > 0) {
+            Product.populate(newcartdata, {
+                path: "product",
+                select: "name rentalamount securitydeposit images",
+                options: {
+                    lean: true
+                }
+            }, function(err, response) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    var totalrentalamount = 0;
+                    var totalsecuritydeposit = 0;
+                    newdata.cartproduct = response;
+                    console.log("resss", response);
+                    _.each(response, function(res) {
+                        totalrentalamount = parseInt(totalrentalamount) + parseInt(res.product.rentalamount);
+                        totalsecuritydeposit = parseInt(totalsecuritydeposit) + parseInt(res.product.securitydeposit);
+                    });
+                    cartcount.totalrentalamount = totalrentalamount;
+                    cartcount.totalsecuritydeposit = totalsecuritydeposit;
+                    cartcount.count = response.length;
+                    newdata.cartcount = cartcount;
+                    callback(null, newdata);
+                }
             });
-            setTimeout(function() {
-                callback(null, finalcart);
-            }, 300);
-
-
         } else {
             callback(null, {
                 message: "No products"
