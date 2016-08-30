@@ -84,7 +84,7 @@ var schema = new Schema({
         type: String,
         default: ""
     },
-    products:  [{
+    cartproduct: [{
         product: {
             type: Schema.Types.ObjectId,
             ref: 'Product',
@@ -93,26 +93,32 @@ var schema = new Schema({
         size: String,
         duration: String,
         by: String,
-        // size: {
-        //     type: Schema.Types.ObjectId,
-        //     ref: 'Size',
-        //     index: true
-        // },
         timeFrom: Date,
         timeTo: Date,
         deliveryTime: String,
         pickupTime: String,
     }],
 
-    status: {
-        type: String,
-        default: ""
+    subtotal: {
+        type: Number,
+        default: 0
     },
-    subtotal: Number,
-    servicetax: Number,
-    refundabledeposit: Number,
-    deliverycharge: Number,
-    total: Number,
+    servicetax: {
+        type: Number,
+        default: 0
+    },
+    refundabledeposit: {
+        type: Number,
+        default: 0
+    },
+    deliverycharge: {
+        type: Number,
+        default: 0
+    },
+    total: {
+        type: Number,
+        default: 0
+    },
     transactionid: {
         type: String,
         default: ""
@@ -168,6 +174,19 @@ var models = {
                         if (err) {
                             callback(err, null);
                         } else if (created) {
+                            console.log("in order data", data);
+                            if (data.user != null) {
+                                data._id = data.user;
+                                User.saveData(data, function(err, data3) {
+                                    if (err) {
+                                        console.log(err);
+                                        callback(err, null)
+                                    } else {
+                                        console.log("user updated", data3);
+                                        // callback(null, data3);
+                                    }
+                                });
+                            }
                             callback(null, created);
                         } else {
                             callback({

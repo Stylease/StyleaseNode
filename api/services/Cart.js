@@ -17,11 +17,6 @@ var schema = new Schema({
         size: String,
         duration: String,
         by: String,
-        // size: {
-        //     type: Schema.Types.ObjectId,
-        //     ref: 'Size',
-        //     index: true
-        // },
         timeFrom: Date,
         timeTo: Date,
         deliveryTime: String,

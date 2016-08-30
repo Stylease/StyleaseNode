@@ -7,14 +7,22 @@ var schema = new Schema({
         type: String,
         default: ""
     },
+    firstname: {
+        type: String,
+        default: ""
+    },
+    lastname: {
+        type: String,
+        default: ""
+    },
     email: String,
     password: {
         type: String,
         default: ""
     },
     forgotpassword: {
-      type:String,
-      default: ""
+        type: String,
+        default: ""
     },
     mobile: {
         type: String,
@@ -38,21 +46,61 @@ var schema = new Schema({
     //   type: [],
     //   index:true
     // },
-    cart: {
-        type: [{
-            timestamp: Date,
-            product: {
-                type: Schema.Types.ObjectId,
-                ref: 'Product',
-                index: true
-            },
-            size: String,
-            timeFrom: Date,
-            timeTo: Date,
-            deliveryTime: String,
-            pickupTime: String
-        }],
-        index: true
+    billingaddressflat: {
+        type: String,
+        default: ""
+    },
+    billingaddresslandmark: {
+        type: String,
+        default: ""
+    },
+    billingaddressstreet: {
+        type: String,
+        default: ""
+    },
+    billingaddresspin: {
+        type: String,
+        default: ""
+    },
+    billingaddresscity: {
+        type: String,
+        default: ""
+    },
+    billingaddressstate: {
+        type: String,
+        default: ""
+    },
+    billingaddresscountry: {
+        type: String,
+        default: ""
+    },
+    shippingaddressflat: {
+        type: String,
+        default: ""
+    },
+    shippingaddresslandmark: {
+        type: String,
+        default: ""
+    },
+    shippingaddressstreet: {
+        type: String,
+        default: ""
+    },
+    shippingaddresspin: {
+        type: String,
+        default: ""
+    },
+    shippingaddresscity: {
+        type: String,
+        default: ""
+    },
+    shippingaddressstate: {
+        type: String,
+        default: ""
+    },
+    shippingaddresscountry: {
+        type: String,
+        default: ""
     },
     wishlist: {
         type: [{
@@ -99,31 +147,31 @@ var models = {
         }
     },
     register: function(data, callback) {
-      if (data.password && data.password !== "") {
-        data.password = md5(data.password);
-      }
-      var user = this(data);
-      user.email = data.email;
-      this.count({
-        "email": user.email
-      }).exec(function(err, data2) {
-        if (err) {
-          callback(err, data);
-        } else {
-          if (data2 === 0) {
-                user.save(function(err, data3) {
-                  data3.password = '';
-                  if (err) {
-                    callback(err, null);
-                  } else {
-                    callback(null, data3);
-                  }
-                });
-          } else {
-            callback("User already Exists", false);
-          }
+        if (data.password && data.password !== "") {
+            data.password = md5(data.password);
         }
-      });
+        var user = this(data);
+        user.email = data.email;
+        this.count({
+            "email": user.email
+        }).exec(function(err, data2) {
+            if (err) {
+                callback(err, data);
+            } else {
+                if (data2 === 0) {
+                    user.save(function(err, data3) {
+                        data3.password = '';
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, data3);
+                        }
+                    });
+                } else {
+                    callback("User already Exists", false);
+                }
+            }
+        });
     },
     saveData: function(data, callback) {
         //        delete data.password;
@@ -148,7 +196,6 @@ var models = {
             user.timestamp = new Date();
             data.expiry = new Date();
             user.password = md5(user.password);
-
             user.save(function(err, created) {
                 if (err) {
                     callback(err, null);
@@ -376,65 +423,65 @@ var models = {
             });
     },
     login: function(data, callback) {
-      data.password = md5(data.password);
-      User.findOne({
-          email: data.email,
-          password: data.password
-      }, function(err, data2) {
-          if (err) {
-              console.log(err);
-              callback(er, null);
-          } else {
-              if (_.isEmpty(data2)) {
-                  User.findOne({
-                      email: data.email,
-                      forgotpassword: data.password
-                  }, function(err, data4) {
-                      if (err) {
-                          console.log(err);
-                          callback(err, null);
-                      } else {
-                          if (_.isEmpty(data4)) {
-                              callback(null, {
-                                  comment: "User Not Found"
-                              });
-                          } else {
-                              User.findOneAndUpdate({
-                                  _id: data4._id
-                              }, {
-                                  password: data.password,
-                                  forgotpassword: ""
-                              }, function(err, data5) {
-                                  if (err) {
-                                      console.log(err);
-                                      callback(err, null);
-                                  } else {
-                                      data5.password = "";
-                                      data5.forgotpassword = "";
-                                      callback(null, data5);
-                                  }
-                              });
-                          }
-                      }
-                  });
-              } else {
-                  User.findOneAndUpdate({
-                      _id: data2._id
-                  }, {
-                      forgotpassword: ""
-                  }, function(err, data3) {
-                      if (err) {
-                          console.log(err);
-                          callback(err, null);
-                      } else {
-                          data3.password = "";
-                          data3.forgotpassword = "";
-                          callback(null, data3);
-                      }
-                  });
-              }
-          }
-      });
+        data.password = md5(data.password);
+        User.findOne({
+            email: data.email,
+            password: data.password
+        }, function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(er, null);
+            } else {
+                if (_.isEmpty(data2)) {
+                    User.findOne({
+                        email: data.email,
+                        forgotpassword: data.password
+                    }, function(err, data4) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            if (_.isEmpty(data4)) {
+                                callback(null, {
+                                    comment: "User Not Found"
+                                });
+                            } else {
+                                User.findOneAndUpdate({
+                                    _id: data4._id
+                                }, {
+                                    password: data.password,
+                                    forgotpassword: ""
+                                }, function(err, data5) {
+                                    if (err) {
+                                        console.log(err);
+                                        callback(err, null);
+                                    } else {
+                                        data5.password = "";
+                                        data5.forgotpassword = "";
+                                        callback(null, data5);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    User.findOneAndUpdate({
+                        _id: data2._id
+                    }, {
+                        forgotpassword: ""
+                    }, function(err, data3) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            data3.password = "";
+                            data3.forgotpassword = "";
+                            callback(null, data3);
+                        }
+                    });
+                }
+            }
+        });
     },
     getLimited: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
