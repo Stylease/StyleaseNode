@@ -174,7 +174,6 @@ var models = {
                         if (err) {
                             callback(err, null);
                         } else if (created) {
-                            console.log("in order data", data);
                             if (data.user != null) {
                                 data._id = data.user;
                                 User.saveData(data, function(err, data3) {
@@ -182,7 +181,7 @@ var models = {
                                         console.log(err);
                                         callback(err, null)
                                     } else {
-                                        console.log("user updated", data3);
+                                        // console.log("user updated", data3);
                                         // callback(null, data3);
                                     }
                                 });
