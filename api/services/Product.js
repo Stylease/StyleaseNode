@@ -136,14 +136,14 @@ var models = {
         }
     },
     saveData: function(data, callback) {
-        console.log("pro", data.suggestedProduct);
+        // console.log("pro", data.suggestedProduct);
         //delete data.password;
         if (data.suggestedProduct != undefined) {
             if (data.suggestedProduct.length <= 0 || data.suggestedProduct === "") {
-                console.log("inn");
+                // console.log("inn");
                 delete data.suggestedProduct;
             } else {
-                console.log("ou=");
+                // console.log("ou=");
             }
         }
         var product = this(data);

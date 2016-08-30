@@ -190,31 +190,11 @@ var models = {
     },
 
     getCart: function(data, callback) {
-        // data.pagenumber = parseInt(data.pagenumber);
-        // data.pagesize = parseInt(data.pagesize);
-        // var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            // function(callback1) {
-            //     Cart.count({
-            //         user: data.user
-            //     }).exec(function(err, number) {
-            //         if (err) {
-            //             console.log(err);
-            //             callback1(err, null);
-            //         } else if (number) {
-            //             newreturns.cartcount = number;
-            //             newreturns.totalpages = Math.ceil(number / data.pagesize);
-            //             callback1(null, newreturns);
-            //         } else {
-            //             newreturns.totalpages = 0;
-            //             callback1(null, newreturns);
-            //         }
-            //     });
-            // },
             function(callback1) {
-                console.log("logged user", data.user);
+                // console.log("logged user", data.user);
                 Cart.aggregate([{
                         $match: {
                             user: objectid(data.user)
@@ -310,7 +290,7 @@ var models = {
                     var totalrentalamount = 0;
                     var totalsecuritydeposit = 0;
                     newdata.cartproduct = response;
-                    console.log("resss", response);
+                    // console.log("resss", response);
                     _.each(response, function(res) {
                         totalrentalamount = parseInt(totalrentalamount) + parseInt(res.product.rentalamount);
                         totalsecuritydeposit = parseInt(totalsecuritydeposit) + parseInt(res.product.securitydeposit);
@@ -328,6 +308,60 @@ var models = {
             })
         }
 
+    },
+
+    getCartBackend: function(data, callback) {
+        data.pagenumber = parseInt(data.pagenumber);
+        data.pagesize = parseInt(data.pagesize);
+        var checkfor = new RegExp(data.search, "i");
+        var newreturns = {};
+        newreturns.data = [];
+        async.parallel([
+            function(callback1) {
+                Cart.count({
+                    user: data._id
+                }).exec(function(err, number) {
+                    if (err) {
+                        console.log(err);
+                        callback1(err, null);
+                    } else if (number) {
+                        newreturns.cartcount = number;
+                        newreturns.totalpages = Math.ceil(number / data.pagesize);
+                        callback1(null, newreturns);
+                    } else {
+                        newreturns.totalpages = 0;
+                        callback1(null, newreturns);
+                    }
+                });
+            },
+            function(callback1) {
+                Cart.find({
+                    user: data._id
+                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name rentalamount").lean().exec(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback1(err, null);
+                    } else {
+                        if (data2 && data2.length > 0) {
+                            newreturns.data = data2[0].cartproduct;
+                            newreturns.pagenumber = data.pagenumber;
+                            callback1(null, newreturns);
+                        } else {
+                            callback1({
+                                message: "No data found"
+                            }, null);
+                        }
+                    }
+                });
+            }
+        ], function(err, respo) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, newreturns);
+            }
+        });
     },
     getLimited: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);

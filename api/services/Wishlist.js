@@ -11,13 +11,7 @@ var schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         index: true
-    },
-    size: String,
-    timeFrom: Date,
-    timeTo: Date,
-    deliveryTime: String,
-    pickupTime: String
-
+    }
 });
 
 module.exports = mongoose.model('Wishlist', schema);
@@ -67,7 +61,6 @@ var models = {
                 }
             });
         } else {
-
             wishlist.save(function(err, created) {
                 if (err) {
                     callback(err, null);
@@ -133,7 +126,7 @@ var models = {
         async.parallel([
             function(callback1) {
                 Wishlist.count({
-                    user: data.user
+                    user: data._id
                 }).exec(function(err, number) {
                     if (err) {
                         console.log(err);
@@ -182,24 +175,23 @@ var models = {
             }
         });
     },
-    getLimited: function(data, callback) {
+    getWishlistUser: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
-        data.pagewishlist = parseInt(data.pagewishlist);
+        data.pagesize = parseInt(data.pagesize);
+        console.log(data);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
             function(callback1) {
                 Wishlist.count({
-                    name: {
-                        "$regex": checkfor
-                    }
+                    user: data.user
                 }).exec(function(err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
                     } else if (number) {
-                        newreturns.totalpages = Math.ceil(number / data.pagewishlist);
+                        newreturns.totalpages = Math.ceil(number / data.pagesize);
                         callback1(null, newreturns);
                     } else {
                         newreturns.totalpages = 0;
@@ -209,12 +201,14 @@ var models = {
             },
             function(callback1) {
                 Wishlist.find({
-                    name: {
-                        "$regex": checkfor
-                    }
+                    user: data.user
                 }, {}).sort({
                     name: 1
-                }).skip((data.pagenumber - 1) * data.pagewishlist).limit(data.pagewishlist).lean().exec(function(err, data2) {
+                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id  name rentalamount images", null, {
+                    sort: {
+                        "name": 1
+                    }
+                }).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -240,6 +234,7 @@ var models = {
             }
         });
     },
+
 };
 
 module.exports = _.assign(module.exports, models);

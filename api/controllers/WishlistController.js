@@ -16,7 +16,15 @@ module.exports = {
 
     save: function(req, res) {
         if (req.body) {
-            Wishlist.saveData(req.body, res.callback);
+            if (req.session.user) {
+                req.body.user = req.session.user._id;
+                Wishlist.saveData(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "Please login to Add Wishlist"
+                });
+            }
         } else {
             res.json({
                 value: false,
@@ -95,6 +103,35 @@ module.exports = {
                     data: "Invalid Params"
                 });
             }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+    getWishlistUser: function(req, res) {
+        function callback(err, data) {
+            Global.response(err, data, res);
+        }
+        if (req.body) {
+            if (req.session.user) {
+                if (req.body.pagesize && req.body.pagenumber) {
+                    req.body.user = req.session.user._id;
+                    Wishlist.getWishlistUser(req.body, res.callback);
+                } else {
+                    res.json({
+                        value: false,
+                        data: "Invalid Params"
+                    });
+                }
+            } else {
+                res.json({
+                    value: false,
+                    data: "User not logged in"
+                });
+            }
+
         } else {
             res.json({
                 value: false,

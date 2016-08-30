@@ -168,6 +168,26 @@ module.exports = {
             });
         }
     },
+    getCartBackend: function(req, res) {
+        function callback(err, data) {
+            Global.response(err, data, res);
+        }
+        if (req.body) {
+            if (req.body.pagesize && req.body.pagenumber)  {
+                Cart.getCartBackend(req.body, res.callback);
+            } else {
+              res.json({
+                  value: false,
+                  data: "Invalid params"
+              });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
 
 
 
