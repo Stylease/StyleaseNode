@@ -99,6 +99,7 @@ var models = {
         });
     },
     getOne: function(data, callback) {
+      console.log("in local");
         this.findOne({
             "_id": data._id
         }, {
