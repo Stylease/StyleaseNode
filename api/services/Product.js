@@ -247,7 +247,7 @@ var models = {
             function(callback) {
                 Product.findOne({
                     _id: data._id
-                }).populate("category","name").populate("designer","name").populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
+                }).populate("category","name").populate("subcategory","name").populate("designer","name").populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null)
@@ -314,6 +314,9 @@ var models = {
                 $in: data.color
             }
         };
+        if (data.subcategory.length == 0 || data.subcategory == null) {
+            delete matchobj.subcategory;
+        }
         if (!data.size || data.size == "") {
             delete matchobj.size;
         }
@@ -326,7 +329,7 @@ var models = {
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
             function(callback) {
-                Product.find(matchobj).select('_id name rentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
+                Product.find(matchobj).sort({}).select('_id name rentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);

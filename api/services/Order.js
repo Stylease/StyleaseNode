@@ -353,8 +353,24 @@ var models = {
     },
 
 
-    getOrderId: function(data, callback) {
-
+    getOrderByUser: function(data, callback) {
+        Order.find({
+            user: data.user
+        }).populate("cartproduct.product","name rentalamount images").exec(function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                if (data2 && data2.length > 0) {
+                    console.log(data2);
+                    callback(null, data2);
+                } else {
+                    callback({
+                        message: "No data found"
+                    }, null);
+                }
+            }
+        });
     },
 };
 

@@ -251,7 +251,7 @@ var models = {
                         callback1(err, null);
                     } else {
                         if (data2 && data2.length > 0) {
-                          console.log("data2", data2);
+                            console.log("data2", data2);
                             newreturns.cartproduct = data2[0].cartproduct;
                             newreturns.pagenumber = data.pagenumber;
                             callback1(null, newreturns);
@@ -306,9 +306,9 @@ var models = {
                 }
             });
         } else {
-            callback(null, {
+            callback({
                 message: "No products"
-            })
+            }, null)
         }
 
     },

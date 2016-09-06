@@ -4,7 +4,7 @@ module.exports = {
     save: function(req, res) {
         if (req.body) {
             if (req.session.user) {
-              console.log("userss", req.session.user._id);
+                console.log("userss", req.session.user._id);
                 req.body.user = req.session.user._id;
             } else {
                 req.body.user = null;
@@ -29,9 +29,17 @@ module.exports = {
         }
     },
 
-    getOrderId: function(req, res) {
+    getOrderByUser: function(req, res) {
         if (req.body) {
-            Order.getOrderId(req.body, res.callback);
+            if (req.session.user) {
+                req.body.user = req.session.user._id;
+                Order.getOrderByUser(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "User not logged in"
+                });
+            }
         } else {
             res.json({
                 value: false,
