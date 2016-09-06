@@ -273,7 +273,9 @@ var models = {
     },
 
     getCartOffline: function(data, callback) {
+      console.log("in offline cart");
         var newcartdata = _.cloneDeep(data);
+        console.log("newcartdata", newcartdata);
         var newdata = {};
         var cartcount = {};
         if (newcartdata && newcartdata.length > 0) {
