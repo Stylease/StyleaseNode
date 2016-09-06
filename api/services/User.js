@@ -17,8 +17,7 @@ var schema = new Schema({
     },
     email: String,
     password: {
-        type: String,
-        default: ""
+        type: String
     },
     forgotpassword: {
         type: String,
@@ -102,6 +101,22 @@ var schema = new Schema({
         type: String,
         default: ""
     },
+    beneficiaryName: {
+        type: String,
+        default: ""
+    },
+    accountNumber: {
+        type: String,
+        default: ""
+    },
+    bankName: {
+        type: String,
+        default: ""
+    },
+    IFSC: {
+        type: String,
+        default: ""
+    },
     wishlist: {
         type: [{
             timestamp: Date,
@@ -180,14 +195,17 @@ var models = {
             data.expiry = new Date(data.expiry);
             data.password = md5(data.password);
             data.userid = new Date();
+            delete data.password;
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, {
+                $set: data
+            }).exec(function(err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
                 } else if (updated) {
-                    callback(null, updated);
+                    callback(null, data);
                 } else {
                     callback(null, {});
                 }
@@ -257,6 +275,38 @@ var models = {
                 callback(null, found);
             } else {
                 callback(null, {});
+            }
+        });
+    },
+    changePassword: function(data, callback) {
+      var Main= this;
+        Main.findOne({
+            password: md5(data.oldPassword)
+        }).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                if (found) {
+                  // console.log(found);
+                    // callback(null, found);
+                    Main.update({
+                        password: md5(data.newPassword)
+                    }).exec(function(err, data3) {
+                      console.log("data3", data3);
+                        if (err) {
+                            console.log(err);
+                            callback(err, null)
+                        } else {
+                            callback(null, data3);
+                        }
+
+                    });
+                } else {
+                    callback(null, {
+                        message: "no data"
+                    });
+                }
             }
         });
     },

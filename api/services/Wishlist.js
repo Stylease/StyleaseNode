@@ -61,15 +61,26 @@ var models = {
                 }
             });
         } else {
-            wishlist.save(function(err, created) {
+            this.findOne({
+                user: data.user,
+                product: data.product
+            }).exec(function(err, found) {
                 if (err) {
+                    console.log(err);
                     callback(err, null);
-                } else if (created) {
-                    callback(null, created);
                 } else {
-                    callback(null, {});
+                    wishlist.save(function(err, created) {
+                        if (err) {
+                            callback(err, null);
+                        } else if (created) {
+                            callback(null, created);
+                        } else {
+                            callback(null, {});
+                        }
+                    });
                 }
             });
+
         }
     },
     deleteData: function(data, callback) {

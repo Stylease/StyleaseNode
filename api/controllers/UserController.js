@@ -17,7 +17,22 @@ module.exports = {
 
     save: function(req, res) {
         if (req.body) {
-            User.saveData(req.body, res.callback);
+            // User.saveData(req.body, res.callback);
+            User.saveData(req.body, function(err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    req.session.user = respo;
+                    // console.log("sess",req.session.user );
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
         } else {
             res.json({
                 value: false,
@@ -140,6 +155,16 @@ module.exports = {
     forgotPassword: function(req, res) {
         if (req.body) {
             User.forgotPassword(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+    changePassword: function(req, res) {
+        if (req.body) {
+            User.changePassword(req.body, res.callback);
         } else {
             res.json({
                 value: false,

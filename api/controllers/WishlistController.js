@@ -116,15 +116,10 @@ module.exports = {
         }
         if (req.body) {
             if (req.session.user) {
-                if (req.body.pagesize && req.body.pagenumber) {
+
                     req.body.user = req.session.user._id;
                     Wishlist.getWishlistUser(req.body, res.callback);
-                } else {
-                    res.json({
-                        value: false,
-                        data: "Invalid Params"
-                    });
-                }
+              
             } else {
                 res.json({
                     value: false,

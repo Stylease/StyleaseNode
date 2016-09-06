@@ -231,6 +231,7 @@ var models = {
         }, {
             password: 0
         }).exec(function(err, found) {
+          console.log("fff",found);
             if (err) {
                 console.log(err);
                 callback(err, null);
