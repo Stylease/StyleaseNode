@@ -19,11 +19,11 @@ module.exports = {
                         return o.product == req.body.product;
                     });
                     if (abc === -1) {
-                      console.log("new");
+                        console.log("new");
                         //add new product
                         req.session.cart.push(req.body);
                     } else {
-                      console.log("edit");
+                        console.log("edit");
                         //edit cart product
                         var index = _.indexOf(req.session.cart, _.find(req.session.cart, {
                             product: req.body.product
@@ -31,7 +31,7 @@ module.exports = {
                         req.session.cart.splice(index, 1, req.body);
                     }
                 } else {
-                  console.log("first new");
+                    console.log("first new");
                     req.session.cart = [];
                     req.session.cart.push(req.body);
                 }
@@ -89,7 +89,6 @@ module.exports = {
                 }
             } else {
                 // Remove product from offline cart
-                console.log('before', req.session.cart);
                 var id = req.body.product;
                 if (req.session.cart.length > 0) {
                     _.remove(req.session.cart, function(n) {
@@ -173,13 +172,13 @@ module.exports = {
             Global.response(err, data, res);
         }
         if (req.body) {
-            if (req.body.pagesize && req.body.pagenumber)  {
+            if (req.body.pagesize && req.body.pagenumber) {
                 Cart.getCartBackend(req.body, res.callback);
             } else {
-              res.json({
-                  value: false,
-                  data: "Invalid params"
-              });
+                res.json({
+                    value: false,
+                    data: "Invalid params"
+                });
             }
         } else {
             res.json({

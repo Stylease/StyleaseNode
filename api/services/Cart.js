@@ -191,7 +191,6 @@ var models = {
 
     getCart: function(data, callback) {
         var newreturns = {};
-        newreturns.data = [];
         async.parallel([
             function(callback1) {
                 // console.log("logged user", data.user);
@@ -214,7 +213,8 @@ var models = {
                         $project: {
                             "product.name": 1,
                             "product.rentalamount": 1,
-                            "product.securitydeposit": 1
+                            "product.securitydeposit": 1,
+                            "product.price": 1
                         }
                     }, {
                         $group: {
@@ -237,7 +237,7 @@ var models = {
                         callback1(err, null);
                     } else {
                         newreturns.cartcount = cartco[0];
-                        console.log("cartcount", cartco);
+                        // console.log("cartcount", cartco);
                         callback1(null, newreturns);
                     }
                 });
@@ -245,13 +245,14 @@ var models = {
             function(callback1) {
                 Cart.find({
                     user: data.user
-                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name rentalamount securitydeposit images").lean().exec(function(err, data2) {
+                }, {}).populate("cartproduct.product", "name price rentalamount securitydeposit images").lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
                     } else {
                         if (data2 && data2.length > 0) {
-                            newreturns.data = data2;
+                          console.log("data2", data2);
+                            newreturns.cartproduct = data2[0].cartproduct;
                             newreturns.pagenumber = data.pagenumber;
                             callback1(null, newreturns);
                         } else {
@@ -273,7 +274,7 @@ var models = {
     },
 
     getCartOffline: function(data, callback) {
-      console.log("in offline cart");
+        // console.log("in offline cart");
         var newcartdata = _.cloneDeep(data);
         console.log("newcartdata", newcartdata);
         var newdata = {};
@@ -281,7 +282,7 @@ var models = {
         if (newcartdata && newcartdata.length > 0) {
             Product.populate(newcartdata, {
                 path: "product",
-                select: "name rentalamount securitydeposit images",
+                select: "name rentalamount securitydeposit images price",
                 options: {
                     lean: true
                 }

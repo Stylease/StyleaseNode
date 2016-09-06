@@ -247,7 +247,7 @@ var models = {
             function(callback) {
                 Product.findOne({
                     _id: data._id
-                }).populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
+                }).populate("designer","name").populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null)
