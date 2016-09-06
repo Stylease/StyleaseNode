@@ -1,0 +1,5 @@
+apps:
+  - script: "app.js"
+    name: "Stylease"
+    watch: true
+    args: "--prod"
