@@ -35,6 +35,7 @@ var schema = new Schema({
             socialId: String,
             modificationTime: Date
         }],
+
         index: true
     },
     accesslevel: String,
@@ -45,66 +46,80 @@ var schema = new Schema({
     //   type: [],
     //   index:true
     // },
-
-
     billingAddress: [{
-        billingaddressflat: {
+        billingTitle: {
             type: String,
             default: ""
         },
-        billingaddresslandmark: {
+        billingAddressFlat: {
             type: String,
             default: ""
         },
-        billingaddressstreet: {
+        billingAddressLandmark: {
             type: String,
             default: ""
         },
-        billingaddresspin: {
+        billingAddressStreet: {
             type: String,
             default: ""
         },
-        billingaddresscity: {
+        billingAddressPin: {
             type: String,
             default: ""
         },
-        billingaddressstate: {
+        billingAddressCity: {
             type: String,
             default: ""
         },
-        billingaddresscountry: {
+        billingAddressState: {
             type: String,
             default: ""
+        },
+        billingAddressCountry: {
+            type: String,
+            default: ""
+        },
+        isDefault: {
+            type: Boolean,
+            default: false
         }
     }],
     shippingAddress: [{
-        shippingaddressflat: {
+        shippingTitle: {
             type: String,
             default: ""
         },
-        shippingaddresslandmark: {
+        shippingAddressFlat: {
             type: String,
             default: ""
         },
-        shippingaddressstreet: {
+        shippingAddressLandmark: {
             type: String,
             default: ""
         },
-        shippingaddresspin: {
+        shippingAddressStreet: {
             type: String,
             default: ""
         },
-        shippingaddresscity: {
+        shippingAddressPin: {
             type: String,
             default: ""
         },
-        shippingaddressstate: {
+        shippingAddressCity: {
             type: String,
             default: ""
         },
-        shippingaddresscountry: {
+        shippingAddressState: {
             type: String,
             default: ""
+        },
+        shippingAddressCountry: {
+            type: String,
+            default: ""
+        },
+        isDefault: {
+            type: Boolean,
+            default: false
         }
     }],
     beneficiaryName: {
@@ -231,6 +246,8 @@ var models = {
             });
         }
     },
+
+
     deleteData: function(data, callback) {
         this.findOneAndRemove({
             _id: data._id

@@ -40,6 +40,27 @@ module.exports = {
             });
         }
     },
+
+    saveBillingAddress: function(data, callback) {
+        if (req.body) {
+            User.saveBillingAddress(req.body, function(err, respo) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
     register: function(req, res) {
         var callback = function(err, data) {
             if (err) {
@@ -139,7 +160,6 @@ module.exports = {
     },
 
     profile: function(req, res) {
-
         var user = req.session.user;
         if (user) {
             res.set('Cache-Control', 'public, max-age=3600');
