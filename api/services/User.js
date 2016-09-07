@@ -45,62 +45,68 @@ var schema = new Schema({
     //   type: [],
     //   index:true
     // },
-    billingaddressflat: {
-        type: String,
-        default: ""
-    },
-    billingaddresslandmark: {
-        type: String,
-        default: ""
-    },
-    billingaddressstreet: {
-        type: String,
-        default: ""
-    },
-    billingaddresspin: {
-        type: String,
-        default: ""
-    },
-    billingaddresscity: {
-        type: String,
-        default: ""
-    },
-    billingaddressstate: {
-        type: String,
-        default: ""
-    },
-    billingaddresscountry: {
-        type: String,
-        default: ""
-    },
-    shippingaddressflat: {
-        type: String,
-        default: ""
-    },
-    shippingaddresslandmark: {
-        type: String,
-        default: ""
-    },
-    shippingaddressstreet: {
-        type: String,
-        default: ""
-    },
-    shippingaddresspin: {
-        type: String,
-        default: ""
-    },
-    shippingaddresscity: {
-        type: String,
-        default: ""
-    },
-    shippingaddressstate: {
-        type: String,
-        default: ""
-    },
-    shippingaddresscountry: {
-        type: String,
-        default: ""
-    },
+
+
+    billingAddress: [{
+        billingaddressflat: {
+            type: String,
+            default: ""
+        },
+        billingaddresslandmark: {
+            type: String,
+            default: ""
+        },
+        billingaddressstreet: {
+            type: String,
+            default: ""
+        },
+        billingaddresspin: {
+            type: String,
+            default: ""
+        },
+        billingaddresscity: {
+            type: String,
+            default: ""
+        },
+        billingaddressstate: {
+            type: String,
+            default: ""
+        },
+        billingaddresscountry: {
+            type: String,
+            default: ""
+        }
+    }],
+    shippingAddress: [{
+        shippingaddressflat: {
+            type: String,
+            default: ""
+        },
+        shippingaddresslandmark: {
+            type: String,
+            default: ""
+        },
+        shippingaddressstreet: {
+            type: String,
+            default: ""
+        },
+        shippingaddresspin: {
+            type: String,
+            default: ""
+        },
+        shippingaddresscity: {
+            type: String,
+            default: ""
+        },
+        shippingaddressstate: {
+            type: String,
+            default: ""
+        },
+        shippingaddresscountry: {
+            type: String,
+            default: ""
+        }
+    }],
     beneficiaryName: {
         type: String,
         default: ""
@@ -279,7 +285,7 @@ var models = {
         });
     },
     changePassword: function(data, callback) {
-      var Main= this;
+        var Main = this;
         Main.findOne({
             password: md5(data.oldPassword)
         }).exec(function(err, found) {
@@ -288,12 +294,12 @@ var models = {
                 callback(err, null);
             } else {
                 if (found) {
-                  // console.log(found);
+                    // console.log(found);
                     // callback(null, found);
                     Main.update({
                         password: md5(data.newPassword)
                     }).exec(function(err, data3) {
-                      console.log("data3", data3);
+                        console.log("data3", data3);
                         if (err) {
                             console.log(err);
                             callback(err, null)

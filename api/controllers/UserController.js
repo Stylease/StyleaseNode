@@ -139,8 +139,10 @@ module.exports = {
     },
 
     profile: function(req, res) {
+
         var user = req.session.user;
         if (user) {
+            res.set('Cache-Control', 'public, max-age=3600');
             res.json({
                 data: user,
                 value: true
