@@ -10,7 +10,19 @@ var schema = new Schema({
         default: ""
     },
     status: Boolean,
-    type: {
+    chest: {
+        type: String,
+        default: ""
+    },
+    waist: {
+        type: String,
+        default: ""
+    },
+    hips: {
+        type: String,
+        default: ""
+    },
+    length: {
         type: String,
         default: ""
     }

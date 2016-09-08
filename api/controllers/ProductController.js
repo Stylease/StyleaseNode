@@ -67,7 +67,7 @@ module.exports = {
     },
     delete: function(req, res) {
         if (req.body) {
-            console.log(req.body);
+            // console.log(req.body);
             Product.deleteData(req.body, res.callback);
         } else {
             res.json({

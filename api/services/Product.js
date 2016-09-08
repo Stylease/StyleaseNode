@@ -62,11 +62,11 @@ var schema = new Schema({
         type: Number,
         default: 0
     },
-    // size: [{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Size',
-    //     index: true
-    // }],
+    size: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Size',
+        index: true
+    }],
     rentalamount: {
         type: Number,
         default: 0
@@ -79,29 +79,29 @@ var schema = new Schema({
         type: Number,
         default: 0
     },
-    status: Boolean,
-    size: [{
-        name: {
-            type: String,
-            default: ""
-        },
-        text1: {
-            type: String,
-            default: ""
-        },
-        text2: {
-            type: String,
-            default: ""
-        },
-        text3: {
-            type: String,
-            default: ""
-        },
-        text4: {
-            type: String,
-            default: ""
-        }
-    }],
+    status: Boolean
+        // size: [{
+        //     name: {
+        //         type: String,
+        //         default: ""
+        //     },
+        //     chest: {
+        //         type: String,
+        //         default: ""
+        //     },
+        //     waist: {
+        //         type: String,
+        //         default: ""
+        //     },
+        //     hips: {
+        //         type: String,
+        //         default: ""
+        //     },
+        //     length: {
+        //         type: String,
+        //         default: ""
+        //     }
+        // }]
 
 });
 
@@ -145,6 +145,10 @@ var models = {
             } else {
                 // console.log("ou=");
             }
+        }
+        if (data.designer == "") {
+            // delete data.designer;
+            data.designer = null;
         }
         var product = this(data);
         if (data._id) {
@@ -200,7 +204,9 @@ var models = {
         });
     },
     getAllDetails: function(data, callback) {
-        this.find({}, {
+        this.find({
+            status: true
+        }, {
             password: 0
         }).populate("category", "_id  name", null, {
             sort: {
@@ -231,7 +237,7 @@ var models = {
         }, {
             password: 0
         }).exec(function(err, found) {
-          console.log("fff",found);
+            // console.log("fff", found);
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -247,8 +253,9 @@ var models = {
         async.parallel([
             function(callback) {
                 Product.findOne({
-                    _id: data._id
-                }).populate("category","name").populate("subcategory","name").populate("designer","name").populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
+                    _id: data._id,
+                    status: true
+                }).populate("category", "name").populate("subcategory", "name").populate("size").populate("designer", "name").populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null)
@@ -266,7 +273,7 @@ var models = {
                         console.log(err);
                         callback(err, null)
                     } else {
-                        console.log("ddd", data1);
+                        // console.log("ddd", data1);
                         newreturns.producttime = data1;
                         callback(null, newreturns);
                     }
@@ -346,7 +353,7 @@ var models = {
                         console.log(err);
                         callback(err, null);
                     } else {
-                        console.log("Number of docs: ", count);
+                        // console.log("Number of docs: ", count);
                         newreturns.totalpages = Math.ceil(count / data.pagesize);
                         callback(null, newreturns);
                     }

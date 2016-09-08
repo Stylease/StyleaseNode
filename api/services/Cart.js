@@ -28,121 +28,109 @@ module.exports = mongoose.model('Cart', schema);
 
 var models = {
     saveData: function(data, callback) {
-        //online cart insert;
-        // console.log(data);
-        if (data.fromsession == true) {
-            // Cart.find({
-            //     user: data.user,
-            //     // cartproduct: {
-            //     //     $elemMatch: {
-            //     //         product: data.cartproduct.product
-            //     //     }
-            //     // }
-            // })
-            Cart.aggregate([{
-                    $match: {
-                        user: objectid(data.user)
-                    }
-                }, {
-                    $unwind: {
-                        path: "$cartproduct",
-                        preserveNullAndEmptyArrays: true
-                    }
-                }, {
-                    $project: {
-                        "cartproduct": 1
-                    }
-                }, {
-                    $match: {
-                        "cartproduct.product": objectid(data.cartproduct.product)
-                    }
-                }])
-                .exec(function(err, data4) {
-                    if (err) {
-                        console.log(err);
-                        callback(err, null);
-                    } else {
-                        if (data4 && data4.length > 0) {
-                            //update existing product
-                            data4._id = objectid(data4[0].cartproduct._id);
-                            //assign id to cart product sent by user
-                            data.cartproduct._id = data4._id;
-                            Cart.update({
-                                "cartproduct._id": data4._id
-                            }, {
-                                $set: {
-                                    "cartproduct.$": data.cartproduct
-                                }
-                            }, function(err, updated) {
-                                if (err) {
-                                    console.log(err);
-                                    callback(err, null);
-                                } else {
-                                    callback(null, {
-                                        message: "Product updated"
-                                    });
-                                }
-                            });
-                        } else {
-                            //add new product
-                            Cart.update({
-                                user: data.user
-                            }, {
-                                $push: {
-                                    cartproduct: data.cartproduct
-                                }
-                            }, function(err, updated) {
-                                if (err) {
-                                    console.log(err);
-                                    callback(err, null);
-                                } else {
-                                    callback(null, {
-                                        message: "Product added"
-                                    });
-                                }
-                            });
-
-                        }
-                    }
-                });
-        } else {
-            //check offline cart insert
-            if (data.cartproduct) {
-                if (data.cartproduct.length > 1) {
-                    var upobj = {
-                        $pushAll: {
-                            cartproduct: data.cartproduct
-                        }
-                    };
-                } else if (data.cartproduct.length < 2) {
-                    var upobj = {
-                        $push: {
-                            cartproduct: data.cartproduct[0]
-                        }
-                    };
-                }
+        function callme(num) {
+            if (num === data.cartproduct.length) {
+                callback(null, "Done");
             } else {
-                var upobj = {};
+                var mydata = {};
+                mydata.cartproduct = [];
+                mydata.user = data.user;
+                mydata.cartproduct.push(data.cartproduct[num]);
+                console.log("mydata", mydata);
+                callcartsave(mydata, num);
             }
-            // console.log("in save else");
+        }
+
+        function callcartsave(data, num) {
+            console.log("mdata", data, num);
+            Cart.aggregate([{
+                $match: {
+                    user: objectid(data.user)
+                }
+            }, {
+                $unwind: {
+                    path: "$cartproduct",
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $project: {
+                    "cartproduct": 1
+                }
+            }, {
+                $match: {
+                    "cartproduct.product": objectid(data.cartproduct.product)
+                }
+            }]).exec(function(err, data4) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    if (data4 && data4.length > 0) {
+                        //update existing product
+                        data4._id = objectid(data4[0].cartproduct._id);
+                        //assign id to cart product sent by user
+                        data.cartproduct._id = data4._id;
+                        Cart.update({
+                            "cartproduct._id": data4._id
+                        }, {
+                            $set: {
+                                "cartproduct.$": data.cartproduct
+                            }
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                num++;
+                                callme(num);
+                            }
+                        });
+                    } else {
+                        //add new product
+                        Cart.update({
+                            user: data.user
+                        }, {
+                            $push: {
+                                cartproduct: data.cartproduct
+                            }
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                num++;
+                                callme(num);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        if (data.fromsession == true) {
+            callcartsave();
+        } else {
+            console.log("ddddddddd");
             Cart.findOneAndUpdate({
                 user: data.user
-            }, upobj, {
+            }, {}, {
                 upsert: true
             }).exec(function(err, respo) {
                 if (err) {
                     console.log(err);
-                    callback(err, null)
+                    callback(err, null);
                 } else {
-                    console.log("save data log");
-                    // console.log(respo);
-                    callback(null, respo)
+                    if (respo) {
+                        callback(null, respo);
+                    } else {
+                        if (data & data.cartproduct.length > 0) {
+                            console.log("innn");
+                            callme(0);
+                        } else {
+                            callback(null, "Done");
+                        }
+                    }
                 }
             });
         }
 
-        // console.log(data);
-        var cart = this(data);
 
     },
     deleteData: function(data, callback) {
@@ -251,7 +239,7 @@ var models = {
                         callback1(err, null);
                     } else {
                         if (data2 && data2.length > 0) {
-                            console.log("data2", data2);
+                            // console.log("data2", data2);
                             newreturns.cartproduct = data2[0].cartproduct;
                             newreturns.pagenumber = data.pagenumber;
                             callback1(null, newreturns);
@@ -276,7 +264,7 @@ var models = {
     getCartOffline: function(data, callback) {
         // console.log("in offline cart");
         var newcartdata = _.cloneDeep(data);
-        console.log("newcartdata", newcartdata);
+        // console.log("newcartdata", newcartdata);
         var newdata = {};
         var cartcount = {};
         if (newcartdata && newcartdata.length > 0) {
