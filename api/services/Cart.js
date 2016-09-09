@@ -29,14 +29,15 @@ module.exports = mongoose.model('Cart', schema);
 var models = {
     saveData: function(data, callback) {
         function callme(num) {
+            console.log("num is", num, data.cartproduct);
             if (num === data.cartproduct.length) {
+                console.log("cart completed");
                 callback(null, "Done");
             } else {
                 var mydata = {};
-                mydata.cartproduct = [];
+                mydata.cartproduct = {};
                 mydata.user = data.user;
-                mydata.cartproduct.push(data.cartproduct[num]);
-                console.log("mydata", mydata);
+                mydata.cartproduct = data.cartproduct[num];
                 callcartsave(mydata, num);
             }
         }
@@ -105,9 +106,9 @@ var models = {
             });
         }
         if (data.fromsession == true) {
+
             callcartsave();
         } else {
-            console.log("ddddddddd");
             Cart.findOneAndUpdate({
                 user: data.user
             }, {}, {
@@ -118,10 +119,13 @@ var models = {
                     callback(err, null);
                 } else {
                     if (respo) {
-                        callback(null, respo);
+                        if (respo && respo.length > 0) {
+                            callback(null, respo);
+                        } else {
+                            callme(0);
+                        }
                     } else {
-                        if (data & data.cartproduct.length > 0) {
-                            console.log("innn");
+                        if (data) {
                             callme(0);
                         } else {
                             callback(null, "Done");
