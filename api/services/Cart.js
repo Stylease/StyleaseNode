@@ -29,21 +29,25 @@ module.exports = mongoose.model('Cart', schema);
 var models = {
     saveData: function(data, callback) {
         function callme(num) {
-            console.log("num is", num, data.cartproduct);
-            if (num === data.cartproduct.length) {
-                console.log("cart completed");
+            if (data.fromsession == true) {
+                // console.log("cart completed");
                 callback(null, "Done");
             } else {
-                var mydata = {};
-                mydata.cartproduct = {};
-                mydata.user = data.user;
-                mydata.cartproduct = data.cartproduct[num];
-                callcartsave(mydata, num);
+                if (num === data.cartproduct.length) {
+                    // console.log("cart completed");
+                    callback(null, "Done");
+                } else {
+                    var mydata = {};
+                    mydata.cartproduct = {};
+                    mydata.user = data.user;
+                    mydata.cartproduct = data.cartproduct[num];
+                    callcartsave(mydata, num);
+                }
             }
         }
 
         function callcartsave(data, num) {
-            console.log("mdata", data, num);
+            // console.log("mdata", data, num);
             Cart.aggregate([{
                 $match: {
                     user: objectid(data.user)
@@ -107,7 +111,7 @@ var models = {
         }
         if (data.fromsession == true) {
 
-            callcartsave();
+            callcartsave(data, 0);
         } else {
             Cart.findOneAndUpdate({
                 user: data.user
@@ -122,13 +126,17 @@ var models = {
                         if (respo && respo.length > 0) {
                             callback(null, respo);
                         } else {
-                            callme(0);
+                            if (data.cartproduct == undefined) {
+                                callback(null, "Cart is empty")
+                            } else {
+                                callme(0);
+                            }
                         }
                     } else {
-                        if (data) {
-                            callme(0);
+                        if (data.cartproduct == undefined) {
+                            callback(null, "Cart is empty")
                         } else {
-                            callback(null, "Done");
+                            callme(0);
                         }
                     }
                 }
