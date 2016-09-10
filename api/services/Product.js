@@ -236,7 +236,7 @@ var models = {
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).populate("size","name").exec(function(err, found) {
             // console.log("fff", found);
             if (err) {
                 console.log(err);
