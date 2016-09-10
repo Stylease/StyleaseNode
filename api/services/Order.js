@@ -28,59 +28,59 @@ var schema = new Schema({
         default: ""
     },
     timestamp: Date,
-    billingaddressflat: {
+    billingAddressFlat: {
         type: String,
         default: ""
     },
-    billingaddresslandmark: {
+    billingAddressLandmark: {
         type: String,
         default: ""
     },
-    billingaddressstreet: {
+    billingAddressStreet: {
         type: String,
         default: ""
     },
-    billingaddresspin: {
+    billingAddressPin: {
         type: String,
         default: ""
     },
-    billingaddresscity: {
+    billingAddressCity: {
         type: String,
         default: ""
     },
-    billingaddressstate: {
+    billingAddressState: {
         type: String,
         default: ""
     },
-    billingaddresscountry: {
+    billingAddressCountry: {
         type: String,
         default: ""
     },
-    shippingaddressflat: {
+    shippingAddressFlat: {
         type: String,
         default: ""
     },
-    shippingaddresslandmark: {
+    shippingAddressLandmark: {
         type: String,
         default: ""
     },
-    shippingaddressstreet: {
+    shippingAddressStreet: {
         type: String,
         default: ""
     },
-    shippingaddresspin: {
+    shippingAddressPin: {
         type: String,
         default: ""
     },
-    shippingaddresscity: {
+    shippingAddressCity: {
         type: String,
         default: ""
     },
-    shippingaddressstate: {
+    shippingAddressState: {
         type: String,
         default: ""
     },
-    shippingaddresscountry: {
+    shippingAddressCountry: {
         type: String,
         default: ""
     },
