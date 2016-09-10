@@ -255,7 +255,13 @@ var models = {
                 Product.findOne({
                     _id: data._id,
                     status: true
-                }).populate("category", "name").populate("subcategory", "name").populate("size").populate("designer", "name").populate("suggestedProduct", "_id name rentalamount images").lean().exec(function(err, found) {
+                }).populate("category", "name").populate("subcategory", "name").populate("size").populate("designer", "name").populate({
+                    path: 'suggestedProduct',
+                    select: '_id name rentalamount images',
+                    options: {
+                        limit: 6
+                    }
+                }).lean().exec(function(err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null)
@@ -267,7 +273,10 @@ var models = {
             },
             function(callback) {
                 ProductTime.find({
-                    product: data._id
+                    product: data._id,
+                    timestampTo: {
+                        $gte: new Date()
+                    }
                 }).exec(function(err, data1) {
                     if (err) {
                         console.log(err);

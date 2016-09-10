@@ -9,7 +9,19 @@ module.exports = {
                 sendcart.fromsession = true;
                 sendcart.user = req.session.user._id;
                 sendcart.cartproduct = req.body;
-                Cart.saveData(sendcart, res.callback);
+                Cart.saveData(sendcart, function(err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: respo
+                        });
+                    }
+                });
             } else {
                 // console.log("Not logged");
                 var newpro = {};
@@ -19,11 +31,9 @@ module.exports = {
                         return o.product == req.body.product;
                     });
                     if (abc === -1) {
-                        console.log("new");
                         //add new product
                         req.session.cart.push(req.body);
                     } else {
-                        console.log("edit");
                         //edit cart product
                         var index = _.indexOf(req.session.cart, _.find(req.session.cart, {
                             product: req.body.product
@@ -31,10 +41,11 @@ module.exports = {
                         req.session.cart.splice(index, 1, req.body);
                     }
                 } else {
-                    console.log("first new");
+                    // console.log("first new");
                     req.session.cart = [];
                     req.session.cart.push(req.body);
                 }
+                //save product to product
                 // console.log(req.session.cart);
                 res.json({
                     value: true,
