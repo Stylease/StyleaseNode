@@ -159,13 +159,13 @@ module.exports = {
         }
     },
     getCart: function(req, res) {
-        function callback(err, data) {
-            Global.response(err, data, res);
-        }
+        // function callback(err, data) {
+        //     Global.response(err, data, res);
+        // }
         if (req.body) {
             if (req.session.user) {
                 req.body.user = req.session.user._id;
-                Cart.getCart(req.body, res.callback);
+                    Cart.getCart(req.body, res.callback);
             } else {
                 // console.log("not logged in");
                 var sendcartoffline = req.session.cart;

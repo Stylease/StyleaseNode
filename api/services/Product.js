@@ -67,7 +67,11 @@ var schema = new Schema({
         ref: 'Size',
         index: true
     }],
-    rentalamount: {
+    fourdayrentalamount: {
+        type: Number,
+        default: 0
+    },
+    eightdayrentalamount: {
         type: Number,
         default: 0
     },
@@ -318,20 +322,23 @@ var models = {
             subcategory: {
                 $in: data.subcategory
             },
-            rentalamount: {
+            eightdayrentalamount: {
                 $gte: data.pricefrom,
                 $lt: data.priceto
             },
             size: {
-                $elemMatch: {
-                    name: data.size
-                }
+                $in: data.size
             },
+            // size: {
+            //     $elemMatch: {
+            //         name: data.size
+            //     }
+            // },
             color: {
                 $in: data.color
             }
         };
-        if (data.subcategory.length == 0 || data.subcategory == null) {
+          if (data.subcategory.length == 0 || data.subcategory == null) {
             delete matchobj.subcategory;
         }
         if (!data.size || data.size == "") {
@@ -346,7 +353,7 @@ var models = {
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
             function(callback) {
-                Product.find(matchobj).sort({}).select('_id name rentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
+                Product.find(matchobj).sort({}).select('_id name fourdayrentalamount eightdayrentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
