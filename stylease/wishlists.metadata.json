@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"stylease.wishlists"},{"v":1,"key":{"product":1},"name":"product_1","background":true,"ns":"stylease.wishlists"},{"v":1,"key":{"user":1},"name":"user_1","ns":"stylease.wishlists","background":true}]}
