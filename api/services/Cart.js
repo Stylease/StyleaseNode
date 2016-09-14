@@ -131,7 +131,7 @@ var models = {
                             } else {
                                 callme(0);
                             }
-                        }
+                        }four
                     } else {
                         if (data.cartproduct == undefined) {
                             callback(null, "Cart is empty")
@@ -213,7 +213,7 @@ var models = {
                             "product.name": 1,
                             "product.eightdayrentalamount": 1,
                             "product.fourdayrentalamount": 1,
-                            "product.securitydeposit": 1,
+                            "product.fourdaysecuritydeposit": 1,
                             "product.price": 1
                         }
                     }, {
@@ -223,7 +223,7 @@ var models = {
                                 $sum: "$product.fourdayrentalamount"
                             },
                             "totalsecuritydeposit": {
-                                $sum: "$product.securitydeposit"
+                                $sum: "$product.fourdaysecuritydeposit"
                             },
                             count: {
                                 $sum: 1
@@ -245,7 +245,7 @@ var models = {
             function(callback1) {
                 Cart.find({
                     user: data.user
-                }, {}).populate("cartproduct.product", "name price fourdayrentalamount eightdayrentalamount securitydeposit images").lean().exec(function(err, data2) {
+                }, {}).populate("cartproduct.product", "name price fourdayrentalamount eightdayrentalamount fourdaysecuritydeposit eightdaysecuritydeposit images").lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -282,7 +282,7 @@ var models = {
         if (newcartdata && newcartdata.length > 0) {
             Product.populate(newcartdata, {
                 path: "product",
-                select: "name fourdayrentalamount eightdayrentalamount securitydeposit images price",
+                select: "name fourdayrentalamount eightdayrentalamount fourdaysecuritydeposit eightdaysecuritydeposit images price",
                 options: {
                     lean: true
                 }
@@ -340,7 +340,7 @@ var models = {
             function(callback1) {
                 Cart.find({
                     user: data._id
-                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name rentalamount").lean().exec(function(err, data2) {
+                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name fourdayrentalamount eightdayrentalamount").lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);

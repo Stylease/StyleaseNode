@@ -75,7 +75,11 @@ var schema = new Schema({
         type: Number,
         default: 0
     },
-    securitydeposit: {
+    fourdaysecuritydeposit: {
+        type: Number,
+        default: 0
+    },
+    eightdaysecuritydeposit: {
         type: Number,
         default: 0
     },
@@ -261,7 +265,7 @@ var models = {
                     status: true
                 }).populate("category", "name").populate("subcategory", "name").populate("size").populate("designer", "name").populate({
                     path: 'suggestedProduct',
-                    select: '_id name rentalamount images',
+                    select: '_id name fourdayrentalamount eightdayrentalamount images',
                     options: {
                         limit: 6
                     }
