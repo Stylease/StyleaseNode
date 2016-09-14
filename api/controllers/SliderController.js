@@ -5,7 +5,7 @@ module.exports = {
             Config.GlobalCallback(err, data, res);
         }
         if (req.body) {
-            Size.sort(req.body, callback);
+            Slider.sort(req.body, callback);
         } else {
             res.json({
                 value: false,
@@ -16,7 +16,7 @@ module.exports = {
 
     save: function(req, res) {
         if (req.body) {
-            Size.saveData(req.body, res.callback);
+            Slider.saveData(req.body, res.callback);
         } else {
             res.json({
                 value: false,
@@ -27,7 +27,7 @@ module.exports = {
     getOne: function(req, res) {
 
         if (req.body) {
-            Size.getOne(req.body, res.callback);
+            Slider.getOne(req.body, res.callback);
         } else {
             res.json({
                 value: false,
@@ -39,7 +39,7 @@ module.exports = {
     delete: function(req, res) {
         if (req.body) {
             console.log(req.body);
-            Size.deleteData(req.body, res.callback);
+            Slider.deleteData(req.body, res.callback);
         } else {
             res.json({
                 value: false,
@@ -53,7 +53,7 @@ module.exports = {
             Global.response(err, data, res);
         }
         if (req.body) {
-            Size.getAll(req.body, res.callback);
+            Slider.getAll(req.body, res.callback);
         } else {
             res.json({
                 value: false,
@@ -67,7 +67,7 @@ module.exports = {
         }
         if (req.body) {
             if (req.body.pagesize && req.body.pagenumber) {
-                Size.getLimited(req.body, res.callback);
+                Slider.getLimited(req.body, res.callback);
             } else {
                 res.json({
                     value: false,

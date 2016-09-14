@@ -7,17 +7,17 @@ var schema = new Schema({
     },
     order: {
         type: Number,
-        default: ""
+        default: 0
     },
     status: Boolean
 });
 
-module.exports = mongoose.model('Size', schema);
+module.exports = mongoose.model('Slider', schema);
 
 var models = {
     sort: function(data, callback) {
         function callSave(num) {
-            Size.saveData({
+            Slider.saveData({
                 _id: data[num],
                 order: num + 1
             }, function(err, respo) {
@@ -44,7 +44,7 @@ var models = {
     },
     saveData: function(data, callback) {
         //        delete data.password;
-        var size = this(data);
+        var slider = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
@@ -60,7 +60,7 @@ var models = {
                 }
             });
         } else {
-            size.save(function(err, created) {
+            slider.save(function(err, created) {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
@@ -85,9 +85,11 @@ var models = {
         });
     },
     getAll: function(data, callback) {
-        this.find({}, {
+        this.find({
+            status: true
+        }, {
             password: 0
-        }).exec(function(err, found) {
+        }).sort({order: 1}).exec(function(err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -122,10 +124,8 @@ var models = {
         newreturns.data = [];
         async.parallel([
             function(callback1) {
-                Size.count({
-                    name: {
-                        "$regex": checkfor
-                    }
+                Slider.count({
+
                 }).exec(function(err, number) {
                     if (err) {
                         console.log(err);
@@ -140,10 +140,8 @@ var models = {
                 });
             },
             function(callback1) {
-                Size.find({
-                    name: {
-                        "$regex": checkfor
-                    }
+                Slider.find({
+
                 }, {}).sort({
                     order: 1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function(err, data2) {
