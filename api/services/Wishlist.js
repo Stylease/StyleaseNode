@@ -215,7 +215,7 @@ var models = {
                     user: data.user
                 }, {}).sort({
                     name: 1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id  name rentalamount images", null, {
+                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id  name fourdayrentalamount images", null, {
                     sort: {
                         "name": 1
                     }

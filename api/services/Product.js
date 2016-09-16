@@ -326,7 +326,7 @@ var models = {
             subcategory: {
                 $in: data.subcategory
             },
-            eightdayrentalamount: {
+            fourdayrentalamount: {
                 $gte: data.pricefrom,
                 $lt: data.priceto
             },
