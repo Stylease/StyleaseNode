@@ -125,6 +125,28 @@ module.exports = {
         }
     },
 
+    emptyCart: function(req, res) {
+        if (req.body) {
+            if (req.session.user) {
+                req.body.user = req.session.user._id;
+                Cart.emptyCart(req.body, res.callback);
+            } else {
+                req.session.cart = [];
+                res.json({
+                    value: true,
+                    data: {
+                        message: "Cart is Empty"
+                    }
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+
     getAll: function(req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
@@ -165,7 +187,7 @@ module.exports = {
         if (req.body) {
             if (req.session.user) {
                 req.body.user = req.session.user._id;
-                    Cart.getCart(req.body, res.callback);
+                Cart.getCart(req.body, res.callback);
             } else {
                 // console.log("not logged in");
                 var sendcartoffline = req.session.cart;

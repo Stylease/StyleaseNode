@@ -131,7 +131,8 @@ var models = {
                             } else {
                                 callme(0);
                             }
-                        }four
+                        }
+                        four
                     } else {
                         if (data.cartproduct == undefined) {
                             callback(null, "Cart is empty")
@@ -434,6 +435,22 @@ var models = {
                 "cartproduct": {
                     "product": data.product
                 }
+            }
+        }).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null)
+            } else {
+                callback(null, found)
+            }
+        });
+    },
+    emptyCart: function(data, callback) {
+        Cart.update({
+            user: data.user
+        }, {
+            "$set": {
+                "cartproduct": []
             }
         }).exec(function(err, found) {
             if (err) {
