@@ -7,6 +7,10 @@ var schema = new Schema({
         index: true
     },
     orderid: Number,
+    date: {
+        type: Date,
+        default: Date.now
+    },
     firstname: {
         type: String,
         default: ""
@@ -129,7 +133,7 @@ var schema = new Schema({
     },
     orderstatus: {
         type: String,
-        default: "Pending"
+        default: "Processing"
     }
 });
 
@@ -282,7 +286,7 @@ var models = {
                     sort: {
                         "name": 1
                     }
-                }).populate("products.product", "_id  name", null, {
+                }).populate("cartproduct.product", "_id  name fourdayrentalamount eightdayrentalamount", null, {
                     sort: {
                         "name": 1
                     }
@@ -321,12 +325,10 @@ var models = {
             sort: {
                 "name": 1
             }
-        }).populate("products.product", "_id  name rentalamount", null, {
+        }).populate("cartproduct.product", "_id  name fourdayrentalamount eightdayrentalamount", null, {
             sort: {
                 "name": 1
             }
-        }).populate("products.size", "_id  name", null, {
-            sort: {}
         }).lean().exec(function(err, found) {
             if (err) {
                 console.log(err);

@@ -6,8 +6,8 @@ var schema = new Schema({
         ref: 'Product',
         index: true
     },
-    timestampFrom: Date,
-    timestampTo: Date,
+    timeFrom: Date,
+    timeTo: Date,
     status: String
 });
 module.exports = mongoose.model('ProductTime', schema);

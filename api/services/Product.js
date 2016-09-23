@@ -282,7 +282,7 @@ var models = {
             function(callback) {
                 ProductTime.find({
                     product: data._id,
-                    timestampTo: {
+                    timeTo: {
                         $gte: new Date()
                     }
                 }).exec(function(err, data1) {
