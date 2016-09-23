@@ -5,6 +5,14 @@ var schema = new Schema({
         type: String,
         default: ""
     },
+    mobileimage: {
+        type: String,
+        default: ""
+    },
+    url: {
+        type: String,
+        default: ""
+    },
     order: {
         type: Number,
         default: 0
