@@ -69,15 +69,21 @@ var models = {
                     console.log(err);
                     callback(err, null);
                 } else {
-                    wishlist.save(function(err, created) {
-                        if (err) {
-                            callback(err, null);
-                        } else if (created) {
-                            callback(null, created);
-                        } else {
-                            callback(null, {});
-                        }
-                    });
+                    if (found) {
+                        callback(null, {
+                            message: "Already in wishlist"
+                        });
+                    } else {
+                        wishlist.save(function(err, created) {
+                            if (err) {
+                                callback(err, null);
+                            } else if (created) {
+                                callback(null, created);
+                            } else {
+                                callback(null, {});
+                            }
+                        });
+                    }
                 }
             });
 

@@ -461,6 +461,31 @@ var models = {
             }
         });
     },
+
+    updateCartDate: function(data, callback) {
+        // tobechanged = {};
+        // var attribute = "cartproduct.$.";
+        // _.forIn(data, function(value, key) {
+        //     console.log("val", value, "key", key);
+        //     tobechanged[attribute + key] = value;
+        // });
+        // Cart.update({
+        //     user: data.user
+        // }, {
+        //     $set: {
+        //         "cartproduct.deliveryTime": data.deliveryTime
+        //     }
+        // }, {
+        //     multi: true
+        // }).exec(function(err, found) {
+        //     if (err) {
+        //         console.log(err);
+        //         callback(err, null)
+        //     } else {
+        //         callback(null, found)
+        //     }
+        // });
+    },
 };
 
 module.exports = _.assign(module.exports, models);

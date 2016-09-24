@@ -61,6 +61,21 @@ module.exports = {
         }
     },
 
+    updateCartDate: function(req, res) {
+        if (req.body) {
+            if (req.session.user) {
+                req.body.user = req.session.user._id;
+                Cart.updateCartDate(req.body, res.callback);
+            } else {
+                console.log("user not logged in");
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            })
+        }
+    },
     getOne: function(req, res) {
 
         if (req.body) {
