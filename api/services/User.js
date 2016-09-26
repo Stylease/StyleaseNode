@@ -214,7 +214,7 @@ var models = {
         var user = this(data);
         if (data._id) {
             data.expiry = new Date(data.expiry);
-            data.password = md5(data.password);
+            // data.password = md5(data.password);
             data.userid = new Date();
             delete data.password;
             this.findOneAndUpdate({
