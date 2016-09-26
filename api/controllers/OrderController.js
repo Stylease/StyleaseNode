@@ -33,6 +33,7 @@ module.exports = {
         if (req.body) {
             if (req.session.user) {
                 req.body.user = req.session.user._id;
+                console.log("req", req.body.user);
                 Order.getOrderByUser(req.body, res.callback);
             } else {
                 res.json({
@@ -111,6 +112,7 @@ module.exports = {
         if (req.body) {
             if (req.body.pagesize && req.body.pagenumber) {
               if(req.session.user){
+                req.body.user = req.session.user._id;
                   Order.getLimitedByUser(req.body, res.callback);
               }else {
                 res.json({
