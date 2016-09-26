@@ -316,6 +316,74 @@ var models = {
             }
         });
     },
+    getLimitedByUser: function(data, callback) {
+        data.pagenumber = parseInt(data.pagenumber);
+        data.pagesize = parseInt(data.pagesize);
+        var checkfor = new RegExp(data.search, "i");
+        var newreturns = {};
+        newreturns.data = [];
+        async.parallel([
+            function(callback1) {
+                Order.count({
+                    user: data.user
+                    // email: {
+                    //     "$regex": checkfor
+                    // }
+                }).exec(function(err, number) {
+                    if (err) {
+                        console.log(err);
+                        callback1(err, null);
+                    } else if (number) {
+                        newreturns.totalpages = Math.ceil(number / data.pagesize);
+                        callback1(null, newreturns);
+                    } else {
+                        newreturns.totalpages = 0;
+                        callback1(null, newreturns);
+                    }
+                });
+            },
+            function(callback1) {
+                Order.find({
+                  user: data.user
+                    // email: {
+                    //     "$regex": checkfor
+                    // }
+                }, {}).sort({
+                    name: 1
+                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("user", "_id  name", null, {
+                    sort: {
+                        "name": 1
+                    }
+                }).populate("cartproduct.product", "_id  name fourdayrentalamount eightdayrentalamount", null, {
+                    sort: {
+                        "name": 1
+                    }
+                }).lean().exec(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback1(err, null);
+                    } else {
+                        if (data2 && data2.length > 0) {
+                            newreturns.data = data2;
+                            newreturns.pagenumber = data.pagenumber;
+                            callback1(null, newreturns);
+                        } else {
+                            callback1({
+                                message: "No data found"
+                            }, null);
+                        }
+                    }
+                });
+            }
+        ], function(err, respo) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, newreturns);
+            }
+        });
+    },
     getOne: function(data, callback) {
         this.findOne({
             "_id": data._id
@@ -325,7 +393,7 @@ var models = {
             sort: {
                 "name": 1
             }
-        }).populate("cartproduct.product", "_id  name fourdayrentalamount eightdayrentalamount", null, {
+        }).populate("cartproduct.product", "_id  name fourdayrentalamount images eightdayrentalamount", null, {
             sort: {
                 "name": 1
             }
@@ -358,7 +426,7 @@ var models = {
     getOrderByUser: function(data, callback) {
         Order.find({
             user: data.user
-        }).populate("cartproduct.product","name rentalamount images").exec(function(err, data2) {
+        }).populate("cartproduct.product", "name rentalamount images").exec(function(err, data2) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -374,6 +442,21 @@ var models = {
             }
         });
     },
+
+    getOrderById: function( data, callback){
+      Order.findOne({
+        orderid : data.orderid
+      }).select("orderid total transactionid servicetax subtotal refundabledeposit").exec(function(err, found){
+        if(err){
+          console.log(err);
+          callback(err, null);
+        }else {
+          callback(null, found);
+        }
+      })
+    }
+
+
 };
 
 module.exports = _.assign(module.exports, models);

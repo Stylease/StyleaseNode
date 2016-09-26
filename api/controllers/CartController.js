@@ -68,12 +68,16 @@ module.exports = {
                 Cart.updateCartDate(req.body, res.callback);
             } else {
                 console.log("user not logged in");
+                var index = _.indexOf(req.session.cart, _.find(req.session.cart, {
+                    product: req.body.product
+                }));
+                req.session.cart.splice(index, 1, req.body);
             }
         } else {
             res.json({
                 value: false,
                 data: "Invalid Request"
-            })
+            });
         }
     },
     getOne: function(req, res) {

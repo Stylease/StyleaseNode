@@ -48,6 +48,17 @@ module.exports = {
         }
     },
 
+    getOrderById:function(req, res) {
+        if (req.body) {
+            Order.getOrderById(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+
     delete: function(req, res) {
         if (req.body) {
             console.log(req.body);
@@ -80,6 +91,34 @@ module.exports = {
         if (req.body) {
             if (req.body.pagesize && req.body.pagenumber) {
                 Order.getLimited(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+    getLimitedByUser: function(req, res) {
+        function callback(err, data) {
+            Global.response(err, data, res);
+        }
+        if (req.body) {
+            if (req.body.pagesize && req.body.pagenumber) {
+              if(req.session.user){
+                  Order.getLimitedByUser(req.body, res.callback);
+              }else {
+                res.json({
+                  value: false,
+                  data: "User Not logged in"
+                });
+              }
+
             } else {
                 res.json({
                     value: false,
