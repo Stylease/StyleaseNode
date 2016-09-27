@@ -102,6 +102,20 @@ var models = {
             }
         });
     },
+    deleteByUser: function(data, callback) {
+        this.findOneAndRemove({
+            product: data.product,
+            user: data.user
+        }, function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else if (deleted) {
+                callback(null, deleted);
+            } else {
+                callback(null, {});
+            }
+        });
+    },
     getAll: function(data, callback) {
         this.find({}, {
             password: 0

@@ -55,6 +55,24 @@ module.exports = {
             });
         }
     },
+    deleteByUser: function(req, res) {
+        if (req.body) {
+            if (req.session.user) {
+                req.body.user = req.session.user._id;
+                Wishlist.deleteByUser(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "User Not logged in"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
 
     getAll: function(req, res) {
         function callback(err, data) {
@@ -117,9 +135,9 @@ module.exports = {
         if (req.body) {
             if (req.session.user) {
 
-                    req.body.user = req.session.user._id;
-                    Wishlist.getWishlistUser(req.body, res.callback);
-              
+                req.body.user = req.session.user._id;
+                Wishlist.getWishlistUser(req.body, res.callback);
+
             } else {
                 res.json({
                     value: false,
