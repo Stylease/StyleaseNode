@@ -186,7 +186,15 @@ module.exports = {
     },
     changePassword: function(req, res) {
         if (req.body) {
-            User.changePassword(req.body, res.callback);
+            if (req.session.user) {
+              req.body.user = req.session.user._id;
+                User.changePassword(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "User Not logged in"
+                });
+            }
         } else {
             res.json({
                 value: false,

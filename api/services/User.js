@@ -304,6 +304,7 @@ var models = {
     changePassword: function(data, callback) {
         var Main = this;
         Main.findOne({
+            _id: data.user,
             password: md5(data.oldPassword)
         }).exec(function(err, found) {
             if (err) {
@@ -326,9 +327,9 @@ var models = {
 
                     });
                 } else {
-                    callback(null, {
-                        message: "no data"
-                    });
+                    callback({
+                        message: "No data found"
+                    }, null);
                 }
             }
         });
