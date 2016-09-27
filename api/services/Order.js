@@ -290,7 +290,7 @@ var models = {
                     sort: {
                         "name": 1
                     }
-                }).lean().exec(function(err, data2) {
+                }).sort({ _id: -1}).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -358,7 +358,7 @@ var models = {
                     sort: {
                         "name": 1
                     }
-                }).lean().exec(function(err, data2) {
+                }).sort({ _id: -1}).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -426,7 +426,7 @@ var models = {
     getOrderByUser: function(data, callback) {
         Order.find({
             user: data.user
-        }).populate("cartproduct.product", "name rentalamount images").exec(function(err, data2) {
+        }).populate("cartproduct.product", "name rentalamount images").sort({ _id: -1}).exec(function(err, data2) {
             if (err) {
                 console.log(err);
                 callback(err, null);
