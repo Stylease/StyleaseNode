@@ -244,7 +244,7 @@ var models = {
             "_id": data._id
         }, {
             password: 0
-        }).populate("size","name").exec(function(err, found) {
+        }).populate("size", "name").exec(function(err, found) {
             // console.log("fff", found);
             if (err) {
                 console.log(err);
@@ -342,7 +342,21 @@ var models = {
                 $in: data.color
             }
         };
-          if (data.subcategory.length == 0 || data.subcategory == null) {
+
+        if (data.sort === "recent") {
+            var sortfilter = {
+                _id: -1
+            }
+        } else if (data.sort === "low") {
+            var sortfilter = {
+                fourdayrentalamount: 1
+            }
+        } else if (data.sort === "high") {
+            var sortfilter = {
+                fourdayrentalamount: -1
+            }
+        }
+        if (data.subcategory.length == 0 || data.subcategory == null) {
             delete matchobj.subcategory;
         }
         if (!data.size || data.size == "") {
@@ -357,7 +371,7 @@ var models = {
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
             function(callback) {
-                Product.find(matchobj).sort({}).select('_id name fourdayrentalamount eightdayrentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
+                Product.find(matchobj).sort(sortfilter).select('_id name fourdayrentalamount eightdayrentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
@@ -543,6 +557,8 @@ var models = {
                     sort: {
                         "name": 1
                     }
+                }).sort({
+                    _id: -1
                 }).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
