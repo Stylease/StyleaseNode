@@ -62,30 +62,36 @@ module.exports = {
         }
     },
     register: function(req, res) {
-        var callback = function(err, data) {
-            if (err) {
-                res.json({
-                    error: err,
-                    value: false
-                });
-            } else if (_.isEmpty(data)) {
-                res.json({
-                    error: "User not Registered",
-                    value: false
-                });
-
-            } else {
-                req.session.user = data;
-                res.json({
-                    data: "User Registered",
-                    value: true
-                });
-            }
-        };
         if (req.body) {
             console.log(req.body);
             if (req.body.email && req.body.email !== "" && req.body.password && req.body.password !== "") {
-                User.register(req.body, callback);
+                User.register(req.body, function(err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                      var sendcart = {};
+                      req.session.user = respo;
+                      sendcart.user = req.session.user._id;
+                      sendcart.cartproduct = req.session.cart;
+                      Cart.saveData(sendcart, function(err, data) {
+                          if (err) {
+                              console.log(err);
+                              callback(err, null);
+                          } else {
+                              req.session.cart = "";
+                              res.json({
+                                  value: true,
+                                  data: {
+                                      message: "signup success"
+                                  }
+                              });
+                          }
+                      });
+                    }
+                });
             } else {
                 res.json({
                     value: false,

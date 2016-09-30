@@ -14,7 +14,7 @@ var lodash = require('lodash');
 var moment = require('moment');
 var MaxImageSize = 1200;
 var request = require("request");
-var requrl = "http://localhost:80/";
+var requrl = "http://localhost:81/";
 var gfs = Grid(mongoose.connections[0].db, mongoose);
 gfs.mongo = mongoose.mongo;
 
@@ -127,6 +127,7 @@ module.exports = {
                             console.log(err);
                             callback(err, null);
                         } else {
+                          console.log("body", body);
                             if (body && body.value !== false) {
                                 var sendgrid = require("sendgrid")(userdata[0].name);
                                 sendgrid.send({

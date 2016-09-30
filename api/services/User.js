@@ -200,6 +200,21 @@ var models = {
                         if (err) {
                             callback(err, null);
                         } else {
+                            // var emailData = {};
+                            // emailData.email = data.email;
+                            // emailData.filename = "mailer.ejs";
+                            // emailData.name = data.firstName;
+                            // emailData.content = "";
+                            // emailData.subject = "Register Email";
+                            // console.log("eee", emailData);
+                            // Config.email(emailData, function(err, emailRespo) {
+                            //     if (err) {
+                            //         console.log(err);
+                            //         callback(err, null);
+                            //     } else {
+                            //         callback(null, data3);
+                            //     }
+                            // });
                             callback(null, data3);
                         }
                     });
@@ -302,8 +317,7 @@ var models = {
         });
     },
     changePassword: function(data, callback) {
-        var Main = this;
-        Main.findOne({
+        User.findOne({
             _id: data.user,
             password: md5(data.oldPassword)
         }).exec(function(err, found) {
@@ -312,9 +326,11 @@ var models = {
                 callback(err, null);
             } else {
                 if (found) {
-                    // console.log(found);
+                    console.log(found, data);
                     // callback(null, found);
-                    Main.update({
+                    User.update({
+                        _id: data.user
+                    },{
                         password: md5(data.newPassword)
                     }).exec(function(err, data3) {
                         console.log("data3", data3);
