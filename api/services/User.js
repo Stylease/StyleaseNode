@@ -326,11 +326,9 @@ var models = {
                 callback(err, null);
             } else {
                 if (found) {
-                    console.log(found, data);
-                    // callback(null, found);
                     User.update({
                         _id: data.user
-                    },{
+                    }, {
                         password: md5(data.newPassword)
                     }).exec(function(err, data3) {
                         console.log("data3", data3);
