@@ -158,7 +158,7 @@ var models = {
                     }
                 }, {}).sort({
                     order: 1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id  name", null, {
+                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id name fourdayrentalamount eightdayrentalamount", null, {
                     sort: {
                         "name": 1
                     }

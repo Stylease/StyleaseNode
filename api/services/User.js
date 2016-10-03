@@ -200,22 +200,22 @@ var models = {
                         if (err) {
                             callback(err, null);
                         } else {
-                            // var emailData = {};
-                            // emailData.email = data.email;
-                            // emailData.filename = "mailer.ejs";
-                            // emailData.name = data.firstName;
-                            // emailData.content = "";
-                            // emailData.subject = "Register Email";
-                            // console.log("eee", emailData);
-                            // Config.email(emailData, function(err, emailRespo) {
-                            //     if (err) {
-                            //         console.log(err);
-                            //         callback(err, null);
-                            //     } else {
-                            //         callback(null, data3);
-                            //     }
-                            // });
-                            callback(null, data3);
+                            var emailData = {};
+                            emailData.email = data.email;
+                            emailData.filename = "mailer.ejs";
+                            emailData.name = data.firstName;
+                            emailData.content = "";
+                            emailData.subject = "Register Email";
+                            console.log("eee", emailData);
+                            Config.email(emailData, function(err, emailRespo) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    callback(null, data3);
+                                }
+                            });
+                            // callback(null, data3);
                         }
                     });
                 } else {

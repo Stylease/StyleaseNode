@@ -127,8 +127,7 @@ module.exports = {
                             console.log(err);
                             callback(err, null);
                         } else {
-                          console.log("body", body);
-                            if (body && body.value !== false) {
+                          if (body && body.value !== false) {
                                 var sendgrid = require("sendgrid")(userdata[0].name);
                                 sendgrid.send({
                                     to: data.email,
