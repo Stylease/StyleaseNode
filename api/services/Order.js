@@ -151,6 +151,96 @@ var models = {
                     console.log(err);
                     callback(err, null);
                 } else if (updated) {
+                    if (data.orderstatus === "Out for Delivery") {
+                        var emailData = {};
+                        emailData.email = data.email;
+                        emailData.filename = "mailer.ejs";
+                        emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content1 = "We’re as excited as you are. Your order is now out for delivery and will shortly be arriving at the selected location";
+                        emailData.content2 = "Order No. : " + data.orderid;
+                        emailData.subject = "Out for delivery - Stylease";
+                        // console.log("eee", emailData);
+                        Config.email(emailData, function(err, emailRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // callback(null, updated);
+                            }
+                        });
+                    }
+                    if (data.orderstatus === "Delivered") {
+                        var emailData = {};
+                        emailData.email = data.email;
+                        emailData.filename = "mailer.ejs";
+                        emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content1 = "We have received confirmation that your order has been delivered. For any comments or queries contact us on +91 97351 88624 or mail us at info@thestylease.com";
+                        emailData.content2 = "Order No. : " + data.orderid;
+                        emailData.subject = "Successfully delivered - Stylease";
+                        // console.log("eee", emailData);
+                        Config.email(emailData, function(err, emailRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // callback(null, updated);
+                            }
+                        });
+                    }
+                    if (data.orderstatus === "Pick-up") {
+                        var emailData = {};
+                        emailData.email = data.email;
+                        emailData.filename = "mailer.ejs";
+                        emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content1 = "Thank you for taking care of our outfit like it was one of your own. We have received the parcel. Your deposit amount of Rs." + data.refundabledeposit + " will be refunded within the next 7 working days. We will share the details shortly";
+                        emailData.content2 = "Order No. : " + data.orderid;
+                        emailData.subject = "Order picked up - Stylease";
+                        // console.log("eee", emailData);
+                        Config.email(emailData, function(err, emailRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // callback(null, updated);
+                            }
+                        });
+                    }
+                    if (data.orderstatus === "Completed") {
+                        var emailData = {};
+                        emailData.email = data.email;
+                        emailData.filename = "mailer.ejs";
+                        emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content1 = "Hope you’re having a good day! This is to notify you that we have returned your deposit for Rs. " + data.refundabledeposit + " against Order " + data.orderid;
+                        emailData.content2 = "We look forward to helping you style again soon";
+                        emailData.subject = "Deposit returned notification - Stylease";
+                        // console.log("eee", emailData);
+                        Config.email(emailData, function(err, emailRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // callback(null, updated);
+                            }
+                        });
+                    }
+                    if (data.orderstatus === "Refund") {
+                        var emailData = {};
+                        emailData.email = data.email;
+                        emailData.filename = "mailer.ejs";
+                        emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content1 = "Now that all the parties are done and dusted, this is your update on the refund policy. As per our policy we will return the deposit refund against order number " + data.orderid + " , within the next 7 working days.";
+                        emailData.content2 = " ";
+                        emailData.subject = "Refund notification - Stylease";
+                        // console.log("eee", emailData);
+                        Config.email(emailData, function(err, emailRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // callback(null, updated);
+                            }
+                        });
+                    }
                     callback(null, updated);
                 } else {
                     callback(null, {});
@@ -190,7 +280,56 @@ var models = {
                                     }
                                 });
                             }
-                            callback(null, created);
+
+                            function callme(num) {
+                                if (num === created.cartproduct.length) {
+                                    console.log("producttime completed");
+                                    // callback(null, "Done");
+                                } else {
+                                    console.log("in producttime ", num, created );
+                                    var create = created.toObject();
+                                    var mydata = {};
+                                    mydata = create.cartproduct[num];
+                                    delete mydata._id;
+                                    console.log("mydata", mydata._id);
+                                    ProductTime.saveData(mydata, function(err, data4) {
+                                      console.log("data save");
+                                        if (err) {
+                                            console.log(err);
+                                            callback(err, null);
+                                        } else {
+                                          console.log("aaaaa");
+                                            // console.log("save products to ProductTime");
+                                        }
+                                    });
+                                }
+
+                            }
+
+                            callme(0);
+
+                            var emailData = {};
+                            emailData.email = data.email;
+                            emailData.filename = "order.ejs";
+                            emailData.name = data.firstname + " " + data.lastname;
+                            emailData.cartproduct = data.cartproduct;
+                            emailData.total = created.total;
+                            emailData.subtotal = created.subtotal;
+                            emailData.servicetax = created.servicetax;
+                            emailData.refundabledeposit = created.refundabledeposit;
+                            emailData.content1 = "Your payment for Rs." + created.total + " has been successfully received on our end. Your outfit will be out for dispatch on your selected date.";
+                            emailData.orderno = created.orderid;
+                            emailData.subject = "Order confirmation - Stylease";
+                            // console.log("eee", emailData);
+                            Config.email(emailData, function(err, emailRespo) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    callback(null, created);
+                                }
+                            });
+                            // callback(null, created);
                         } else {
                             callback({
                                 message: "Not created"
@@ -290,7 +429,9 @@ var models = {
                     sort: {
                         "name": 1
                     }
-                }).sort({ _id: -1}).lean().exec(function(err, data2) {
+                }).sort({
+                    _id: -1
+                }).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -326,9 +467,9 @@ var models = {
             function(callback1) {
                 Order.count({
                     user: data.user
-                    // email: {
-                    //     "$regex": checkfor
-                    // }
+                        // email: {
+                        //     "$regex": checkfor
+                        // }
                 }).exec(function(err, number) {
                     if (err) {
                         console.log(err);
@@ -344,10 +485,10 @@ var models = {
             },
             function(callback1) {
                 Order.find({
-                  user: data.user
-                    // email: {
-                    //     "$regex": checkfor
-                    // }
+                    user: data.user
+                        // email: {
+                        //     "$regex": checkfor
+                        // }
                 }, {}).sort({
                     name: 1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("user", "_id  name", null, {
@@ -358,7 +499,9 @@ var models = {
                     sort: {
                         "name": 1
                     }
-                }).sort({ _id: -1}).lean().exec(function(err, data2) {
+                }).sort({
+                    _id: -1
+                }).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -426,7 +569,9 @@ var models = {
     getOrderByUser: function(data, callback) {
         Order.find({
             user: data.user
-        }).populate("cartproduct.product", "name rentalamount images").sort({ _id: -1}).exec(function(err, data2) {
+        }).populate("cartproduct.product", "name rentalamount images").sort({
+            _id: -1
+        }).exec(function(err, data2) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -443,17 +588,17 @@ var models = {
         });
     },
 
-    getOrderById: function( data, callback){
-      Order.findOne({
-        orderid : data.orderid
-      }).select("orderid total transactionid servicetax subtotal refundabledeposit").exec(function(err, found){
-        if(err){
-          console.log(err);
-          callback(err, null);
-        }else {
-          callback(null, found);
-        }
-      })
+    getOrderById: function(data, callback) {
+        Order.findOne({
+            orderid: data.orderid
+        }).select("orderid total transactionid servicetax subtotal refundabledeposit").exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, found);
+            }
+        })
     }
 
 
