@@ -286,19 +286,18 @@ var models = {
                                     console.log("producttime completed");
                                     // callback(null, "Done");
                                 } else {
-                                    console.log("in producttime ", num, created );
                                     var create = created.toObject();
                                     var mydata = {};
                                     mydata = create.cartproduct[num];
                                     delete mydata._id;
                                     console.log("mydata", mydata._id);
                                     ProductTime.saveData(mydata, function(err, data4) {
-                                      console.log("data save");
+                                        console.log("data save");
                                         if (err) {
                                             console.log(err);
                                             callback(err, null);
                                         } else {
-                                          console.log("aaaaa");
+                                            console.log("aaaaa");
                                             // console.log("save products to ProductTime");
                                         }
                                     });
@@ -306,8 +305,9 @@ var models = {
 
                             }
 
-                            callme(0);
-
+                            if (created.cartproduct.length > 0) {
+                                callme(0);
+                            }
                             var emailData = {};
                             emailData.email = data.email;
                             emailData.filename = "order.ejs";
