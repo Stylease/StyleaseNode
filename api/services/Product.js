@@ -58,6 +58,10 @@ var schema = new Schema({
         type: Number,
         default: 0
     },
+    booked: {
+        type: Number,
+        default: 0
+    },
     price: {
         type: Number,
         default: 0
@@ -244,7 +248,7 @@ var models = {
             "_id": data._id
         }, {
             password: 0
-        }).populate("size", "name").exec(function(err, found) {
+        }).exec(function(err, found) {
             // console.log("fff", found);
             if (err) {
                 console.log(err);
@@ -343,17 +347,21 @@ var models = {
             }
         };
 
-        if (data.sort === "recent") {
+        if (data.sort === "Recent Addition") {
             var sortfilter = {
                 _id: -1
             }
-        } else if (data.sort === "low") {
+        } else if (data.sort === "Price : Low - High") {
             var sortfilter = {
                 fourdayrentalamount: 1
             }
-        } else if (data.sort === "high") {
+        } else if (data.sort === "Price : High - Low") {
             var sortfilter = {
                 fourdayrentalamount: -1
+            }
+        }else if (data.sort === "Popularity") {
+            var sortfilter = {
+                booked: 1
             }
         }
         if (data.subcategory.length == 0 || data.subcategory == null) {

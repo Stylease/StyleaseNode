@@ -223,6 +223,7 @@ var models = {
                             }
                         });
                     }
+
                     if (data.orderstatus === "Refund") {
                         var emailData = {};
                         emailData.email = data.email;
@@ -302,7 +303,6 @@ var models = {
                                         }
                                     });
                                 }
-
                             }
 
                             if (created.cartproduct.length > 0) {
