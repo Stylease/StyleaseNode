@@ -68,10 +68,17 @@ module.exports = {
                 Cart.updateCartDate(req.body, res.callback);
             } else {
                 console.log("user not logged in");
-                var index = _.indexOf(req.session.cart, _.find(req.session.cart, {
-                    product: req.body.product
-                }));
-                req.session.cart.splice(index, 1, req.body);
+                _.each(req.session.cart, function(cartp) {
+                    cartp.timeFrom = req.body.timeFrom;
+                    cartp.timeTo = req.body.timeTo;
+                    cartp.deliveryTime = req.body.deliveryTime;
+                    cartp.pickupTime = req.body.pickupTime;
+                });
+                res.json({
+                    value: true,
+                    data: req.session.cart,
+                    message: "Offline cart"
+                });
             }
         } else {
             res.json({

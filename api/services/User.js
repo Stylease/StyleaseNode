@@ -23,6 +23,7 @@ var schema = new Schema({
         type: String,
         default: ""
     },
+    forgotpassworddate: Date,
     mobile: {
         type: String,
         default: ""
@@ -205,7 +206,7 @@ var models = {
                             emailData.filename = "mailer.ejs";
                             emailData.name = data.name;
                             emailData.content1 = "Congratulations on successfully signing up. We’re glad we can be your fashion brand on speed dial.";
-                            emailData.content2 =" Enjoy the world of couture and embrace the latest fashions at your next event.";
+                            emailData.content2 = " Enjoy the world of couture and embrace the latest fashions at your next event.";
                             emailData.subject = "Sign Up Successful";
                             console.log("eee", emailData);
                             Config.email(emailData, function(err, emailRespo) {
@@ -350,7 +351,7 @@ var models = {
         });
     },
     forgotPassword: function(data, callback) {
-        this.findOne({
+        User.findOne({
             email: data.email
         }, {
             password: 0,
@@ -367,11 +368,13 @@ var models = {
                         for (var i = 0; i < 8; i++) {
                             text += possible.charAt(Math.floor(Math.random() * possible.length));
                         }
+                        var updateddate = new Date();
                         var encrypttext = md5(text);
                         User.findOneAndUpdate({
                             _id: found._id
                         }, {
-                            forgotpassword: encrypttext
+                            forgotpassword: encrypttext,
+                            forgotpassworddate: updateddate
                         }, function(err, data2) {
                             if (err) {
                                 console.log(err);
@@ -402,9 +405,9 @@ var models = {
                         });
                     }
                 } else {
-                    callback(null, {
+                    callback({
                         comment: "User not found"
-                    });
+                    }, null);
                 }
             }
         });
@@ -511,61 +514,108 @@ var models = {
                 }
             });
     },
+    // login: function(data, callback) {
+    //     data.password = md5(data.password);
+    //     User.findOne({
+    //         email: data.email,
+    //         password: data.password
+    //     }, function(err, data2) {
+    //         if (err) {
+    //             console.log(err);
+    //             callback(er, null);
+    //         } else {
+    //             var d = new Date();
+    //             d.setMinutes(d.getMinutes() - 180);
+    //             if (_.isEmpty(data2)) {
+    //                 User.findOne({
+    //                     email: data.email,
+    //                     forgotpassword: data.password,
+    //                     forgotpassworddate: {
+    //                         $gte: d
+    //                     }
+    //                 }, function(err, data4) {
+    //                     if (err) {
+    //                         console.log(err);
+    //                         callback(err, null);
+    //                     } else {
+    //                         if (_.isEmpty(data4)) {
+    //                             callback(null, {
+    //                                 message: "User Not Found"
+    //                             });
+    //                         } else {
+    //                             User.findOneAndUpdate({
+    //                                 _id: data4._id
+    //                             }, {
+    //                                 password: data.password,
+    //                                 forgotpassword: ""
+    //                             }, function(err, data5) {
+    //                                 if (err) {
+    //                                     console.log(err);
+    //                                     callback(err, null);
+    //                                 } else {
+    //                                     data5.password = "";
+    //                                     data5.forgotpassword = "";
+    //                                     callback(null, data5);
+    //                                 }
+    //                             });
+    //                         }
+    //                     }
+    //                 });
+    //             } else {
+    //                 User.findOneAndUpdate({
+    //                     _id: data2._id
+    //                 }, {
+    //                     forgotpassword: ""
+    //                 }, function(err, data3) {
+    //                     if (err) {
+    //                         console.log(err);
+    //                         callback(err, null);
+    //                     } else {
+    //                         data3.password = "";
+    //                         data3.forgotpassword = "";
+    //                         callback(null, data3);
+    //                     }
+    //                 });
+    //             }
+    //         }
+    //     });
+    // },
+
     login: function(data, callback) {
         data.password = md5(data.password);
+        var d = new Date();
+        d.setMinutes(d.getMinutes() - 180);
         User.findOne({
             email: data.email,
             password: data.password
-        }, function(err, data2) {
+        }).exec(function(err, found) {
             if (err) {
                 console.log(err);
-                callback(er, null);
+                callback(err, null);
             } else {
-                if (_.isEmpty(data2)) {
+                console.log(found);
+                if (found) {
+                    callback(null, found);
+                } else {
+                    // callback(null,{message:"no data found"});
                     User.findOne({
                         email: data.email,
-                        forgotpassword: data.password
-                    }, function(err, data4) {
+                        forgotpassword: data.password,
+                        forgotpassworddate: {
+                            $gte: d
+                        }
+                    }).exec(function(err, forgotdata) {
                         if (err) {
                             console.log(err);
                             callback(err, null);
                         } else {
-                            if (_.isEmpty(data4)) {
-                                callback(null, {
-                                    comment: "User Not Found"
-                                });
+                            if (forgotdata) {
+                                callback(null, forgotdata);
                             } else {
-                                User.findOneAndUpdate({
-                                    _id: data4._id
-                                }, {
-                                    password: data.password,
-                                    forgotpassword: ""
-                                }, function(err, data5) {
-                                    if (err) {
-                                        console.log(err);
-                                        callback(err, null);
-                                    } else {
-                                        data5.password = "";
-                                        data5.forgotpassword = "";
-                                        callback(null, data5);
-                                    }
+                                callback(null, {
+                                    message: "Invalid Username Or Password"
                                 });
                             }
-                        }
-                    });
-                } else {
-                    User.findOneAndUpdate({
-                        _id: data2._id
-                    }, {
-                        forgotpassword: ""
-                    }, function(err, data3) {
-                        if (err) {
-                            console.log(err);
-                            callback(err, null);
-                        } else {
-                            data3.password = "";
-                            data3.forgotpassword = "";
-                            callback(null, data3);
                         }
                     });
                 }
