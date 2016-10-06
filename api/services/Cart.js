@@ -469,22 +469,25 @@ var models = {
         //     console.log("val", value, "key", key);
         //     tobechanged[attribute + key] = value;
         // });
-        // Cart.update({
-        //     user: data.user
-        // }, {
-        //     $set: {
-        //         "cartproduct.deliveryTime": data.deliveryTime
-        //     }
-        // }, {
-        //     multi: true
-        // }).exec(function(err, found) {
-        //     if (err) {
-        //         console.log(err);
-        //         callback(err, null)
-        //     } else {
-        //         callback(null, found)
-        //     }
-        // });
+        console.log("dd", data);
+        Cart.update({
+            user: data.user
+        }, {
+            $each: {
+                $set: {
+                    "cartproduct.deliveryTime": data.deliveryTime
+                }
+            }
+        }, {
+            multi: true
+        }).exec(function(err, respo) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, respo);
+            }
+        });
     },
 };
 

@@ -69,6 +69,7 @@ module.exports = {
             } else {
                 console.log("user not logged in");
                 _.each(req.session.cart, function(cartp) {
+                    cartp.duration = req.body.duration;
                     cartp.timeFrom = req.body.timeFrom;
                     cartp.timeTo = req.body.timeTo;
                     cartp.deliveryTime = req.body.deliveryTime;
