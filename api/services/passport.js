@@ -6,8 +6,8 @@ module.exports = require("passport");
 
 
 module.exports.use(new FacebookStrategy({
-        clientID: "302798880074536",
-        clientSecret: "579dc39ae91c7148d319da6834b8e188",
+        clientID: "310667669306983",
+        clientSecret: "e699901907ed0bc0ca91a63d3a7b2054",
         callbackURL: "/user/loginFacebook/",
         profileFields: ['id', 'displayName', 'photos', 'email'],
         enableProof: false
