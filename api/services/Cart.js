@@ -132,7 +132,7 @@ var models = {
                                 callme(0);
                             }
                         }
-                        four
+                      
                     } else {
                         if (data.cartproduct == undefined) {
                             callback(null, "Cart is empty")
