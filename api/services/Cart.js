@@ -463,31 +463,26 @@ var models = {
     },
 
     updateCartDate: function(data, callback) {
-        // tobechanged = {};
-        // var attribute = "cartproduct.$.";
-        // _.forIn(data, function(value, key) {
-        //     console.log("val", value, "key", key);
-        //     tobechanged[attribute + key] = value;
+      console.log(data);
+        // console.log("dd", data);
+        // Cart.update({
+        //     user: data.user
+        // }, {
+        //     $each: {
+        //         $set: {
+        //             "cartproduct.deliveryTime": data.deliveryTime
+        //         }
+        //     }
+        // }, {
+        //     multi: true
+        // }).exec(function(err, respo) {
+        //     if (err) {
+        //         console.log(err);
+        //         callback(err, null);
+        //     } else {
+        //         callback(null, respo);
+        //     }
         // });
-        console.log("dd", data);
-        Cart.update({
-            user: data.user
-        }, {
-            $each: {
-                $set: {
-                    "cartproduct.deliveryTime": data.deliveryTime
-                }
-            }
-        }, {
-            multi: true
-        }).exec(function(err, respo) {
-            if (err) {
-                console.log(err);
-                callback(err, null);
-            } else {
-                callback(null, respo);
-            }
-        });
     },
 };
 

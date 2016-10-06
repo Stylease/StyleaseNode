@@ -1,5 +1,5 @@
 var request = require('request');
-var redirect = "http://stylease.wohlig.com";
+var redirect = "http://thestylease.com";
 module.exports = {
     sort: function(req, res) {
         function callback(err, data) {

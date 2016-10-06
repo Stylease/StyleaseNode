@@ -70,9 +70,9 @@ var models = {
                     callback(err, null);
                 } else {
                     if (found) {
-                        callback(null, {
+                        callback( {
                             message: "Already in wishlist"
-                        });
+                        },null);
                     } else {
                         wishlist.save(function(err, created) {
                             if (err) {

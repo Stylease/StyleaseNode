@@ -131,7 +131,7 @@ module.exports = {
                                 var sendgrid = require("sendgrid")(userdata[0].name);
                                 sendgrid.send({
                                     to: data.email,
-                                    from: "support@stylease.com",
+                                    from: "vinodwohlig@gmail.com",
                                     subject: data.subject,
                                     fromname: 'Stylease Support',
                                     html: body
