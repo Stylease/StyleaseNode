@@ -224,7 +224,7 @@ var models = {
                                 emailData.name = data.firstname + " " + data.lastname;
                                 emailData.content1 = "Thanks for taking our outfits and accessories out with you and creating some amazing memories. We are sure you shined like a star.This is a gentle reminder that our staff will be at the " + data.shippingAddressFlat + " " + data.shippingAddressStreet + " " + data.shippingAddressLandmark + " " + data.shippingAddressCity + " " + data.shippingAddressPin + " " + data.shippingAddressState + " " + data.shippingAddressCountry + "for pick-up tomorrow. Ensure that your garment and accessories are packed in the same garment bag you received it in and that it is ready at the time of pick-up. ";
                                 emailData.content2 = "Order No. : " + data.orderid;
-                                emailData.subject = "Pickup reminder";
+                                emailData.subject = "Pickup reminder - Stylease";
                                 // console.log("eee", emailData);
                                 Config.email(emailData, function (err, emailRespo) {
                                     if (err) {
@@ -251,7 +251,7 @@ var models = {
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "Our staff is out for pick-up of your order. They will be arriving shortly, do ensure you are ready with the parcel. You totally slayed this event, see you soon for the next one!";
                         emailData.content2 = "Order No. : " + data.orderid;
-                        emailData.subject = "Out for pick-up!";
+                        emailData.subject = "Out for pick-up! - Stylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
@@ -271,6 +271,24 @@ var models = {
                         emailData.content1 = "Hope you’re having a good day! This is to notify you that we have returned your deposit for Rs. " + data.refundabledeposit + " against Order " + data.orderid;
                         emailData.content2 = "We look forward to helping you style again soon";
                         emailData.subject = "Deposit returned notification - Stylease";
+                        // console.log("eee", emailData);
+                        Config.email(emailData, function (err, emailRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // callback(null, updated);
+                            }
+                        });
+                    }
+                    if (data.orderstatus === "Transaction cancelled") {
+                        var emailData = {};
+                        emailData.email = data.email;
+                        emailData.filename = "mailer.ejs";
+                        emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content1 = "This is to notify you that we have received your request to cancel the order. We will get in touch with you shortly. For any queries contact us on XYZ.";
+                        emailData.content2 = "";
+                        emailData.subject = "Transaction cancelled - Stylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
