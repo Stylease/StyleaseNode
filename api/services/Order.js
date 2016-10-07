@@ -281,7 +281,7 @@ var models = {
                             }
                         });
                     }
-                    if (data.orderstatus === "Transaction cancelled") {
+                    if (data.orderstatus === "Cancelled") {
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
