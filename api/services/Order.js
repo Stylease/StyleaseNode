@@ -206,6 +206,63 @@ var models = {
                             }
                         });
                     }
+
+
+
+                    if (data.orderstatus === "Pickup reminder") {
+                        Order.findOne({
+                            _id: data._id
+                        }).exec(function (err, found) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+
+                                var emailData = {};
+                                emailData.email = data.email;
+                                emailData.filename = "mailer.ejs";
+                                emailData.name = data.firstname + " " + data.lastname;
+                                emailData.content1 = "Thanks for taking our outfits and accessories out with you and creating some amazing memories. We are sure you shined like a star.This is a gentle reminder that our staff will be at the " + data.shippingAddressFlat + " " + data.shippingAddressStreet + " " + data.shippingAddressLandmark + " " + data.shippingAddressCity + " " + data.shippingAddressPin + " " + data.shippingAddressState + " " + data.shippingAddressCountry + "for pick-up tomorrow. Ensure that your garment and accessories are packed in the same garment bag you received it in and that it is ready at the time of pick-up. ";
+                                emailData.content2 = "Order No. : " + data.orderid;
+                                emailData.subject = "Pickup reminder";
+                                // console.log("eee", emailData);
+                                Config.email(emailData, function (err, emailRespo) {
+                                    if (err) {
+                                        console.log(err);
+                                        callback(err, null);
+                                    } else {
+                                        // callback(null, updated);
+                                    }
+                                });
+                                // callback(null, found);
+                            }
+                        })
+
+
+
+                    }
+                    if (data.orderstatus === "Out for pick-up") {
+
+
+
+                        var emailData = {};
+                        emailData.email = data.email;
+                        emailData.filename = "mailer.ejs";
+                        emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content1 = "Our staff is out for pick-up of your order. They will be arriving shortly, do ensure you are ready with the parcel. You totally slayed this event, see you soon for the next one!";
+                        emailData.content2 = "Order No. : " + data.orderid;
+                        emailData.subject = "Out for pick-up!";
+                        // console.log("eee", emailData);
+                        Config.email(emailData, function (err, emailRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // callback(null, updated);
+                            }
+                        });
+                    }
+
                     if (data.orderstatus === "Completed") {
                         var emailData = {};
                         emailData.email = data.email;
@@ -310,23 +367,23 @@ var models = {
                                 callme(0);
                             }
                             var emailData = {};
-                                   var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
-  "July", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
- var dd = new Date(data.cartproduct[0].timeFrom);
-var month = monthNames[dd.getMonth()];
-var year = dd.getFullYear();
-var day = dd.getDate();
-var timeFrom =  month+" "+day + ", " + year;
+                            var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
+                                "July", "Aug", "Sep", "Oct", "Nov", "Dec"
+                            ];
+                            var dd = new Date(data.cartproduct[0].timeFrom);
+                            var month = monthNames[dd.getMonth()];
+                            var year = dd.getFullYear();
+                            var day = dd.getDate();
+                            var timeFrom = month + " " + day + ", " + year;
 
- var ddt = new Date(data.cartproduct[0].timeTo);
-var monthd = monthNames[ddt.getMonth()];
-var yeard = ddt.getFullYear();
-var dayd = ddt.getDate();
-var timeTo =  monthd+" "+dayd + ", " + yeard;
+                            var ddt = new Date(data.cartproduct[0].timeTo);
+                            var monthd = monthNames[ddt.getMonth()];
+                            var yeard = ddt.getFullYear();
+                            var dayd = ddt.getDate();
+                            var timeTo = monthd + " " + dayd + ", " + yeard;
                             emailData.email = data.email;
-                             emailData.timeFrom = timeFrom;
-                              emailData.timeTo = timeTo;
+                            emailData.timeFrom = timeFrom;
+                            emailData.timeTo = timeTo;
                             emailData.filename = "invoice.ejs";
                             emailData.name = data.firstname + " " + data.lastname;
                             emailData.cartproduct = data.cartproduct;
