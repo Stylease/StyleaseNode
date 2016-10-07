@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<body style='margin:0px'>
+    <div style='width:600px;background-color: #fff6f1;font-family: sans-serif;color: #2d2d2d;'>
+        <img href='#' src='invoiceimg/Layer-1.png'>
+        <div style='padding:0px 8% 0 13%;'>
+            <p style='padding: 1% 0%;font-size: 18px;'>Hello <%= name%>!</p>
+
+            <p style='font-size: 15px;'>  <%= content1%></p>
+
+            <div style='border-top: 1px solid black;padding: 7px 16%;font-size: 18px;border-bottom: 1px solid black;margin: 12% -10% 5% -16%;'>Order Summary:</div>
+            <table style='width: 100%;margin: 6% 0;font-size: 14px;'>
+                <thead>
+                    <tr>
+                        <td>Order Number:</td>
+                        <td><%= orderno%></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Delivery date:</td>
+                        <td><%= cartproduct[0].timeFrom %></td>
+                    </tr>
+                    <tr>
+                        <td>Return Date:</td>
+                        <td><%= cartproduct[0].timeTo %></td>
+                    </tr>
+                    <tr>
+                        <td>Duration:</td>
+                        <td><%= cartproduct[0].duration %> Days</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style='border-top: 1px solid black;padding: 7px 10% 7px 17%;font-size: 18px;border-bottom: 1px solid black;margin: 0% -10% 5% -17%;'>
+                <div style='width: 35%;display: inline-block;float: left;    text-align: center;'>Items</div>
+                <div style='display: inline-block;width: 35%; float: left;  text-align: center;'>Size</div>
+                <div style='width: 30%;display:  inline-block;   text-align: center;'>Sub Total</div>
+            </div>
+            <table style='width: 100%;margin: 8% 0;'>
+            <% cartproduct.forEach(function(cartpro) { %>
+                <tr>
+                    <td style='text-align: center;width: 35%;'><img style='width: 84px;margin: -9% 0%;' src='http://104.155.129.33:81/upload/readFile?file=<%= cartpro.product.images[0].image %>'>
+                     <br><span> <%= cartpro.product.name %></span></td>
+                    <td style='text-align: center;width: 35%;'> <%= cartpro.size %>M</td>
+   <%if (cartproduct[0].duration == 4) { %>
+              <td style="text-align: center;width: 30%;">
+                <%= cartpro.product.fourdayrentalamount %>
+              </td>
+              <% } %>
+
+
+   <%if (cartproduct[0].duration == 8) { %>
+                <td style="text-align: center;width: 30%;">
+                  <%= cartpro.product.eightdayrentalamount %>
+                </td>
+                <% } %>
+
+
+
+
+
+
+                </tr>
+                 <% }); %>
+            </table>
+
+            <div style='border-top: 1px solid black;padding: 7px 10% 7px 17%;font-size: 18px;border-bottom: 1px solid black;margin: 0% -10% 5% -17%;'>
+                <div style='width: 50%;display: inline-block;float: left;    text-align: left;'>Delivery Address</div>
+                <div style='display: inline-block;width: 50%;  text-align: left;'>Shipping Address</div>
+            </div>
+            <table style='width: 100%;margin: 6% 0;'>
+                <tr>
+                    <td style='text-align: left;width: 50%;padding-bottom: 3%;'><%= name%></td>
+                    <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;'><%= name%></td>
+                </tr>
+                <tr>
+                    <td style='text-align: left;width: 50%;padding-bottom: 3%;font-size: 14px;'><%= billingAddressFlat%>,<%= billingAddressStreet%>, <%= billingAddressLandmark%>,<%= billingAddressCity%> - <%= billingAddressPin%>
+                        <brak><%= billingAddressState%></td>
+                    <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;font-size: 14px;'><%= shippingAddressFlat%>,<%= shippingAddressStreet%>, <%= shippingAddressLandmark%>,<%= shippingAddressCity%> - <%= shippingAddressPin%>
+                        <brak>mahar<%= shippingAddressState%>ashtra</td>
+                </tr>
+                <tr>
+                    <td style='text-align: left;width: 50%;padding-bottom: 3%;'>Mobile:<%= mobile%></td>
+                    <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;'>Mobile:<%= mobile%></td>
+                </tr>
+            </table>
+            <div style='border-top: 1px solid black;padding: 7px 10% 7px 17%;font-size: 18px;border-bottom: 1px solid black;margin: 0% -10% 5% -17%;'>
+                <div style='width: 100%;   text-align: left;'>Billing Details</div>
+            </div>
+            <table style='width: 83%;margin: 6% 0;font-size: 14px;'>
+                <tr>
+                    <td>Sub total:</td>
+                    <td>
+                        <td style='width: 5%;'>Rs.</td>
+                        <td style='text-align: right;width: 15%;'><%= subtotal %></td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Service Tax:</td>
+                    <td>
+                        <td style='width: 5%;'>Rs.</td>
+                        <td style='text-align: right;width: 15%;'><%= servicetax %></td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Refundable Deposit:</td>
+                    <td>
+                        <td style='width: 5%;'>Rs.</td>
+                        <td style='text-align: right;width: 15%;'><%= refundabledeposit %></td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total:</td>
+                    <td>
+                        <td style='width: 5%;'>Rs.</td>
+                        <td style='text-align: right;width: 15%;'> <%= total %></td>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table style='width: 100%;background-color: #e87b66;font-size: 14px;'>
+            <tr>
+                <td style='text-align: center;    padding: 4px 0px;'>www.TheStylease.com</th>
+                    <td style='text-align: center;    padding: 4px 0px;'>
+                        <span style='margin-right: 7px;'>Follow us on</span>
+                        <span><img style='width: 17px;margin: 0px 2px -4px;' src='invoiceimg/facebook.png'></span>
+                        <span><img style='width: 17px;margin: 0px 2px -4px;' src='invoiceimg/twitter.png'></span>
+                        <span><img style='width: 17px;margin: 0px 2px -4px;' src='invoiceimg/instagram.png'>
+                    <span><img style='width: 17px;margin: 0px 2px -4px;' src='invoiceimg/pinterest.png'></span></span>
+                    </td>
+            </tr>
+        </table>
+</body>
+
+</html>

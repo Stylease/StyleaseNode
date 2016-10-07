@@ -140,13 +140,13 @@ var schema = new Schema({
 module.exports = mongoose.model('Order', schema);
 
 var models = {
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         //        delete data.password;
         var order = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, data).exec(function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -160,7 +160,7 @@ var models = {
                         emailData.content2 = "Order No. : " + data.orderid;
                         emailData.subject = "Out for delivery - Stylease";
                         // console.log("eee", emailData);
-                        Config.email(emailData, function(err, emailRespo) {
+                        Config.email(emailData, function (err, emailRespo) {
                             if (err) {
                                 console.log(err);
                                 callback(err, null);
@@ -178,7 +178,7 @@ var models = {
                         emailData.content2 = "Order No. : " + data.orderid;
                         emailData.subject = "Successfully delivered - Stylease";
                         // console.log("eee", emailData);
-                        Config.email(emailData, function(err, emailRespo) {
+                        Config.email(emailData, function (err, emailRespo) {
                             if (err) {
                                 console.log(err);
                                 callback(err, null);
@@ -196,7 +196,7 @@ var models = {
                         emailData.content2 = "Order No. : " + data.orderid;
                         emailData.subject = "Order picked up - Stylease";
                         // console.log("eee", emailData);
-                        Config.email(emailData, function(err, emailRespo) {
+                        Config.email(emailData, function (err, emailRespo) {
                             if (err) {
                                 console.log(err);
                                 callback(err, null);
@@ -214,7 +214,7 @@ var models = {
                         emailData.content2 = "We look forward to helping you style again soon";
                         emailData.subject = "Deposit returned notification - Stylease";
                         // console.log("eee", emailData);
-                        Config.email(emailData, function(err, emailRespo) {
+                        Config.email(emailData, function (err, emailRespo) {
                             if (err) {
                                 console.log(err);
                                 callback(err, null);
@@ -233,7 +233,7 @@ var models = {
                         emailData.content2 = " ";
                         emailData.subject = "Refund notification - Stylease";
                         // console.log("eee", emailData);
-                        Config.email(emailData, function(err, emailRespo) {
+                        Config.email(emailData, function (err, emailRespo) {
                             if (err) {
                                 console.log(err);
                                 callback(err, null);
@@ -255,7 +255,7 @@ var models = {
                 sort: {
                     '_id': -1
                 },
-            }).exec(function(err, found) {
+            }).exec(function (err, found) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -265,13 +265,13 @@ var models = {
                     } else {
                         order.orderid = found.orderid + 1;
                     }
-                    order.save(function(err, created) {
+                    order.save(function (err, created) {
                         if (err) {
                             callback(err, null);
                         } else if (created) {
                             if (data.user != null) {
                                 data._id = data.user;
-                                User.saveData(data, function(err, data3) {
+                                User.saveData(data, function (err, data3) {
                                     if (err) {
                                         console.log(err);
                                         callback(err, null)
@@ -292,7 +292,7 @@ var models = {
                                     mydata = create.cartproduct[num];
                                     delete mydata._id;
                                     console.log("mydata", mydata._id);
-                                    ProductTime.saveData(mydata, function(err, data4) {
+                                    ProductTime.saveData(mydata, function (err, data4) {
                                         console.log("data save");
                                         if (err) {
                                             console.log(err);
@@ -313,6 +313,25 @@ var models = {
                             emailData.filename = "order.ejs";
                             emailData.name = data.firstname + " " + data.lastname;
                             emailData.cartproduct = data.cartproduct;
+                            emailData.billingAddressFlat = data.billingAddressFlat;
+                            emailData.billingAddressStreet = data.billingAddressStreet;
+                            emailData.billingAddressLandmark = data.billingAddressLandmark;
+                            emailData.billingAddressPin = data.billingAddressPin;
+                            emailData.billingAddressCity = data.billingAddressCity;
+                            emailData.billingAddressState = data.billingAddressState;
+                            emailData.billingAddressCountry = data.billingAddressCountry;
+                            emailData.mobile = data.mobile;
+
+
+                            emailData.shippingAddressFlat = data.shippingAddressFlat;
+                            emailData.shippingAddressStreet = data.shippingAddressStreet;
+                            emailData.shippingAddressLandmark = data.shippingAddressLandmark;
+                            emailData.shippingAddressPin = data.shippingAddressPin;
+                            emailData.shippingAddressCity = data.shippingAddressCity;
+                            emailData.shippingAddressState = data.shippingAddressState;
+                            emailData.shippingAddressCountry = data.shippingAddressCountry;
+
+
                             emailData.total = created.total;
                             emailData.subtotal = created.subtotal;
                             emailData.servicetax = created.servicetax;
@@ -321,7 +340,7 @@ var models = {
                             emailData.orderno = created.orderid;
                             emailData.subject = "Order confirmation - Stylease";
                             // console.log("eee", emailData);
-                            Config.email(emailData, function(err, emailRespo) {
+                            Config.email(emailData, function (err, emailRespo) {
                                 if (err) {
                                     console.log(err);
                                     callback(err, null);
@@ -340,10 +359,10 @@ var models = {
             });
         }
     },
-    deleteData: function(data, callback) {
+    deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -353,10 +372,10 @@ var models = {
             }
         });
     },
-    getAll: function(data, callback) {
+    getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -367,7 +386,7 @@ var models = {
             }
         });
     },
-    getAllDetails: function(data, callback) {
+    getAllDetails: function (data, callback) {
         this.find({}, {
             password: 0
         }).populate("user", "_id  name", null, {
@@ -378,7 +397,7 @@ var models = {
             sort: {
                 "name": 1
             }
-        }).lean().exec(function(err, found) {
+        }).lean().exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -389,19 +408,19 @@ var models = {
             }
         });
     },
-    getLimited: function(data, callback) {
+    getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Order.count({
                     email: {
                         "$regex": checkfor
                     }
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -414,7 +433,7 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Order.find({
                     email: {
                         "$regex": checkfor
@@ -431,7 +450,7 @@ var models = {
                     }
                 }).sort({
                     _id: -1
-                }).lean().exec(function(err, data2) {
+                }).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -448,7 +467,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -457,20 +476,20 @@ var models = {
             }
         });
     },
-    getLimitedByUser: function(data, callback) {
+    getLimitedByUser: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Order.count({
                     user: data.user
                         // email: {
                         //     "$regex": checkfor
                         // }
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -483,7 +502,7 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Order.find({
                     user: data.user
                         // email: {
@@ -501,7 +520,7 @@ var models = {
                     }
                 }).sort({
                     _id: -1
-                }).lean().exec(function(err, data2) {
+                }).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -518,7 +537,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -527,7 +546,7 @@ var models = {
             }
         });
     },
-    getOne: function(data, callback) {
+    getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
         }, {
@@ -540,13 +559,13 @@ var models = {
             sort: {
                 "name": 1
             }
-        }).lean().exec(function(err, found) {
+        }).lean().exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
             } else if (found && Object.keys(found).length > 0) {
                 if (found.products && found.products.length > 0) {
-                    _.each(found.products, function(n) {
+                    _.each(found.products, function (n) {
                         if (n.product && n.product.name) {
                             n.productname = n.product.name;
                             n.productprice = n.product.rentalamount;
@@ -566,12 +585,12 @@ var models = {
     },
 
 
-    getOrderByUser: function(data, callback) {
+    getOrderByUser: function (data, callback) {
         Order.find({
             user: data.user
         }).populate("cartproduct.product", "name rentalamount images").sort({
             _id: -1
-        }).exec(function(err, data2) {
+        }).exec(function (err, data2) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -588,10 +607,10 @@ var models = {
         });
     },
 
-    getOrderById: function(data, callback) {
+    getOrderById: function (data, callback) {
         Order.findOne({
             orderid: data.orderid
-        }).select("orderid total transactionid servicetax subtotal refundabledeposit").exec(function(err, found) {
+        }).select("orderid total transactionid servicetax subtotal refundabledeposit").exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
