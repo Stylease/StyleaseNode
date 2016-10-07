@@ -286,7 +286,7 @@ var models = {
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
                         emailData.name = data.firstname + " " + data.lastname;
-                        emailData.content1 = "This is to notify you that we have received your request to cancel the order. We will get in touch with you shortly. For any queries contact us on XYZ.";
+                        emailData.content1 = "This is to notify you that we have received your request to cancel the order. We will get in touch with you shortly. For any queries contact us on +91 97351 88624 or mail us at info@thestylease.com.";
                         emailData.content2 = "";
                         emailData.subject = "Transaction cancelled - Stylease";
                         // console.log("eee", emailData);
