@@ -76,10 +76,12 @@
                     <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;'><%= name%></td>
                 </tr>
                 <tr>
-                    <td style='text-align: left;width: 50%;padding-bottom: 3%;font-size: 14px;'><%= billingAddressFlat%>,<%= billingAddressStreet%>, <%= billingAddressLandmark%>,<%= billingAddressCity%> - <%= billingAddressPin%>
+                    <td style='text-align: left;width: 50%;padding-bottom: 3%;font-size: 14px;'><%= billingAddressFlat%>,<%= billingAddressStreet%>,<br>  <%= billingAddressLandmark%>,<%= billingAddressCity%> <br><%= billingAddressPin%>
                         <brak><%= billingAddressState%></td>
-                    <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;font-size: 14px;'><%= shippingAddressFlat%>,<%= shippingAddressStreet%>, <%= shippingAddressLandmark%>,<%= shippingAddressCity%> - <%= shippingAddressPin%>
-                        <brak>mahar<%= shippingAddressState%>ashtra</td>
+                        <brak><%= billingAddressCountry%></td>
+                    <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;font-size: 14px;'><%= shippingAddressFlat%>,<%= shippingAddressStreet%>,<br> <%= shippingAddressLandmark%>,<%= shippingAddressCity%> <br><%= shippingAddressPin%>
+                        <brak><%= shippingAddressState%></td>
+                        <brak><%= shippingAddressCountry%></td>
                 </tr>
                 <tr>
                     <td style='text-align: left;width: 50%;padding-bottom: 3%;'>Mobile:<%= mobile%></td>
