@@ -1,7 +1,9 @@
 var request = require('request');
 var redirect = "http://thestylease.com";
+var http = require('http');
+var curl = require('curl-cmd');
 module.exports = {
-    sort: function(req, res) {
+    sort: function (req, res) {
         function callback(err, data) {
             Config.GlobalCallback(err, data, res);
         }
@@ -15,10 +17,10 @@ module.exports = {
         }
     },
 
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body) {
             // User.saveData(req.body, res.callback);
-            User.saveData(req.body, function(err, respo) {
+            User.saveData(req.body, function (err, respo) {
                 if (err) {
                     res.json({
                         value: false,
@@ -41,9 +43,9 @@ module.exports = {
         }
     },
 
-    saveBillingAddress: function(data, callback) {
+    saveBillingAddress: function (data, callback) {
         if (req.body) {
-            User.saveBillingAddress(req.body, function(err, respo) {
+            User.saveBillingAddress(req.body, function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -61,35 +63,35 @@ module.exports = {
             });
         }
     },
-    register: function(req, res) {
+    register: function (req, res) {
         if (req.body) {
             console.log(req.body);
             if (req.body.email && req.body.email !== "" && req.body.password && req.body.password !== "") {
-                User.register(req.body, function(err, respo) {
+                User.register(req.body, function (err, respo) {
                     if (err) {
                         res.json({
                             value: false,
                             data: err
                         });
                     } else {
-                      var sendcart = {};
-                      req.session.user = respo;
-                      sendcart.user = req.session.user._id;
-                      sendcart.cartproduct = req.session.cart;
-                      Cart.saveData(sendcart, function(err, data) {
-                          if (err) {
-                              console.log(err);
-                              callback(err, null);
-                          } else {
-                              req.session.cart = "";
-                              res.json({
-                                  value: true,
-                                  data: {
-                                      message: "signup success"
-                                  }
-                              });
-                          }
-                      });
+                        var sendcart = {};
+                        req.session.user = respo;
+                        sendcart.user = req.session.user._id;
+                        sendcart.cartproduct = req.session.cart;
+                        Cart.saveData(sendcart, function (err, data) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                req.session.cart = "";
+                                res.json({
+                                    value: true,
+                                    data: {
+                                        message: "signup success"
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
             } else {
@@ -105,7 +107,7 @@ module.exports = {
             });
         }
     },
-    getOne: function(req, res) {
+    getOne: function (req, res) {
 
         if (req.body) {
             User.getOne(req.body, res.callback);
@@ -116,9 +118,9 @@ module.exports = {
             });
         }
     },
-    getCart: function(req, res) {
+    getCart: function (req, res) {
         if (req.body) {
-            User.getCart(req.body, function(err, respo) {
+            User.getCart(req.body, function (err, respo) {
                 if (err) {
                     res.json({
                         value: false,
@@ -139,7 +141,7 @@ module.exports = {
         }
     },
 
-    delete: function(req, res) {
+    delete: function (req, res) {
         if (req.body) {
             console.log(req.body);
             User.deleteData(req.body, res.callback);
@@ -151,7 +153,7 @@ module.exports = {
         }
     },
 
-    getAll: function(req, res) {
+    getAll: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -165,7 +167,7 @@ module.exports = {
         }
     },
 
-    profile: function(req, res) {
+    profile: function (req, res) {
         var user = req.session.user;
         if (user) {
             res.set('Cache-Control', 'public, max-age=3600');
@@ -180,7 +182,7 @@ module.exports = {
             });
         }
     },
-    forgotPassword: function(req, res) {
+    forgotPassword: function (req, res) {
         if (req.body) {
             User.forgotPassword(req.body, res.callback);
         } else {
@@ -190,10 +192,10 @@ module.exports = {
             });
         }
     },
-    changePassword: function(req, res) {
+    changePassword: function (req, res) {
         if (req.body) {
             if (req.session.user) {
-              req.body.user = req.session.user._id;
+                req.body.user = req.session.user._id;
                 User.changePassword(req.body, res.callback);
             } else {
                 res.json({
@@ -208,10 +210,10 @@ module.exports = {
             });
         }
     },
-    login: function(req, res) {
+    login: function (req, res) {
         if (req.body) {
             if (req.body.email && req.body.email !== "" && req.body.password && req.body.password !== "") {
-                User.login(req.body, function(err, data) {
+                User.login(req.body, function (err, data) {
                     if (err) {
                         res.json({
                             value: false,
@@ -223,7 +225,7 @@ module.exports = {
                             req.session.user = data;
                             sendcart.user = req.session.user._id;
                             sendcart.cartproduct = req.session.cart;
-                            Cart.saveData(sendcart, function(err, data) {
+                            Cart.saveData(sendcart, function (err, data) {
                                 if (err) {
                                     console.log(err);
                                     callback(err, null);
@@ -259,7 +261,7 @@ module.exports = {
             });
         }
     },
-    getProfile: function(req, res) {
+    getProfile: function (req, res) {
         if (req.session.user) {
             res.json({
                 value: true,
@@ -272,8 +274,8 @@ module.exports = {
             });
         }
     },
-    logout: function(req, res) {
-        req.session.destroy(function(err) {
+    logout: function (req, res) {
+        req.session.destroy(function (err) {
             if (err) {
                 res.json({
                     value: false,
@@ -287,13 +289,13 @@ module.exports = {
             }
         });
     },
-    loginGoogle: function(req, res) {
+    loginGoogle: function (req, res) {
         passport.authenticate('google', {
             scope: "openid profile email"
         })(req, res);
     },
-    loginGoogleCallback: function(req, res) {
-        var callback = function(err, data) {
+    loginGoogleCallback: function (req, res) {
+        var callback = function (err, data) {
             if (err || _.isEmpty(data)) {
                 res.json({
                     error: err,
@@ -302,7 +304,7 @@ module.exports = {
             } else {
                 if (data._id) {
                     req.session.user = data;
-                    req.session.save(function(err) {
+                    req.session.save(function (err) {
                         if (err) {
                             res.json(err);
                         } else {
@@ -321,8 +323,8 @@ module.exports = {
             failureRedirect: '/login'
         }, callback)(req, res);
     },
-    loginFacebook: function(req, res) {
-        var callback = function(err, data) {
+    loginFacebook: function (req, res) {
+        var callback = function (err, data) {
             if (err || _.isEmpty(data)) {
                 res.json({
                     error: err,
@@ -331,7 +333,7 @@ module.exports = {
             } else {
                 if (data._id) {
                     req.session.user = data;
-                    req.session.save(function(err) {
+                    req.session.save(function (err) {
                         if (err) {
                             res.json(err);
                         } else {
@@ -351,7 +353,7 @@ module.exports = {
         }, callback)(req, res);
     },
 
-    getLimited: function(req, res) {
+    getLimited: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -371,5 +373,43 @@ module.exports = {
             });
         }
     },
+    sms: function (req, res) {
+
+        var options = {
+            hostname: 'http://URL/api/v3/index.php?method=sms&api_key=A84a4330cfxxxxxxxxxxxxxxxxxxxxxxxxx&to=9594390024&sender=INFXXX&message=testing&unicode=1',
+            method: 'GET'
+        };
+
+        console.log('=> %s', curl.cmd(options));
+
+        http.request(options, function (res) {
+            console.log('STATUS: ' + res.statusCode);
+            console.log('HEADERS: ' + JSON.stringify(res.headers));
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                console.log('BODY: ' + chunk);
+            });
+        }).end();
+
+
+        // request({
+        //     url: "http://URL/api/v3/index.php?method=sms&api_key=A84a4330cfxxxxxxxxxxxxxxxxxxxxxxxxx&to=9594390024&sender=INFXXX&message=testing&unicode=1",
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     }
+        // }, function (err, httpResponse) {
+        //     console.log(err);
+        //     console.log(httpResponse);
+        //     if (err) {
+        //         callback(err, null);
+        //     } else {
+        //         res.json(httpResponse);
+        //     }
+
+        // });
+    },
+
+
 
 };
