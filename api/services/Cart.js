@@ -465,24 +465,32 @@ var models = {
     updateCartDate: function(data, callback) {
       console.log(data);
         // console.log("dd", data);
-        // Cart.update({
-        //     user: data.user
-        // }, {
-        //     $each: {
-        //         $set: {
-        //             "cartproduct.deliveryTime": data.deliveryTime
-        //         }
-        //     }
-        // }, {
-        //     multi: true
-        // }).exec(function(err, respo) {
-        //     if (err) {
-        //         console.log(err);
-        //         callback(err, null);
-        //     } else {
-        //         callback(null, respo);
-        //     }
-        // });
+       _.each(data, function(n){
+           console.log("asd",n);
+       });
+        Cart.update({
+            // $atomic : 1,
+            user: data.user,
+            "cartproduct.duration": data.duration
+        }
+        , {
+              $set: {
+                    "cartproduct.$.deliveryTime": data.deliveryTime,
+                     "cartproduct.$.pickupTime": data.pickupTime,
+                      "cartproduct.$.timeTo": data.timeTo,
+                       "cartproduct.$.timeFrom": data.timeFrom
+                        }
+            }
+            ,{ multi: true 
+                }).exec(function(err, respo) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, respo);
+            }
+        });
+
     },
 };
 
