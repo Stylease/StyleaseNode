@@ -140,6 +140,7 @@ var schema = new Schema({
 module.exports = mongoose.model('Order', schema);
 
 var models = {
+
     saveData: function (data, callback) {
         //        delete data.password;
         var order = this(data);
@@ -309,8 +310,24 @@ var models = {
                                 callme(0);
                             }
                             var emailData = {};
+                                   var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
+  "July", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+ var dd = new Date(data.cartproduct[0].timeFrom);
+var month = monthNames[dd.getMonth()];
+var year = dd.getFullYear();
+var day = dd.getDate();
+var timeFrom =  month+" "+day + ", " + year;
+
+ var ddt = new Date(data.cartproduct[0].timeTo);
+var monthd = monthNames[ddt.getMonth()];
+var yeard = ddt.getFullYear();
+var dayd = ddt.getDate();
+var timeTo =  monthd+" "+dayd + ", " + yeard;
                             emailData.email = data.email;
-                            emailData.filename = "order.ejs";
+                             emailData.timeFrom = timeFrom;
+                              emailData.timeTo = timeTo;
+                            emailData.filename = "invoice.ejs";
                             emailData.name = data.firstname + " " + data.lastname;
                             emailData.cartproduct = data.cartproduct;
                             emailData.billingAddressFlat = data.billingAddressFlat;
@@ -321,8 +338,6 @@ var models = {
                             emailData.billingAddressState = data.billingAddressState;
                             emailData.billingAddressCountry = data.billingAddressCountry;
                             emailData.mobile = data.mobile;
-
-
                             emailData.shippingAddressFlat = data.shippingAddressFlat;
                             emailData.shippingAddressStreet = data.shippingAddressStreet;
                             emailData.shippingAddressLandmark = data.shippingAddressLandmark;
@@ -330,8 +345,6 @@ var models = {
                             emailData.shippingAddressCity = data.shippingAddressCity;
                             emailData.shippingAddressState = data.shippingAddressState;
                             emailData.shippingAddressCountry = data.shippingAddressCountry;
-
-
                             emailData.total = created.total;
                             emailData.subtotal = created.subtotal;
                             emailData.servicetax = created.servicetax;
