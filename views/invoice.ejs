@@ -41,7 +41,7 @@
             <table style='width: 100%;margin: 8% 0;'>
             <% cartproduct.forEach(function(cartpro) { %>
                 <tr>
-                    <td style='text-align: center;width: 35%;'><img style='width: 84px;margin: -9% 0%;' src='http://104.155.129.33:81/upload/readFile?file=<%= cartpro.product.images[0].image %>'>
+                    <td style='text-align: center;width: 35%;'><img style='width: 84px;margin: -9% 0%;' src='http://admin.thestylease.com/upload/readFile?file=<%= cartpro.product.images[0].image %>'>
                      <br><span> <%= cartpro.product.name %></span></td>
                     <td style='text-align: center;width: 35%;'> <%= cartpro.size %></td>
    <%if (cartproduct[0].duration == 4) { %>
@@ -70,24 +70,32 @@
                 <div style='width: 50%;display: inline-block;float: left;    text-align: left;'>Delivery Address</div>
                 <div style='display: inline-block;width: 50%;  text-align: left;'>Shipping Address</div>
             </div>
-            <table style='width: 100%;margin: 6% 0;'>
+                <table style="width: 100%;margin: 6% 0;">
                 <tr>
-                    <td style='text-align: left;width: 50%;padding-bottom: 3%;'><%= name%></td>
-                    <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;'><%= name%></td>
+                    <td style="text-align: left;width: 50%;padding-bottom: 3%;">Riya shah</td>
+                    <td style="text-align: left;width: 50%;padding: 0% 0% 3% 5%;">Riya shah</td>
                 </tr>
                 <tr>
-                    <td style='text-align: left;width: 50%;padding-bottom: 3%;font-size: 14px;'><%= billingAddressFlat%>,<%= billingAddressStreet%>,<br>  <%= billingAddressLandmark%>,<%= billingAddressCity%> <br><%= billingAddressPin%>
-                        <br><%= billingAddressState%></td>
+                    <td style="text-align: left;width: 50%;padding-bottom: 3%;font-size: 14px;">
+                    <%= billingAddressFlat%>, <%= billingAddressLandmark%>,
+                    <br/><%= billingAddressStreet%>,
+                    <br/> <%= billingAddressLandmark%>, 
+                        <br><%= billingAddressCity%> - <%= billingAddressState%>
                         <br><%= billingAddressCountry%></td>
-                    <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;font-size: 14px;'><%= shippingAddressFlat%>,<%= shippingAddressStreet%>,<br> <%= shippingAddressLandmark%>,<%= shippingAddressCity%> <br><%= shippingAddressPin%>
-                        <br><%= shippingAddressState%></td>
+                    <td style="text-align: left;width: 50%;padding: 0% 0% 3% 5%;font-size: 14px;">
+                    <%= shippingAddressFlat%>, <%= shippingAddressLandmark%>,
+                    <br/><%= shippingAddressStreet%>,
+                    <br/> <%= shippingAddressLandmark%>, 
+                        <br><%= shippingAddressCity%> - <%= shippingAddressState%>
                         <br><%= shippingAddressCountry%></td>
                 </tr>
                 <tr>
-                    <td style='text-align: left;width: 50%;padding-bottom: 3%;'>Mobile:<%= mobile%></td>
-                    <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;'>Mobile:<%= mobile%></td>
+                    <td style="text-align: left;width: 50%;padding-bottom: 3%;">Mobile:9920674907</td>
+                    <td style="text-align: left;width: 50%;padding: 0% 0% 3% 5%;">Mobile:9920674907</td>
                 </tr>
             </table>
+
+
             <div style='border-top: 1px solid black;padding: 7px 10% 7px 17%;font-size: 18px;border-bottom: 1px solid black;margin: 0% -10% 5% -17%;'>
                 <div style='width: 100%;   text-align: left;'>Billing Details</div>
             </div>
