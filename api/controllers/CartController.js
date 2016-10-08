@@ -2,14 +2,14 @@ var request = require('request');
 var lodash = require('lodash');
 module.exports = {
 
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body) {
             if (req.session.user) {
                 var sendcart = {};
                 sendcart.fromsession = true;
                 sendcart.user = req.session.user._id;
                 sendcart.cartproduct = req.body;
-                Cart.saveData(sendcart, function(err, respo) {
+                Cart.saveData(sendcart, function (err, respo) {
                     if (err) {
                         res.json({
                             value: false,
@@ -26,7 +26,7 @@ module.exports = {
                 // console.log("Not logged");
                 var newpro = {};
                 if (req.session.cart && req.session.cart.length > 0) {
-                    var abc = _.findIndex(req.session.cart, function(o) {
+                    var abc = _.findIndex(req.session.cart, function (o) {
                         newpro = req.body.product;
                         return o.product == req.body.product;
                     });
@@ -61,14 +61,17 @@ module.exports = {
         }
     },
 
-    updateCartDate: function(req, res) {
+    updateCartDate: function (req, res) {
         if (req.body) {
             if (req.session.user) {
                 req.body.user = req.session.user._id;
                 Cart.updateCartDate(req.body, res.callback);
             } else {
                 console.log("user not logged in");
-                _.each(req.session.cart, function(cartp) {
+                _.each(req.session.cart, function (cartp) {
+                    if (cartp.product == req.body.product) {
+                        cartp.size = req.body.size;
+                    }
                     cartp.duration = req.body.duration;
                     cartp.timeFrom = req.body.timeFrom;
                     cartp.timeTo = req.body.timeTo;
@@ -88,7 +91,7 @@ module.exports = {
             });
         }
     },
-    getOne: function(req, res) {
+    getOne: function (req, res) {
 
         if (req.body) {
             Cart.getOne(req.body, res.callback);
@@ -100,7 +103,7 @@ module.exports = {
         }
     },
 
-    delete: function(req, res) {
+    delete: function (req, res) {
         if (req.body) {
             console.log(req.body);
             Cart.deleteData(req.body, res.callback);
@@ -112,7 +115,7 @@ module.exports = {
         }
     },
 
-    removeCart: function(req, res) {
+    removeCart: function (req, res) {
         if (req.body) {
             if (req.session.user) {
                 // Remove product from online cart
@@ -129,7 +132,7 @@ module.exports = {
                 // Remove product from offline cart
                 var id = req.body.product;
                 if (req.session.cart.length > 0) {
-                    _.remove(req.session.cart, function(n) {
+                    _.remove(req.session.cart, function (n) {
                         return n.product === id;
                     });
                     res.json({
@@ -152,7 +155,7 @@ module.exports = {
         }
     },
 
-    emptyCart: function(req, res) {
+    emptyCart: function (req, res) {
         if (req.body) {
             if (req.session.user) {
                 req.body.user = req.session.user._id;
@@ -174,7 +177,7 @@ module.exports = {
         }
     },
 
-    getAll: function(req, res) {
+    getAll: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -187,7 +190,7 @@ module.exports = {
             });
         }
     },
-    getLimited: function(req, res) {
+    getLimited: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -207,7 +210,7 @@ module.exports = {
             });
         }
     },
-    getCart: function(req, res) {
+    getCart: function (req, res) {
         // function callback(err, data) {
         //     Global.response(err, data, res);
         // }
@@ -227,7 +230,7 @@ module.exports = {
             });
         }
     },
-    getCartBackend: function(req, res) {
+    getCartBackend: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }

@@ -120,12 +120,12 @@ var schema = new Schema({
 module.exports = mongoose.model('Product', schema);
 
 var models = {
-    sort: function(data, callback) {
+    sort: function (data, callback) {
         function callSave(num) {
             Product.saveData({
                 _id: data[num],
                 order: num + 1
-            }, function(err, respo) {
+            }, function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -147,7 +147,7 @@ var models = {
             callback(null, {});
         }
     },
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         // console.log("pro", data.suggestedProduct);
         //delete data.password;
         if (data.suggestedProduct != undefined) {
@@ -166,7 +166,7 @@ var models = {
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, data).exec(function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -177,7 +177,7 @@ var models = {
                 }
             });
         } else {
-            product.save(function(err, created) {
+            product.save(function (err, created) {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
@@ -188,10 +188,10 @@ var models = {
             });
         }
     },
-    deleteData: function(data, callback) {
+    deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -201,10 +201,10 @@ var models = {
             }
         });
     },
-    getAll: function(data, callback) {
+    getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -215,7 +215,7 @@ var models = {
             }
         });
     },
-    getAllDetails: function(data, callback) {
+    getAllDetails: function (data, callback) {
         this.find({
             status: true
         }, {
@@ -232,7 +232,7 @@ var models = {
             sort: {
                 "name": 1
             }
-        }).lean().exec(function(err, found) {
+        }).lean().exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -243,12 +243,12 @@ var models = {
             }
         });
     },
-    getOne: function(data, callback) {
+    getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             // console.log("fff", found);
             if (err) {
                 console.log(err);
@@ -260,10 +260,27 @@ var models = {
             }
         });
     },
-    getProductById: function(data, callback) {
+    getOneProduct: function (data, callback) {
+        this.findOne({
+            "_id": data._id
+        }, {
+            password: 0
+        }).populate("size", "name").exec(function (err, found) {
+            // console.log("fff", found);
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (found && Object.keys(found).length > 0) {
+                callback(null, found);
+            } else {
+                callback(null, {});
+            }
+        });
+    },
+    getProductById: function (data, callback) {
         var newreturns = {};
         async.parallel([
-            function(callback) {
+            function (callback) {
                 Product.findOne({
                     _id: data._id,
                     status: true
@@ -273,7 +290,7 @@ var models = {
                     options: {
                         limit: 6
                     }
-                }).lean().exec(function(err, found) {
+                }).lean().exec(function (err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null)
@@ -283,13 +300,13 @@ var models = {
                     }
                 });
             },
-            function(callback) {
+            function (callback) {
                 ProductTime.find({
                     product: data._id,
                     timeTo: {
                         $gte: new Date()
                     }
-                }).exec(function(err, data1) {
+                }).exec(function (err, data1) {
                     if (err) {
                         console.log(err);
                         callback(err, null)
@@ -301,7 +318,7 @@ var models = {
                 });
             }
 
-        ], function(err, data3) {
+        ], function (err, data3) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -325,7 +342,7 @@ var models = {
         // });
     },
 
-    getProductByCat: function(data, callback) {
+    getProductByCat: function (data, callback) {
         var matchobj = {
             subcategory: {
                 $in: data.subcategory
@@ -359,7 +376,7 @@ var models = {
             var sortfilter = {
                 fourdayrentalamount: -1
             }
-        }else if (data.sort === "Popularity") {
+        } else if (data.sort === "Popularity") {
             var sortfilter = {
                 booked: 1
             }
@@ -378,8 +395,8 @@ var models = {
         data.pagesize = parseInt(data.pagesize);
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
-            function(callback) {
-                Product.find(matchobj).sort(sortfilter).select('_id name fourdayrentalamount eightdayrentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
+            function (callback) {
+                Product.find(matchobj).sort(sortfilter).select('_id name fourdayrentalamount eightdayrentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
@@ -389,8 +406,8 @@ var models = {
                     }
                 });
             },
-            function(callback) {
-                Product.find(matchobj).count(function(err, count) {
+            function (callback) {
+                Product.find(matchobj).count(function (err, count) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
@@ -402,7 +419,7 @@ var models = {
 
                 });
             }
-        ], function(err, data3) {
+        ], function (err, data3) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -412,13 +429,13 @@ var models = {
         });
     },
 
-    getProductByCatName: function(data, callback) {
+    getProductByCatName: function (data, callback) {
         var newreturns = {};
         newreturns.data = [];
         data.pagesize = parseInt(data.pagesize);
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
-            function(callback) {
+            function (callback) {
                 Product.aggregate([{
                     $unwind: "$subcategory"
                 }, {
@@ -441,7 +458,7 @@ var models = {
                             $sum: 1
                         }
                     }
-                }]).exec(function(err, found) {
+                }]).exec(function (err, found) {
                     // console.log(found[0].count);
                     if (err) {
                         console.log(err);
@@ -455,7 +472,7 @@ var models = {
                     }
                 });
             },
-            function(callback) {
+            function (callback) {
                 Product.aggregate([{
                     $unwind: "$subcategory"
                 }, {
@@ -502,7 +519,7 @@ var models = {
                         rentalamount: 1,
                         subcategory: 1
                     }
-                }]).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function(err, found) {
+                }]).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
@@ -512,7 +529,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, data3) {
+        ], function (err, data3) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -521,19 +538,19 @@ var models = {
             }
         });
     },
-    getLimited: function(data, callback) {
+    getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Product.count({
                     name: {
                         "$regex": checkfor
                     }
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -546,7 +563,7 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Product.find({
                     name: {
                         "$regex": checkfor
@@ -567,7 +584,7 @@ var models = {
                     }
                 }).sort({
                     _id: -1
-                }).lean().exec(function(err, data2) {
+                }).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -584,7 +601,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -594,7 +611,7 @@ var models = {
         });
     },
 
-    findSize: function(data, callback) {
+    findSize: function (data, callback) {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
@@ -602,7 +619,7 @@ var models = {
         data.pagesize = parseInt(data.pagesize);
         var skip = parseInt(data.pagesize * (data.pagenumber - 1));
         async.parallel([
-                function(callback) {
+                function (callback) {
                     Product.aggregate([{
                         $match: {
                             _id: objectid(data._id)
@@ -620,7 +637,7 @@ var models = {
                         $project: {
                             count: 1
                         }
-                    }]).exec(function(err, result) {
+                    }]).exec(function (err, result) {
                         console.log(result);
                         if (result && result[0]) {
                             newreturns.total = result[0].count;
@@ -636,7 +653,7 @@ var models = {
                         }
                     });
                 },
-                function(callback) {
+                function (callback) {
                     Product.aggregate([{
                         $match: {
                             _id: objectid(data._id)
@@ -657,7 +674,7 @@ var models = {
                                 $slice: ["$size", skip, data.pagesize]
                             }
                         }
-                    }]).exec(function(err, found) {
+                    }]).exec(function (err, found) {
                         console.log(found);
                         if (found && found.length > 0) {
                             newreturns.data = found[0].size;
@@ -673,7 +690,7 @@ var models = {
                     });
                 }
             ],
-            function(err, data4) {
+            function (err, data4) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -685,7 +702,7 @@ var models = {
             });
     },
 
-    deleteSize: function(data, callback) {
+    deleteSize: function (data, callback) {
         Product.update({
             "size._id": data._id
         }, {
@@ -694,7 +711,7 @@ var models = {
                     "_id": objectid(data._id)
                 }
             }
-        }, function(err, updated) {
+        }, function (err, updated) {
             console.log(updated);
             if (err) {
                 console.log(err);
@@ -706,7 +723,7 @@ var models = {
 
     },
 
-    saveSize: function(data, callback) {
+    saveSize: function (data, callback) {
         var product = data.product;
         console.log(product);
         if (!data._id) {
@@ -716,7 +733,7 @@ var models = {
                 $push: {
                     size: data
                 }
-            }, function(err, updated) {
+            }, function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -728,14 +745,14 @@ var models = {
             data._id = objectid(data._id);
             tobechanged = {};
             var attribute = "size.$.";
-            _.forIn(data, function(value, key) {
+            _.forIn(data, function (value, key) {
                 tobechanged[attribute + key] = value;
             });
             Product.update({
                 "size._id": data._id
             }, {
                 $set: tobechanged
-            }, function(err, updated) {
+            }, function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -745,7 +762,7 @@ var models = {
             });
         }
     },
-    findOneSize: function(data, callback) {
+    findOneSize: function (data, callback) {
         // aggregate query
         Product.aggregate([{
             $unwind: "$size"
@@ -757,7 +774,7 @@ var models = {
             $project: {
                 size: 1
             }
-        }]).exec(function(err, respo) {
+        }]).exec(function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);

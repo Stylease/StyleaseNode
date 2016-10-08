@@ -1,6 +1,6 @@
 var request = require('request');
 module.exports = {
-    sort: function(req, res) {
+    sort: function (req, res) {
         function callback(err, data) {
             Config.GlobalCallback(err, data, res);
         }
@@ -14,7 +14,7 @@ module.exports = {
         }
     },
 
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body) {
             Product.saveData(req.body, res.callback);
         } else {
@@ -24,7 +24,7 @@ module.exports = {
             });
         }
     },
-    getOne: function(req, res) {
+    getOne: function (req, res) {
         if (req.body) {
             Product.getOne(req.body, res.callback);
         } else {
@@ -34,7 +34,17 @@ module.exports = {
             });
         }
     },
-    getProductById: function(req, res) {
+    getOneProduct: function (req, res) {
+        if (req.body) {
+            Product.getOneProduct(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+    getProductById: function (req, res) {
         if (req.body) {
             Product.getProductById(req.body, res.callback);
         } else {
@@ -45,7 +55,7 @@ module.exports = {
         }
     },
 
-    getProductByCatName: function(req, res) {
+    getProductByCatName: function (req, res) {
         if (req.body) {
             Product.getProductByCatName(req.body, res.callback);
         } else {
@@ -55,7 +65,7 @@ module.exports = {
             });
         }
     },
-    getProductByCat: function(req, res) {
+    getProductByCat: function (req, res) {
         if (req.body) {
             Product.getProductByCat(req.body, res.callback);
         } else {
@@ -65,7 +75,7 @@ module.exports = {
             });
         }
     },
-    delete: function(req, res) {
+    delete: function (req, res) {
         if (req.body) {
             // console.log(req.body);
             Product.deleteData(req.body, res.callback);
@@ -77,7 +87,7 @@ module.exports = {
         }
     },
 
-    getAll: function(req, res) {
+    getAll: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -90,7 +100,7 @@ module.exports = {
             });
         }
     },
-    getAllDetails: function(req, res) {
+    getAllDetails: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -103,7 +113,7 @@ module.exports = {
             });
         }
     },
-    getLimited: function(req, res) {
+    getLimited: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -124,9 +134,9 @@ module.exports = {
         }
     },
 
-    findSize: function(req, res) {
+    findSize: function (req, res) {
         if (req.body) {
-            Product.findSize(req.body, function(err, respo) {
+            Product.findSize(req.body, function (err, respo) {
                 if (err) {
                     res.json({
                         value: false,
@@ -146,7 +156,7 @@ module.exports = {
             });
         }
     },
-    findOneSize: function(req, res) {
+    findOneSize: function (req, res) {
         if (req.body) {
             Product.findOneSize(req.body, res.callback);
         } else {
@@ -157,11 +167,11 @@ module.exports = {
         }
     },
 
-    deleteSize: function(req, res) {
+    deleteSize: function (req, res) {
         if (req.body) {
             if (req.body._id && req.body._id !== "") {
                 //	console.log("not valid");
-                Product.deleteSize(req.body, function(err, respo) {
+                Product.deleteSize(req.body, function (err, respo) {
                     if (err) {
                         res.json({
                             value: false,
@@ -187,9 +197,9 @@ module.exports = {
             });
         }
     },
-    saveSize: function(req, res) {
+    saveSize: function (req, res) {
         if (req.body) {
-            Product.saveSize(req.body, function(err, respo) {
+            Product.saveSize(req.body, function (err, respo) {
                 if (err) {
                     res.json({
                         value: false,

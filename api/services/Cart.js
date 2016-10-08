@@ -27,7 +27,7 @@ var schema = new Schema({
 module.exports = mongoose.model('Cart', schema);
 
 var models = {
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         function callme(num) {
             if (data.fromsession == true) {
                 // console.log("cart completed");
@@ -47,7 +47,7 @@ var models = {
         }
 
         function callcartsave(data, num) {
-            // console.log("mdata", data, num);
+            console.log("mdata", data, num);
             Cart.aggregate([{
                 $match: {
                     user: objectid(data.user)
@@ -65,12 +65,13 @@ var models = {
                 $match: {
                     "cartproduct.product": objectid(data.cartproduct.product)
                 }
-            }]).exec(function(err, data4) {
+            }]).exec(function (err, data4) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
                 } else {
                     if (data4 && data4.length > 0) {
+                        console.log("in edit");
                         //update existing product
                         data4._id = objectid(data4[0].cartproduct._id);
                         //assign id to cart product sent by user
@@ -81,7 +82,7 @@ var models = {
                             $set: {
                                 "cartproduct.$": data.cartproduct
                             }
-                        }, function(err, updated) {
+                        }, function (err, updated) {
                             if (err) {
                                 console.log(err);
                             } else {
@@ -91,13 +92,14 @@ var models = {
                         });
                     } else {
                         //add new product
+                        console.log("in save");
                         Cart.update({
                             user: data.user
                         }, {
                             $push: {
                                 cartproduct: data.cartproduct
                             }
-                        }, function(err, updated) {
+                        }, function (err, updated) {
                             if (err) {
                                 console.log(err);
                             } else {
@@ -117,7 +119,7 @@ var models = {
                 user: data.user
             }, {}, {
                 upsert: true
-            }).exec(function(err, respo) {
+            }).exec(function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -132,7 +134,7 @@ var models = {
                                 callme(0);
                             }
                         }
-                      
+
                     } else {
                         if (data.cartproduct == undefined) {
                             callback(null, "Cart is empty")
@@ -146,10 +148,10 @@ var models = {
 
 
     },
-    deleteData: function(data, callback) {
+    deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -159,10 +161,10 @@ var models = {
             }
         });
     },
-    getAll: function(data, callback) {
+    getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -173,12 +175,12 @@ var models = {
             }
         });
     },
-    getOne: function(data, callback) {
+    getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -190,10 +192,10 @@ var models = {
         });
     },
 
-    getCart: function(data, callback) {
+    getCart: function (data, callback) {
         var newreturns = {};
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Cart.aggregate([{
                         $match: {
                             user: objectid(data.user)
@@ -232,7 +234,7 @@ var models = {
                         }
                     }
 
-                ], function(err, cartco) {
+                ], function (err, cartco) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -243,10 +245,10 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Cart.find({
                     user: data.user
-                }, {}).populate("cartproduct.product", "name price fourdayrentalamount eightdayrentalamount fourdaysecuritydeposit eightdaysecuritydeposit images").lean().exec(function(err, data2) {
+                }, {}).populate("cartproduct.product", "name price fourdayrentalamount eightdayrentalamount fourdaysecuritydeposit eightdaysecuritydeposit images").lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -264,7 +266,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -274,7 +276,7 @@ var models = {
         });
     },
 
-    getCartOffline: function(data, callback) {
+    getCartOffline: function (data, callback) {
         // console.log("in offline cart");
         var newcartdata = _.cloneDeep(data);
         // console.log("newcartdata", newcartdata);
@@ -287,7 +289,7 @@ var models = {
                 options: {
                     lean: true
                 }
-            }, function(err, response) {
+            }, function (err, response) {
                 if (err) {
                     callback(err, null);
                 } else {
@@ -295,7 +297,7 @@ var models = {
                     var totalsecuritydeposit = 0;
                     newdata.cartproduct = response;
                     // console.log("resss", response);
-                    _.each(response, function(res) {
+                    _.each(response, function (res) {
                         totalrentalamount = parseInt(totalrentalamount) + parseInt(res.product.rentalamount);
                         totalsecuritydeposit = parseInt(totalsecuritydeposit) + parseInt(res.product.securitydeposit);
                     });
@@ -314,17 +316,17 @@ var models = {
 
     },
 
-    getCartBackend: function(data, callback) {
+    getCartBackend: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Cart.count({
                     user: data._id
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -338,10 +340,10 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Cart.find({
                     user: data._id
-                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name fourdayrentalamount eightdayrentalamount").lean().exec(function(err, data2) {
+                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cartproduct.product", "name fourdayrentalamount eightdayrentalamount").lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -358,7 +360,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -367,19 +369,19 @@ var models = {
             }
         });
     },
-    getLimited: function(data, callback) {
+    getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagecart = parseInt(data.pagecart);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Cart.count({
                     name: {
                         "$regex": checkfor
                     }
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -392,14 +394,14 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Cart.find({
                     name: {
                         "$regex": checkfor
                     }
                 }, {}).sort({
                     name: 1
-                }).skip((data.pagenumber - 1) * data.pagecart).limit(data.pagecart).lean().exec(function(err, data2) {
+                }).skip((data.pagenumber - 1) * data.pagecart).limit(data.pagecart).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -416,7 +418,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -426,7 +428,7 @@ var models = {
         });
     },
 
-    removeCart: function(data, callback) {
+    removeCart: function (data, callback) {
         console.log("in remove", data);
         Cart.update({
             user: data.user
@@ -436,7 +438,7 @@ var models = {
                     "product": data.product
                 }
             }
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null)
@@ -445,14 +447,14 @@ var models = {
             }
         });
     },
-    emptyCart: function(data, callback) {
+    emptyCart: function (data, callback) {
         Cart.update({
             user: data.user
         }, {
             "$set": {
                 "cartproduct": []
             }
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null)
@@ -462,27 +464,26 @@ var models = {
         });
     },
 
-    updateCartDate: function(data, callback) {
-      console.log(data);
+    updateCartDate: function (data, callback) {
+        console.log(data);
         // console.log("dd", data);
-       _.each(data, function(n){
-           console.log("asd",n);
-       });
+        _.each(data, function (n) {
+            console.log("asd", n);
+        });
         Cart.update({
             // $atomic : 1,
             user: data.user,
             "cartproduct.duration": data.duration
-        }
-        , {
-              $set: {
-                    "cartproduct.$.deliveryTime": data.deliveryTime,
-                     "cartproduct.$.pickupTime": data.pickupTime,
-                      "cartproduct.$.timeTo": data.timeTo,
-                       "cartproduct.$.timeFrom": data.timeFrom
-                        }
+        }, {
+            $set: {
+                "cartproduct.$.deliveryTime": data.deliveryTime,
+                "cartproduct.$.pickupTime": data.pickupTime,
+                "cartproduct.$.timeTo": data.timeTo,
+                "cartproduct.$.timeFrom": data.timeFrom
             }
-            ,{ multi: true 
-                }).exec(function(err, respo) {
+        }, {
+            multi: true
+        }).exec(function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
