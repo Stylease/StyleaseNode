@@ -43,7 +43,7 @@
                 <tr>
                     <td style='text-align: center;width: 35%;'><img style='width: 84px;margin: -9% 0%;' src='http://104.155.129.33:81/upload/readFile?file=<%= cartpro.product.images[0].image %>'>
                      <br><span> <%= cartpro.product.name %></span></td>
-                    <td style='text-align: center;width: 35%;'> <%= cartpro.size %>M</td>
+                    <td style='text-align: center;width: 35%;'> <%= cartpro.size %></td>
    <%if (cartproduct[0].duration == 4) { %>
               <td style="text-align: center;width: 30%;">
                 <%= cartpro.product.fourdayrentalamount %>
@@ -77,11 +77,11 @@
                 </tr>
                 <tr>
                     <td style='text-align: left;width: 50%;padding-bottom: 3%;font-size: 14px;'><%= billingAddressFlat%>,<%= billingAddressStreet%>,<br>  <%= billingAddressLandmark%>,<%= billingAddressCity%> <br><%= billingAddressPin%>
-                        <brak><%= billingAddressState%></td>
-                        <brak><%= billingAddressCountry%></td>
+                        <br><%= billingAddressState%></td>
+                        <br><%= billingAddressCountry%></td>
                     <td style='text-align: left;width: 50%;padding: 0% 0% 3% 5%;font-size: 14px;'><%= shippingAddressFlat%>,<%= shippingAddressStreet%>,<br> <%= shippingAddressLandmark%>,<%= shippingAddressCity%> <br><%= shippingAddressPin%>
-                        <brak><%= shippingAddressState%></td>
-                        <brak><%= shippingAddressCountry%></td>
+                        <br><%= shippingAddressState%></td>
+                        <br><%= shippingAddressCountry%></td>
                 </tr>
                 <tr>
                     <td style='text-align: left;width: 50%;padding-bottom: 3%;'>Mobile:<%= mobile%></td>
