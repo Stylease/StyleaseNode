@@ -97,7 +97,7 @@ module.exports = {
             } else {
                 res.json({
                     value: false,
-                    data: "Invalid params"
+                    data: "Invalid Email ID"
                 });
             }
         } else {

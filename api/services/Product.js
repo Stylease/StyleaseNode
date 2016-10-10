@@ -162,6 +162,10 @@ var models = {
             // delete data.designer;
             data.designer = null;
         }
+        if (data.size == "") {
+            // delete data.size;
+            data.size = null;
+        }
         var product = this(data);
         if (data._id) {
             this.findOneAndUpdate({
