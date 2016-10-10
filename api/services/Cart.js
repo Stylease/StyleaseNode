@@ -465,32 +465,78 @@ var models = {
     },
 
     updateCartDate: function (data, callback) {
-        console.log(data);
-        // console.log("dd", data);
-        _.each(data, function (n) {
-            console.log("asd", n);
-        });
-        Cart.update({
-            // $atomic : 1,
-            user: data.user,
-            "cartproduct.duration": data.duration
-        }, {
-            $set: {
-                "cartproduct.$.deliveryTime": data.deliveryTime,
-                "cartproduct.$.pickupTime": data.pickupTime,
-                "cartproduct.$.timeTo": data.timeTo,
-                "cartproduct.$.timeFrom": data.timeFrom
-            }
-        }, {
-            multi: true
-        }).exec(function (err, respo) {
+        // console.log(data);
+        Cart.findOne({
+            user: data.user
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
             } else {
-                callback(null, respo);
+                // callback(null, found);
+                // console.log("cartproducts", found.cartproduct);
+                if (found && found.cartproduct) {
+                    console.log("in cartp");
+
+                    function callme(num) {
+                        console.log("cartproduct", found.cartproduct.length, "num", num);
+                        if (num === found.cartproduct.length) {
+                            // console.log("cart completed");
+                            callback(null, "Done");
+                        } else {
+                            console.log("in else", data);
+                            var mydata = {};
+                            mydata.cartproduct = {};
+                            mydata.user = data.user;
+                            // mydata.cartproduct = found.cartproduct[num];
+                            mydata.cartproduct.product = data.product;
+                            if (mydata.cartproduct.product == data.product) {
+                                if (data.size) {
+                                    mydata.cartproduct.size = data.size;
+                                }
+                            }
+                            mydata.cartproduct._id = found.cartproduct[num]._id;
+                            mydata.cartproduct.duration = data.duration;
+                            mydata.cartproduct.timeFrom = data.timeFrom;
+                            mydata.cartproduct.timeTo = data.timeTo;
+                            mydata.cartproduct.deliveryTime = data.deliveryTime;
+                            mydata.cartproduct.pickupTime = data.pickupTime;
+                            callupdatecart(mydata, num);
+                        }
+                    }
+
+                    function callupdatecart(mydata, num) {
+                        // console.log("in update", mydata, num);
+                        mydata._id = objectid(mydata.cartproduct._id);
+                        //assign id to cart product sent by user
+                        console.log("mydata id", mydata._id);
+                        Cart.update({
+                            "cartproduct._id": mydata._id
+                        }, {
+                            $set: {
+                                "cartproduct.$": mydata.cartproduct
+                            }
+                        }, function (err, updated) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                num++;
+                                callme(num);
+                            }
+                        });
+                    }
+
+                    callme(0);
+
+
+                } else {
+                    callback(null, {
+                        message: "products not found"
+                    });
+                }
             }
         });
+
 
     },
 };
