@@ -358,6 +358,7 @@ var models = {
                                 });
                             }
 
+
                             function callme(num) {
                                 if (num === created.cartproduct.length) {
                                     console.log("producttime completed");
@@ -368,6 +369,22 @@ var models = {
                                     mydata = create.cartproduct[num];
                                     delete mydata._id;
                                     console.log("mydata", mydata._id);
+                                    //update product booking
+                                    Product.update({
+                                        _id: mydata.product
+                                    }, {
+                                        $inc: {
+                                            booked: 1
+                                        }
+                                    }).exec(function (err, booked) {
+                                        if (err) {
+                                            console.log(err);
+                                            callback(err, null);
+                                        } else {
+                                            // console.log("booked update");
+                                        }
+                                    });
+
                                     ProductTime.saveData(mydata, function (err, data4) {
                                         console.log("data save");
                                         if (err) {
@@ -375,6 +392,8 @@ var models = {
                                             callback(err, null);
                                         } else {
                                             console.log("aaaaa");
+                                            num++;
+                                            callme(num);
                                             // console.log("save products to ProductTime");
                                         }
                                     });

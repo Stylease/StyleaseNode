@@ -489,18 +489,27 @@ var models = {
                             mydata.cartproduct = {};
                             mydata.user = data.user;
                             // mydata.cartproduct = found.cartproduct[num];
-                            mydata.cartproduct.product = data.product;
-                            if (mydata.cartproduct.product == data.product) {
-                                if (data.size) {
-                                    mydata.cartproduct.size = data.size;
-                                }
+                            if (found.cartproduct[num].product == data.product) {
+                                mydata.cartproduct.size = data.size;
+                            } else {
+                                mydata.cartproduct.size = found.cartproduct[num].size;
                             }
                             mydata.cartproduct._id = found.cartproduct[num]._id;
+                            mydata.cartproduct.product = found.cartproduct[num].product;
                             mydata.cartproduct.duration = data.duration;
-                            mydata.cartproduct.timeFrom = data.timeFrom;
-                            mydata.cartproduct.timeTo = data.timeTo;
+                            if (data.timeFrom) {
+                                mydata.cartproduct.timeFrom = data.timeFrom;
+                            } else {
+                                mydata.cartproduct.timeFrom = found.cartproduct[num].timeFrom;
+                            }
+                            if (data.timeTo) {
+                                mydata.cartproduct.timeTo = data.timeTo;
+                            } else {
+                                mydata.cartproduct.timeTo = found.cartproduct[num].timeTo;
+                            }
                             mydata.cartproduct.deliveryTime = data.deliveryTime;
                             mydata.cartproduct.pickupTime = data.pickupTime;
+
                             callupdatecart(mydata, num);
                         }
                     }
