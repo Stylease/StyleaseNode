@@ -303,14 +303,27 @@ module.exports = {
                 });
             } else {
                 if (data._id) {
+                    var sendcart = {};
                     req.session.user = data;
-                    req.session.save(function (err) {
+                    sendcart.user = req.session.user._id;
+                    sendcart.cartproduct = req.session.cart;
+                    Cart.saveData(sendcart, function (err, data) {
                         if (err) {
-                            res.json(err);
+                            console.log(err);
+                            callback(err, null);
                         } else {
+                            req.session.cart = "";
                             res.redirect(redirect);
                         }
                     });
+                    // req.session.user = data;
+                    // req.session.save(function (err) {
+                    //     if (err) {
+                    //         res.json(err);
+                    //     } else {
+                    //         res.redirect(redirect);
+                    //     }
+                    // });
                 } else {
                     res.json({
                         data: "User not found",
@@ -332,14 +345,27 @@ module.exports = {
                 });
             } else {
                 if (data._id) {
+                    var sendcart = {};
                     req.session.user = data;
-                    req.session.save(function (err) {
+                    sendcart.user = req.session.user._id;
+                    sendcart.cartproduct = req.session.cart;
+                    Cart.saveData(sendcart, function (err, data) {
                         if (err) {
-                            res.json(err);
+                            console.log(err);
+                            callback(err, null);
                         } else {
+                            req.session.cart = "";
                             res.redirect(redirect);
                         }
                     });
+                    // req.session.user = data;
+                    // req.session.save(function (err) {
+                    //     if (err) {
+                    //         res.json(err);
+                    //     } else {
+                    //         res.redirect(redirect);
+                    //     }
+                    // });
                 } else {
                     res.json({
                         data: "User not found",
