@@ -156,12 +156,12 @@ var schema = new Schema({
 module.exports = mongoose.model('User', schema);
 
 var models = {
-    sort: function(data, callback) {
+    sort: function (data, callback) {
         function callSave(num) {
             User.saveData({
                 _id: data[num],
                 order: num + 1
-            }, function(err, respo) {
+            }, function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -183,7 +183,7 @@ var models = {
             callback(null, {});
         }
     },
-    register: function(data, callback) {
+    register: function (data, callback) {
         if (data.password && data.password !== "") {
             data.password = md5(data.password);
         }
@@ -191,12 +191,12 @@ var models = {
         user.email = data.email;
         this.count({
             "email": user.email
-        }).exec(function(err, data2) {
+        }).exec(function (err, data2) {
             if (err) {
                 callback(err, data);
             } else {
                 if (data2 === 0) {
-                    user.save(function(err, data3) {
+                    user.save(function (err, data3) {
                         data3.password = '';
                         if (err) {
                             callback(err, null);
@@ -209,7 +209,7 @@ var models = {
                             emailData.content2 = " Enjoy the world of couture and embrace the latest fashions at your next event.";
                             emailData.subject = "Sign Up Successful";
                             console.log("eee", emailData);
-                            Config.email(emailData, function(err, emailRespo) {
+                            Config.email(emailData, function (err, emailRespo) {
                                 if (err) {
                                     console.log(err);
                                     callback(err, null);
@@ -226,7 +226,7 @@ var models = {
             }
         });
     },
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         //        delete data.password;
         var user = this(data);
         if (data._id) {
@@ -238,7 +238,7 @@ var models = {
                 _id: data._id
             }, {
                 $set: data
-            }).exec(function(err, updated) {
+            }).exec(function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -252,7 +252,7 @@ var models = {
             user.timestamp = new Date();
             data.expiry = new Date();
             user.password = md5(user.password);
-            user.save(function(err, created) {
+            user.save(function (err, created) {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
@@ -265,10 +265,10 @@ var models = {
     },
 
 
-    deleteData: function(data, callback) {
+    deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -278,10 +278,10 @@ var models = {
             }
         });
     },
-    getAll: function(data, callback) {
+    getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -292,20 +292,20 @@ var models = {
             }
         });
     },
-    getOne: function(data, callback) {
+    getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
         }, {
             password: 0
         }).populate("cart.product", "_id  name", null, {
             sort: {}
-        }).lean().exec(function(err, found) {
+        }).lean().exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
             } else if (found && Object.keys(found).length > 0) {
                 if (found.cart && found.cart.length > 0) {
-                    _.each(found.cart, function(n) {
+                    _.each(found.cart, function (n) {
                         if (n.product && n.product.name) {
                             n.productname = n.product.name;
                             delete n.product;
@@ -318,11 +318,16 @@ var models = {
             }
         });
     },
-    changePassword: function(data, callback) {
+    changePassword: function (data, callback) {
         User.findOne({
             _id: data.user,
-            password: md5(data.oldPassword)
-        }).exec(function(err, found) {
+            // forgotpassword: md5(data.oldPassword)
+            $or: [{
+                password: md5(data.oldPassword)
+            }, {
+                forgotpassword: md5(data.oldPassword)
+            }]
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -332,7 +337,7 @@ var models = {
                         _id: data.user
                     }, {
                         password: md5(data.newPassword)
-                    }).exec(function(err, data3) {
+                    }).exec(function (err, data3) {
                         console.log("data3", data3);
                         if (err) {
                             console.log(err);
@@ -350,13 +355,13 @@ var models = {
             }
         });
     },
-    forgotPassword: function(data, callback) {
+    forgotPassword: function (data, callback) {
         User.findOne({
             email: data.email
         }, {
             password: 0,
             forgotpassword: 0
-        }, function(err, found) {
+        }, function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -368,6 +373,7 @@ var models = {
                         for (var i = 0; i < 8; i++) {
                             text += possible.charAt(Math.floor(Math.random() * possible.length));
                         }
+                        console.log("text", text);
                         var updateddate = new Date();
                         var encrypttext = md5(text);
                         User.findOneAndUpdate({
@@ -375,7 +381,7 @@ var models = {
                         }, {
                             forgotpassword: encrypttext,
                             forgotpassworddate: updateddate
-                        }, function(err, data2) {
+                        }, function (err, data2) {
                             if (err) {
                                 console.log(err);
                                 callback(err, null);
@@ -386,7 +392,7 @@ var models = {
                                 emailData.content = text;
                                 emailData.filename = "forgotpassword.ejs";
                                 emailData.subject = "Forgot Password";
-                                Config.email(emailData, function(err, emailRespo) {
+                                Config.email(emailData, function (err, emailRespo) {
                                     if (err) {
                                         console.log(err);
                                         callback(err, null);
@@ -412,7 +418,7 @@ var models = {
             }
         });
     },
-    getCart: function(data, callback) {
+    getCart: function (data, callback) {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
@@ -420,7 +426,7 @@ var models = {
         data.pagesize = parseInt(data.pagesize);
         var skip = parseInt(data.pagesize * (data.pagenumber - 1));
         async.parallel([
-                function(callback) {
+                function (callback) {
                     User.aggregate([{
                         $match: {
                             _id: objectid(data._id)
@@ -444,7 +450,7 @@ var models = {
                         $project: {
                             count: 1
                         }
-                    }]).exec(function(err, result) {
+                    }]).exec(function (err, result) {
                         console.log(result);
                         if (result && result[0]) {
                             newreturns.total = result[0].count;
@@ -460,7 +466,7 @@ var models = {
                         }
                     });
                 },
-                function(callback) {
+                function (callback) {
                     User.aggregate([{
                         $match: {
                             _id: objectid(data._id)
@@ -487,7 +493,7 @@ var models = {
                                 $slice: ["$cart", skip, data.pagesize]
                             }
                         }
-                    }]).exec(function(err, found) {
+                    }]).exec(function (err, found) {
                         console.log(found);
                         if (found && found.length > 0) {
                             newreturns.data = found[0].cart;
@@ -503,7 +509,7 @@ var models = {
                     });
                 }
             ],
-            function(err, data4) {
+            function (err, data4) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -581,14 +587,14 @@ var models = {
     //     });
     // },
 
-    login: function(data, callback) {
+    login: function (data, callback) {
         data.password = md5(data.password);
         var d = new Date();
         d.setMinutes(d.getMinutes() - 180);
         User.findOne({
             email: data.email,
             password: data.password
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -604,7 +610,7 @@ var models = {
                         forgotpassworddate: {
                             $gte: d
                         }
-                    }).exec(function(err, forgotdata) {
+                    }).exec(function (err, forgotdata) {
                         if (err) {
                             console.log(err);
                             callback(err, null);
@@ -622,19 +628,19 @@ var models = {
             }
         });
     },
-    getLimited: function(data, callback) {
+    getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 User.count({
                     email: {
                         "$regex": checkfor
                     }
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -647,7 +653,7 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 User.find({
                     email: {
                         "$regex": checkfor
@@ -658,7 +664,7 @@ var models = {
                     sort: {
                         "name": 1
                     }
-                }).lean().exec(function(err, data2) {
+                }).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -675,7 +681,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);

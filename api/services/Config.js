@@ -15,6 +15,7 @@ var moment = require('moment');
 var MaxImageSize = 1200;
 var request = require("request");
 var requrl = "http://localhost:81/";
+// var requrl = "http://130.211.245.224/:81/";
 var gfs = Grid(mongoose.connections[0].db, mongoose);
 gfs.mongo = mongoose.mongo;
 
@@ -112,8 +113,8 @@ module.exports = {
             fs.unlink(filename);
         });
     },
-    email: function(data, callback) {
-        Password.find().exec(function(err, userdata) {
+    email: function (data, callback) {
+        Password.find().exec(function (err, userdata) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -122,12 +123,12 @@ module.exports = {
                     request.post({
                         url: requrl + "config/emailReader/",
                         json: data
-                    }, function(err, http, body) {
+                    }, function (err, http, body) {
                         if (err) {
                             console.log(err);
                             callback(err, null);
                         } else {
-                          if (body && body.value !== false) {
+                            if (body && body.value !== false) {
                                 var sendgrid = require("sendgrid")(userdata[0].name);
                                 sendgrid.send({
                                     to: data.email,
@@ -135,7 +136,7 @@ module.exports = {
                                     subject: data.subject,
                                     fromname: 'TheStylease.com',
                                     html: body
-                                }, function(err, json) {
+                                }, function (err, json) {
                                     if (err) {
                                         callback(err, null);
                                     } else {
@@ -143,15 +144,21 @@ module.exports = {
                                     }
                                 });
                             } else {
-                                callback({ message: "Some error in html" }, null);
+                                callback({
+                                    message: "Some error in html"
+                                }, null);
                             }
                         }
                     });
                 } else {
-                    callback({ message: "Please provide params" }, null);
+                    callback({
+                        message: "Please provide params"
+                    }, null);
                 }
             } else {
-                callback({ message: "No api keys found" }, null);
+                callback({
+                    message: "No api keys found"
+                }, null);
             }
         });
     },
