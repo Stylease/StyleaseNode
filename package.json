@@ -34,6 +34,7 @@
     "passport-google-oauth": "^1.0.0",
     "rc": "1.0.1",
     "request": "^2.73.0",
+    "request-promise": "^4.1.1",
     "sails": "~0.12.3",
     "sails-disk": "~0.10.9",
     "sendgrid": "^2.0.0"
