@@ -220,4 +220,94 @@ module.exports = {
         }
     },
 
+    // gallery
+
+    findGallery: function (req, res) {
+        if (req.body.pagenumber && req.body.pagesize) {
+            Product.getAllGallery(req.body, function (err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
+    findOneGallery: function (req, res) {
+        if (req.body) {
+            Product.getOneGallery(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+
+    deleteGallery: function (req, res) {
+        if (req.body) {
+            if (req.body._id && req.body._id !== "") {
+                //	console.log("not valid");
+                Product.deleteGallery(req.body, function (err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: respo
+                        });
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Id"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
+    saveGallery: function (req, res) {
+        console.log(req.body);
+        if (req.body) {
+            Product.saveGallery(req.body, function (err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
+
+
 };

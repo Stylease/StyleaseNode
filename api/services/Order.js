@@ -370,33 +370,33 @@ var models = {
                                     delete mydata._id;
                                     console.log("mydata", mydata._id);
                                     //update product booking
-                                    // Product.update({
-                                    //     _id: mydata.product
-                                    // }, {
-                                    //     $inc: {
-                                    //         booked: 1
-                                    //     }
-                                    // }).exec(function (err, booked) {
-                                    //     if (err) {
-                                    //         console.log(err);
-                                    //         callback(err, null);
-                                    //     } else {
-                                    //         // console.log("booked update");
-                                    //     }
-                                    // });
+                                    Product.update({
+                                        _id: mydata.product
+                                    }, {
+                                        $inc: {
+                                            booked: 1
+                                        }
+                                    }).exec(function (err, booked) {
+                                        if (err) {
+                                            console.log(err);
+                                            callback(err, null);
+                                        } else {
+                                            // console.log("booked update");
+                                        }
+                                    });
 
-                                    // ProductTime.saveData(mydata, function (err, data4) {
-                                    //     console.log("data save");
-                                    //     if (err) {
-                                    //         console.log(err);
-                                    //         callback(err, null);
-                                    //     } else {
-                                    //         console.log("aaaaa");
-                                    //         num++;
-                                    //         callme(num);
-                                    //         // console.log("save products to ProductTime");
-                                    //     }
-                                    // });
+                                    ProductTime.saveData(mydata, function (err, data4) {
+                                        console.log("data save");
+                                        if (err) {
+                                            console.log(err);
+                                            callback(err, null);
+                                        } else {
+                                            console.log("aaaaa");
+                                            num++;
+                                            callme(num);
+                                            // console.log("save products to ProductTime");
+                                        }
+                                    });
                                 }
                             }
 

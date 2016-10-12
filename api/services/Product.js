@@ -791,6 +791,188 @@ var models = {
             }
         });
     },
+
+
+    //SIDEMENU Gallery
+
+    saveGallery: function (data, callback) {
+        var product = data.product;
+        if (!data._id) {
+            Product.update({
+                _id: Product
+            }, {
+                $push: {
+                    images: data
+                }
+            }, function (err, updated) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    callback(null, updated);
+                }
+            });
+        } else {
+            data._id = objectid(data._id);
+            tobechanged = {};
+            var attribute = "images.$.";
+            _.forIn(data, function (value, key) {
+                tobechanged[attribute + key] = value;
+            });
+            Product.update({
+                "images._id": data._id
+            }, {
+                $set: tobechanged
+            }, function (err, updated) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    callback(null, updated);
+                }
+            });
+        }
+    },
+
+    getAllGallery: function (data, callback) {
+        var newreturns = {};
+        newreturns.data = [];
+        var check = new RegExp(data.search, "i");
+        data.pagenumber = parseInt(data.pagenumber);
+        data.pagesize = parseInt(data.pagesize);
+        var skip = parseInt(data.pagesize * (data.pagenumber - 1));
+        async.parallel([
+                function (callback) {
+                    Product.aggregate([{
+                        $match: {
+                            _id: objectid(data._id)
+                        }
+                    }, {
+                        $unwind: "$images"
+                    }, {
+                        $group: {
+                            _id: null,
+                            count: {
+                                $sum: 1
+                            }
+                        }
+                    }, {
+                        $project: {
+                            count: 1
+                        }
+                    }]).exec(function (err, result) {
+                        console.log(result);
+                        if (result && result[0]) {
+                            newreturns.total = result[0].count;
+                            newreturns.totalpages = Math.ceil(result[0].count / data.pagesize);
+                            callback(null, newreturns);
+                        } else if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            callback({
+                                message: "Count of null"
+                            }, null);
+                        }
+                    });
+                },
+                function (callback) {
+                    Product.aggregate([{
+                        $match: {
+                            _id: objectid(data._id)
+                        }
+                    }, {
+                        $unwind: "$images"
+                    }, {
+                        $group: {
+                            _id: "_id",
+                            images: {
+                                $push: "$images"
+                            }
+                        }
+                    }, {
+                        $project: {
+                            _id: 0,
+                            images: {
+                                $slice: ["$images", skip, data.pagesize]
+                            }
+                        }
+                    }]).exec(function (err, found) {
+                        console.log(found);
+                        if (found && found.length > 0) {
+                            newreturns.data = found[0].images;
+                            callback(null, newreturns);
+                        } else if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            callback({
+                                message: "Count of null"
+                            }, null);
+                        }
+                    });
+                }
+            ],
+            function (err, data4) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else if (data4) {
+                    callback(null, newreturns);
+                } else {
+                    callback(null, newreturns);
+                }
+            });
+    },
+
+
+    deleteGallery: function (data, callback) {
+        Product.update({
+            "images._id": data._id
+        }, {
+            $pull: {
+                "images": {
+                    "_id": objectid(data._id)
+                }
+            }
+        }, function (err, updated) {
+            console.log(updated);
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, updated);
+            }
+        });
+
+    },
+
+    getOneGallery: function (data, callback) {
+        // aggregate query
+        Product.aggregate([{
+            $unwind: "$images"
+        }, {
+            $match: {
+                "images._id": objectid(data._id)
+            }
+        }, {
+            $project: {
+                images: 1
+            }
+        }]).exec(function (err, respo) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (respo && respo.length > 0 && respo[0].images) {
+                callback(null, respo[0].images);
+            } else {
+                callback({
+                    message: "No data found"
+                }, null);
+            }
+        });
+    },
+
 };
 
 module.exports = _.assign(module.exports, models);

@@ -12,12 +12,12 @@ var schema = new Schema({
 });
 module.exports = mongoose.model('ProductTime', schema);
 var models = {
-    sort: function(data, callback) {
+    sort: function (data, callback) {
         function callSave(num) {
             ProductTime.saveData({
                 _id: data[num],
                 order: num + 1
-            }, function(err, respo) {
+            }, function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -39,12 +39,12 @@ var models = {
             callback(null, {});
         }
     },
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         var producttime = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, data).exec(function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -56,7 +56,7 @@ var models = {
             });
         } else {
 
-            producttime.save(function(err, created) {
+            producttime.save(function (err, created) {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
@@ -67,10 +67,10 @@ var models = {
             });
         }
     },
-    deleteData: function(data, callback) {
+    deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -80,10 +80,10 @@ var models = {
             }
         });
     },
-    getAll: function(data, callback) {
+    getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -94,12 +94,12 @@ var models = {
             }
         });
     },
-    getOne: function(data, callback) {
+    getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -110,19 +110,19 @@ var models = {
             }
         });
     },
-    getLimited: function(data, callback) {
+    getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 ProductTime.count({
-                    name: {
-                        "$regex": checkfor
-                    }
-                }).exec(function(err, number) {
+                    // name: {
+                    //     "$regex": checkfor
+                    // }
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -135,14 +135,14 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 ProductTime.find({
-                    delivery: {
-                        "$regex": checkfor
-                    }
+                    // delivery: {
+                    //     "$regex": checkfor
+                    // }
                 }, {}).sort({
                     name: 1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function(err, data2) {
+                }).populate("product", "name").skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -159,7 +159,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
