@@ -1,46 +1,13 @@
-var PayU = require('payu');
-var payu = new PayU("gtKFFx", "eCwWELxi", "https://test.payu.in");
-var payukey = "gtKFFx";
-var payusalt = "eCwWELxi";
-var payuurl = "https://test.payu.in";
-//   $MERCHANT_KEY = "gtKFFx";
-//   $SALT = "eCwWELxi";
-//   $PAYU_BASE_URL = "https://test.payu.in";
 module.exports = {
-    makePayment: function (req, res) {
-        Order.getOne(req.body, function (err, data) {
-
-            if (err) {
-                res.callback(err);
-            } else {
-                res.json(data);
-                console.log(data);
-
-                callAPI.multipart = [{
-                    "content-type": "application/json",
-                    body: JSON.stringify(req.form)
-                }];
-                request(callAPI, function (err, httpResponse, body) {
-
-
-                    // hash = sha512(key | txnid | amount | productinfo | firstname | email | udf1 | udf2 | udf3 | udf4 | udf5 || || || SALT);
-                    if (err) {
-                        callback(err);
-                    } else if (body) {
-                        body = JSON.parse(body);
-                        if (noTry === 0 && body.error) {
-                            refreshToken();
-                        } else {
-                            callback(err, body);
-                        }
-                    } else {
-                        callback(err, body);
-                    }
-                });
-
-            }
-
-        });
+    payU: function (req, res) {
+        if (req.body._id && req.body._id != '') {
+            Payu.makePayment(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
     },
     test: function (req, res) {
         var txtID = parseInt(Math.random() * 10000000000);
