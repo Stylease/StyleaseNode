@@ -291,7 +291,7 @@ module.exports = {
     sendSMS: function (data, callback) {
         if (data.mobile) {
             request.get({
-                url: "http://api-alerts.solutionsinfini.com/v3/?method=sms&api_key=Ab239cf5d62a8e6d2c531663f289d0f5d&to=" + data.mobile + "&sender=Stylse&message=" + data.content + "&format=json"
+                url: "http://api-alerts.solutionsinfini.com/v3/?method=sms&api_key=A84a4330cf45bb62e40d45a6b5304f1c2&to=" + data.mobile + "&sender=Stylse&message=" + data.content + "&format=json"
             }, function (err, http, body) {
                 if (err) {
                     console.log(err);
