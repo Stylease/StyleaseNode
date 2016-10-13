@@ -287,5 +287,26 @@ module.exports = {
             readstream.pipe(res);
         }
         //error handling, e.g. file does not exist
-    }
+    },
+    sendSMS: function (data, callback) {
+        if (data.mobile) {
+            request.get({
+                url: "http://api-alerts.solutionsinfini.com/v3/?method=sms&api_key=Ab239cf5d62a8e6d2c531663f289d0f5d&to=" + data.mobile + "&sender=Stylse&message=" + data.content + "&format=json"
+            }, function (err, http, body) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    console.log(body);
+                    callback(null, {
+                        message: "SMS Sent"
+                    });
+                }
+            });
+        } else {
+            callback({
+                message: "Mobile number not found"
+            }, null);
+        }
+    },
 };

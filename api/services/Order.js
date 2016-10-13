@@ -153,6 +153,20 @@ var models = {
                     callback(err, null);
                 } else if (updated) {
                     if (data.orderstatus === "Out for Delivery") {
+
+                        var smsData = {};
+                        smsData.mobile = data.mobile;
+                        smsData.content = "Your TheStylease.Com Order No.: " + data.orderid + " has been dispatched for delivery at the designated location. Have a great event. Happy styling!";
+
+                        Config.sendSMS(smsData, function (err, smsRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // console.log("sms sent");
+                                // callback(null, smsRespo);
+                            }
+                        });
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
@@ -217,7 +231,19 @@ var models = {
                                 console.log(err);
                                 callback(err, null);
                             } else {
+                                var smsData = {};
+                                smsData.mobile = data.mobile;
+                                smsData.content = "Hi! this is a gentle reminder that pick up for Order No.: " + data.orderid + " is scheduled for tomorrow.Please keep the order ready in the package provided to you our delivery person will come and pick it up. We hope you had a great event!";
 
+                                Config.sendSMS(smsData, function (err, smsRespo) {
+                                    if (err) {
+                                        console.log(err);
+                                        callback(err, null);
+                                    } else {
+                                        // console.log("sms sent");
+                                        // callback(null, smsRespo);
+                                    }
+                                });
                                 var emailData = {};
                                 emailData.email = data.email;
                                 emailData.filename = "mailer.ejs";
@@ -243,8 +269,19 @@ var models = {
                     }
                     if (data.orderstatus === "Out for pick-up") {
 
+                        var smsData = {};
+                        smsData.mobile = data.mobile;
+                        smsData.content = "Our delivery personnel are out to collect your TheStylease.Com Order No.: " + data.orderid + " Please keep it ready in the packaging provided. Thank you!";
 
-
+                        Config.sendSMS(smsData, function (err, smsRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // console.log("sms sent");
+                                // callback(null, smsRespo);
+                            }
+                        });
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
@@ -264,6 +301,19 @@ var models = {
                     }
 
                     if (data.orderstatus === "Completed") {
+                        var smsData = {};
+                        smsData.mobile = data.mobile;
+                        smsData.content = "Your deposit of Rs " + data.total + " against TheStylease.Com Order No.:  " + data.orderid + " has been credited to your account. Hope you had a great experience with us. Thank You!";
+
+                        Config.sendSMS(smsData, function (err, smsRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // console.log("sms sent");
+                                // callback(null, smsRespo);
+                            }
+                        });
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
@@ -403,6 +453,8 @@ var models = {
                             if (created.cartproduct.length > 0) {
                                 callme(0);
                             }
+
+
                             var emailData = {};
                             var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
                                 "July", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -412,12 +464,25 @@ var models = {
                             var year = dd.getFullYear();
                             var day = dd.getDate();
                             var timeFrom = month + " " + day + ", " + year;
-
                             var ddt = new Date(data.cartproduct[0].timeTo);
                             var monthd = monthNames[ddt.getMonth()];
                             var yeard = ddt.getFullYear();
                             var dayd = ddt.getDate();
                             var timeTo = monthd + " " + dayd + ", " + yeard;
+
+                            var smsData = {};
+                            smsData.mobile = data.mobile;
+                            smsData.content = "Your TheStylease.Com Order No.: " + created.orderid + " has been successfully placed. It will be delivered to your address on " + timeFrom + ". Thank you. Happy styling!";
+
+                            Config.sendSMS(smsData, function (err, smsRespo) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    console.log("sms sent");
+                                    // callback(null, smsRespo);
+                                }
+                            });
                             emailData.email = data.email;
                             emailData.timeFrom = timeFrom;
                             emailData.timeTo = timeTo;

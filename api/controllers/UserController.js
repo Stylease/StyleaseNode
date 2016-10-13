@@ -399,43 +399,10 @@ module.exports = {
             });
         }
     },
-    sms: function (req, res) {
 
-        var options = {
-            hostname: 'http://URL/api/v3/index.php?method=sms&api_key=A84a4330cfxxxxxxxxxxxxxxxxxxxxxxxxx&to=9594390024&sender=INFXXX&message=testing&unicode=1',
-            method: 'GET'
-        };
-
-        console.log('=> %s', curl.cmd(options));
-
-        http.request(options, function (res) {
-            console.log('STATUS: ' + res.statusCode);
-            console.log('HEADERS: ' + JSON.stringify(res.headers));
-            res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                console.log('BODY: ' + chunk);
-            });
-        }).end();
-
-
-        // request({
-        //     url: "http://URL/api/v3/index.php?method=sms&api_key=A84a4330cfxxxxxxxxxxxxxxxxxxxxxxxxx&to=9594390024&sender=INFXXX&message=testing&unicode=1",
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        // }, function (err, httpResponse) {
-        //     console.log(err);
-        //     console.log(httpResponse);
-        //     if (err) {
-        //         callback(err, null);
-        //     } else {
-        //         res.json(httpResponse);
-        //     }
-
-        // });
+    sendSMS: function (req, res) {
+        Config.sendSMS(req.body, res.callback);
     },
-
 
 
 };
