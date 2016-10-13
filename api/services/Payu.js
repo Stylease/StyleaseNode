@@ -39,9 +39,9 @@ var models = {
                         firstname: firstname,
                         email: email,
                         phone: phone,
-                        surl: 'http://localhost:1337/Payu/successError',
+                        surl: 'http://' + sails.getBaseUrl() + ':1337/Payu/successError',
                         // surl: 'http://www.google.com',
-                        furl: 'http://localhost:1337/Payu/successError',
+                        furl: 'http://' + sails.getBaseUrl() + ':1337/Payu/successError',
                         // furl: 'http://www.wohlig.com',
                         hash: hashtext
                     }
