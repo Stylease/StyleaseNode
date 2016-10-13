@@ -18,15 +18,15 @@ module.exports = {
     },
     successError: function (req, res) {
         var data = req.allParams();
+        console.log(data);
+        console.log(data.status != "success");
         if (data.status != "success") {
             // failure
             var transactionid = data.mihpayid;
             var orderid = data.txnid;
             var status = data.status;
 
-            function callback(err, data) {
-                console.log("  fali url ");
-                console.log(data);
+            function callback1(err, data) {
                 if (data) {
                     // go to fail url
                     res.redirect("http://thestylease.com/newsite/testing/#/sorry");
@@ -34,15 +34,13 @@ module.exports = {
                     res.redirect("http://thestylease.com/newsite/testing/#/sorry");
                 }
             }
-            Payu.updateOrderStatus(transactionid, orderid, status, callback)
+            Payu.updateOrderStatus(transactionid, orderid, status, callback1);
         } else {
             var transactionid = data.mihpayid;
             var orderid = data.txnid;
             var status = data.status;
 
-            function callback(err, data) {
-                console.log("  success url ");
-                console.log(data);
+            function callback2(err, data) {
                 if (data) {
                     // go to success url
                     res.redirect("http://thestylease.com/newsite/testing/#/thankyou/" + data.orderid);
@@ -50,9 +48,8 @@ module.exports = {
                     res.redirect("http://thestylease.com/newsite/testing/#/sorry");
                 }
             }
-            Payu.updateOrderStatus(transactionid, orderid, status, callback)
-                //    success
+            Payu.updateOrderStatus(transactionid, orderid, status, callback2);
+            //    success
         }
-        res.json(req.allParams());
     }
 };
