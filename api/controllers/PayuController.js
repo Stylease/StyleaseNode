@@ -58,6 +58,5 @@ module.exports = {
         } else {
 
         }
-        res.json(req.allParams());
     }
 };
