@@ -37,7 +37,8 @@
     "request-promise": "^4.1.1",
     "sails": "~0.12.3",
     "sails-disk": "~0.10.9",
-    "sendgrid": "^2.0.0"
+    "sendgrid": "^2.0.0",
+    "sha512": "0.0.1"
   },
   "scripts": {
     "debug": "node debug app.js",
