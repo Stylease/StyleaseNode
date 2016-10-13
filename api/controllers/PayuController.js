@@ -1,7 +1,16 @@
 module.exports = {
     payU: function (req, res) {
-        if (req.body._id && req.body._id != '') {
-            Payu.makePayment(req.body, res.callback);
+        if (req.query._id) {
+            Payu.makePayment(req.query, function (err, httpResponse, body) {
+                console.log("this is response");
+                if (httpResponse.statusCode == 302) {
+                    console.log("httpResponse");
+                    console.log(httpResponse);
+                    res.redirect(httpResponse.headers.location);
+                } else {
+                    res.send(body);
+                }
+            });
         } else {
             res.json({
                 value: false,

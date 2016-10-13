@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
-var payukey = "nnrXnB";
-var payusalt = "FqSHaI28";
-var payuurl = "https://secure.payu.in";
+// var payukey = "nnrXnB";
+var payukey = "gtKFFx";
+// var payusalt = "FqSHaI28";
+var payusalt = "eCwWELxi";
+var payuurl = "https://test.payu.in/_payment";
 var models = {
 
     makePayment: function (data, callback) {
@@ -11,13 +13,13 @@ var models = {
             if (err) {
                 callback(err, null);
             } else if (found) {
-                var txnid = found.orderid;
+                var txnid = found.orderid + 1;
                 var amount = found.total;
                 var firstname = found.firstname;
                 var email = found.email;
                 var phone = found.mobile;
                 var productinfo = "Purchase of Stylease";
-                var hash = sha512("" + payukey + "|" + txnid + "|" + amount + "|" + productinfo + "|" + firstname + "|" + email + "|1||||||||||" + payusalt);
+                var hash = sha512("" + payukey + "|" + txnid + "|" + amount + "|" + productinfo + "|" + firstname + "|" + email + "|||||||||||" + payusalt);
                 var hashtext = hash.toString('hex');
                 request.post({
                     url: payuurl,
@@ -35,24 +37,7 @@ var models = {
                         furl: 'http://www.wohlig.com',
                         hash: hashtext
                     }
-                }, function (err, httpResponse, body) {
-                    console.log("this is response");
-                    if (httpResponse.statusCode == 302) {
-                        console.log("httpResponse");
-                        console.log(httpResponse);
-                        res.redirect(httpResponse.headers.location);
-                    } else if (err) {
-                        console.log("err");
-                        console.log(err);
-                        // res.send(body);
-                    } else if (body) {
-                        console.log("body");
-                        console.log(body);
-                    }
-                    // res.end();
-                });
-                // go to payment gateway
-
+                }, callback);
             } else {
                 callback(null, {});
             }
