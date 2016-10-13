@@ -251,7 +251,9 @@ var models = {
         } else {
             user.timestamp = new Date();
             data.expiry = new Date();
-            user.password = md5(user.password);
+            if (user.password) {
+                user.password = md5(user.password);
+            }
             user.save(function (err, created) {
                 if (err) {
                     callback(err, null);
