@@ -297,7 +297,7 @@ module.exports = {
                     console.log(err);
                     callback(err, null);
                 } else {
-                    console.log(body);
+                    // console.log(body);
                     callback(null, {
                         message: "SMS Sent"
                     });
