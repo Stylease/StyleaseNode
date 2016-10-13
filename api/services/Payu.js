@@ -39,10 +39,8 @@ var models = {
                         firstname: firstname,
                         email: email,
                         phone: phone,
-                        surl: 'http://' + sails.getBaseUrl() + ':1337/Payu/successError',
-                        // surl: 'http://www.google.com',
-                        furl: 'http://' + sails.getBaseUrl() + ':1337/Payu/successError',
-                        // furl: 'http://www.wohlig.com',
+                        surl: sails.getBaseUrl() + '/payu/successError',
+                        furl: sails.getBaseUrl() + '/payu/successError',
                         hash: hashtext
                     }
                 }, callback);
@@ -51,15 +49,33 @@ var models = {
             }
         });
     },
-    successError: function (req, res) {
-        var data = req.allParams();
-        if (data.status == "success") {
-            var txtID = data.txtID;
-        } else {
 
+
+
+
+    updateOrderStatus: function (transactionid, orderid, status, callback) {
+        if (status == 'failure') {
+            orderstatus = 'Cancelled'
+        } else {
+            orderstatus = 'Processing'
         }
-        res.json(req.allParams());
-    }
+        Order.findOneAndUpdate({
+            orderid: orderid
+        }, {
+            transactionid: transactionid,
+            orderstatus: orderstatus
+        }).exec(function (err, updated) {
+            if (err) {
+                callback(err, null);
+            } else if (updated) {
+                callback(null, updated);
+            } else {
+                callback(null, {});
+            }
+        });
+
+    },
+
 };
 
 module.exports = _.assign(module.exports, models);

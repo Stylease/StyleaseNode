@@ -1,6 +1,7 @@
 module.exports = {
     payU: function (req, res) {
         if (req.query._id) {
+            console.log(sails.getBaseUrl());
             Payu.makePayment(req.query, function (err, httpResponse, body) {
                 if (httpResponse.statusCode == 302) {
                     res.redirect(httpResponse.headers.location);
@@ -15,46 +16,43 @@ module.exports = {
             });
         }
     },
-    test: function (req, res) {
-        var txtID = parseInt(Math.random() * 10000000000);
-        console.log(txtID);
-        var hash = sha512("" + payukey + "|" + txtID + "|100|1|1|1|||||||||||" + payusalt);
-        // sha512(key | txnid | amount | productinfo | firstname | email | udf1 | udf2 | udf3 | udf4 | udf5 || || || SALT)
-        var hashtext = hash.toString('hex');
-
-        console.log(hashtext);
-
-        request.post({
-            url: 'https://test.payu.in/_payment',
-            form: {
-                key: payukey,
-                txnid: txtID,
-                amount: 100,
-                productinfo: 1,
-                firstname: 1,
-                email: 1,
-                phone: 1,
-                surl: 'http://localhost:1337/Payu/successError',
-                furl: 'http://localhost:1337/Payu/successError',
-                hash: hashtext
-            }
-        }, function (err, httpResponse, body) {
-            console.log(body);
-            if (httpResponse.statusCode == 302) {
-                res.redirect(httpResponse.headers.location);
-            } else {
-                res.send(body);
-            }
-            // res.end();
-        });
-    },
     successError: function (req, res) {
         var data = req.allParams();
-        if (data.status == "success") {
-            var txtID = data.txtID;
-        } else {
+        if (data.status != "success") {
+            // failure
+            var transactionid = data.mihpayid;
+            var orderid = data.txnid;
+            var status = data.status;
 
+            function callback(err, data) {
+                console.log("  fali url ");
+                console.log(data);
+                if (data) {
+                    // go to fail url
+                    res.redirect("http://thestylease.com/newsite/testing/#/sorry");
+                } else {
+                    res.redirect("http://thestylease.com/newsite/testing/#/sorry");
+                }
+            }
+            Payu.updateOrderStatus(transactionid, orderid, status, callback)
+        } else {
+            var transactionid = data.mihpayid;
+            var orderid = data.txnid;
+            var status = data.status;
+
+            function callback(err, data) {
+                console.log("  success url ");
+                console.log(data);
+                if (data) {
+                    // go to success url
+                    res.redirect("http://thestylease.com/newsite/testing/#/thankyou/" + data.orderid);
+                } else {
+                    res.redirect("http://thestylease.com/newsite/testing/#/sorry");
+                }
+            }
+            Payu.updateOrderStatus(transactionid, orderid, status, callback)
+                //    success
         }
-        res.redirect();
+        res.json(req.allParams());
     }
 };
