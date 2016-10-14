@@ -50,7 +50,7 @@ var models = {
                 } else if (created) {
                     var emailData = {};
                     emailData.name = data.name;
-                    emailData.email = 'vinodwohlig@gmail.com';
+                    emailData.email = 'contact@thestylease.com';
                     emailData.useremail = data.email;
                     emailData.mobile = data.mobile;
                     emailData.message = data.message;
