@@ -222,7 +222,7 @@ module.exports = {
 
     // gallery
 
-    findGallery: function (req, res) {
+    getAllGallery: function (req, res) {
         if (req.body.pagenumber && req.body.pagesize) {
             Product.getAllGallery(req.body, function (err, respo) {
                 if (err) {
@@ -244,7 +244,7 @@ module.exports = {
             });
         }
     },
-    findOneGallery: function (req, res) {
+    getOneGallery: function (req, res) {
         if (req.body) {
             Product.getOneGallery(req.body, res.callback);
         } else {

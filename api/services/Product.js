@@ -26,7 +26,14 @@ var schema = new Schema({
         default: ""
     },
     images: [{
-        image: String
+        image: {
+            type: String,
+            default: ""
+        },
+        order: {
+            type: Number,
+            default: 0
+        }
     }],
     details: {
         type: String,
@@ -165,6 +172,10 @@ var models = {
         if (data.size == "") {
             // delete data.size;
             data.size = null;
+        }
+        if (data.color == "") {
+            // delete data.color;
+            data.color = null;
         }
         var product = this(data);
         if (data._id) {
@@ -799,7 +810,7 @@ var models = {
         var product = data.product;
         if (!data._id) {
             Product.update({
-                _id: Product
+                _id: data.product
             }, {
                 $push: {
                     images: data
