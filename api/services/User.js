@@ -201,13 +201,16 @@ var models = {
                         if (err) {
                             callback(err, null);
                         } else {
+                            console.log(" TT ");
+                            console.log(data3);
                             var emailData = {};
                             emailData.email = data.email;
                             emailData.filename = "mailer.ejs";
                             emailData.name = data.name;
-                            emailData.fromname = 'contact@thestylease.com';
+                            emailData.fromname = "contact@thestylease.com";
                             emailData.content1 = "Congratulations on successfully signing up. We’re glad we can be your fashion brand on speed dial.";
                             emailData.content2 = " Enjoy the world of couture and embrace the latest fashions at your next event.";
+                            emailData.content3 = "http://thestylease.com/newsite/testing/#/home";
                             emailData.subject = "Sign Up Successful";
                             console.log("eee", emailData);
                             Config.email(emailData, function (err, emailRespo) {
