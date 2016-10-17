@@ -39,6 +39,7 @@ module.exports = {
             var transactionid = data.mihpayid;
             var orderid = data.txnid;
             var status = data.status;
+            Payu.sendMail(orderid);
 
             function callback2(err, data) {
                 if (data) {
@@ -51,5 +52,10 @@ module.exports = {
             Payu.updateOrderStatus(transactionid, orderid, status, callback2);
             //    success
         }
-    }
+    },
+
+
+    sendMail: function (req, res) {
+        Payu.sendMail(req.body, res.callback);
+    },
 };

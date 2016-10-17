@@ -44,14 +44,14 @@
                     <td style='text-align: center;width: 35%;'><img style='width: 84px;margin: -9% 0%;' src='http://admin.thestylease.com/upload/readFile?file=<%= cartpro.product.images[0].image %>'>
                      <br><span> <%= cartpro.product.name %></span></td>
                     <td style='text-align: center;width: 35%;'> <%= cartpro.size %></td>
-   <%if (cartproduct[0].duration == 4) { %>
+   <%if (cartpro.duration == 4) { %>
               <td style="text-align: center;width: 30%;">
                 <%= cartpro.product.fourdayrentalamount %>
               </td>
               <% } %>
 
 
-   <%if (cartproduct[0].duration == 8) { %>
+   <%if (cartpro.duration == 8) { %>
                 <td style="text-align: center;width: 30%;">
                   <%= cartpro.product.eightdayrentalamount %>
                 </td>
