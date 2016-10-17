@@ -303,7 +303,10 @@ var models = {
                     path: 'suggestedProduct',
                     select: '_id name fourdayrentalamount eightdayrentalamount images',
                     options: {
-                        limit: 6
+                        limit: 6,
+                        sort: {
+                            order: 1
+                        }
                     }
                 }).lean().exec(function (err, found) {
                     if (err) {
@@ -381,19 +384,23 @@ var models = {
 
         if (data.sort === "Recent Addition") {
             var sortfilter = {
-                _id: -1
+                _id: -1,
+                "images.order": 1
             }
         } else if (data.sort === "Price : Low - High") {
             var sortfilter = {
-                fourdayrentalamount: 1
+                fourdayrentalamount: 1,
+                "images.order": 1
             }
         } else if (data.sort === "Price : High - Low") {
             var sortfilter = {
-                fourdayrentalamount: -1
+                fourdayrentalamount: -1,
+                "images.order": 1
             }
         } else if (data.sort === "Popularity") {
             var sortfilter = {
-                booked: 1
+                booked: 1,
+                "images.order": 1
             }
         }
         if (data.subcategory.length == 0 || data.subcategory == null) {
@@ -405,13 +412,14 @@ var models = {
         if (!data.color || data.color == "") {
             delete matchobj.color;
         }
+        console.log(sortfilter);
         var newreturns = {};
         newreturns.data = [];
         data.pagesize = parseInt(data.pagesize);
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
             function (callback) {
-                Product.find(matchobj).sort(sortfilter).select('_id name fourdayrentalamount eightdayrentalamount images subcategory').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
+                Product.find(matchobj).select('_id name fourdayrentalamount eightdayrentalamount images subcategory').sort(sortfilter).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
@@ -534,7 +542,9 @@ var models = {
                         rentalamount: 1,
                         subcategory: 1
                     }
-                }]).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
+                }]).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).sort({
+                    order: 1
+                }).exec(function (err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
