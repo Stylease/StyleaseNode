@@ -263,8 +263,9 @@ var models = {
                                 emailData.shippingAddressPin = data.shippingAddressPin;
                                 emailData.shippingAddressState = data.shippingAddressState;
                                 emailData.shippingAddressCountry = data.shippingAddressCountry;
-                                emailData.content1 = "Thanks for taking our outfits and accessories out with you and creating some amazing memories. We are sure you shined like a star.This is a gentle reminder that our staff will be at the " + data.shippingAddressFlat + " " + data.shippingAddressStreet + " " + data.shippingAddressLandmark + " " + data.shippingAddressCity + " " + data.shippingAddressPin + " " + data.shippingAddressState + " " + data.shippingAddressCountry + "for pick-up tomorrow. Ensure that your garment and accessories are packed in the same garment bag you received it in and that it is ready at the time of pick-up. ";
-                                emailData.content2 = "Order No. : " + data.orderid;
+                                emailData.content1 = "Thanks for taking our outfits and accessories out with you and creating some amazing memories. We are sure you shined like a star.This is a gentle reminder that our staff will be at the ";
+                                emailData.content2 = "for pick-up tomorrow. Ensure that your garment and accessories are packed in the same garment bag you received it in and that it is ready at the time of pick-up. ";
+                                emailData.content4 = "Order No. : " + data.orderid;
                                 emailData.subject = "Pickup reminder - TheStylease";
                                 // console.log("eee", emailData);
                                 Config.email(emailData, function (err, emailRespo) {
