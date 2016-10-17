@@ -53,9 +53,9 @@ var models = {
 
     sendMail: function (id, callback) {
         console.log("iddd", id);
-        Order.findOne(
-            id
-        ).populate("cartproduct.product", "name images fourdayrentalamount eightdayrentalamount").exec(function (err, data) {
+        Order.findOne({
+            orderid: id
+        }).populate("cartproduct.product", "name images fourdayrentalamount eightdayrentalamount").exec(function (err, data) {
             console.log("dddd", data);
             var emailData = {};
             var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
