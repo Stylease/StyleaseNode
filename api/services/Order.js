@@ -169,10 +169,12 @@ var models = {
                         });
                         var emailData = {};
                         emailData.email = data.email;
+                        emailData.fromname = 'orders@thestylease.com';
                         emailData.filename = "mailer.ejs";
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "We’re as excited as you are. Your order is now out for delivery and will shortly be arriving at the selected location";
                         emailData.content2 = "Order No. : " + data.orderid;
+                        emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
                         emailData.subject = "Out for delivery - TheStylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
@@ -187,7 +189,9 @@ var models = {
                     if (data.orderstatus === "Delivered") {
                         var emailData = {};
                         emailData.email = data.email;
+                        emailData.fromname = 'orders@thestylease.com';
                         emailData.filename = "mailer.ejs";
+                        emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "We have received confirmation that your order has been delivered. For any comments or queries contact us on +91 97351 88624 or mail us at info@thestylease.com";
                         emailData.content2 = "Order No. : " + data.orderid;
@@ -206,6 +210,8 @@ var models = {
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
+                        emailData.fromname = 'orders@thestylease.com';
+                        emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "Thank you for taking care of our outfit like it was one of your own. We have received the parcel. Your deposit amount of Rs." + data.refundabledeposit + " will be refunded within the next 7 working days. We will share the details shortly";
                         emailData.content2 = "Order No. : " + data.orderid;
@@ -246,8 +252,17 @@ var models = {
                                 });
                                 var emailData = {};
                                 emailData.email = data.email;
-                                emailData.filename = "mailer.ejs";
+                                emailData.filename = "pickup.ejs";
+                                emailData.fromname = 'orders@thestylease.com';
                                 emailData.name = data.firstname + " " + data.lastname;
+                                emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
+                                emailData.shippingAddressFlat = data.shippingAddressFlat;
+                                emailData.shippingAddressStreet = data.shippingAddressStreet;
+                                emailData.shippingAddressLandmark = data.shippingAddressLandmark;
+                                emailData.shippingAddressCity = data.shippingAddressCity;
+                                emailData.shippingAddressPin = data.shippingAddressPin;
+                                emailData.shippingAddressState = data.shippingAddressState;
+                                emailData.shippingAddressCountry = data.shippingAddressCountry;
                                 emailData.content1 = "Thanks for taking our outfits and accessories out with you and creating some amazing memories. We are sure you shined like a star.This is a gentle reminder that our staff will be at the " + data.shippingAddressFlat + " " + data.shippingAddressStreet + " " + data.shippingAddressLandmark + " " + data.shippingAddressCity + " " + data.shippingAddressPin + " " + data.shippingAddressState + " " + data.shippingAddressCountry + "for pick-up tomorrow. Ensure that your garment and accessories are packed in the same garment bag you received it in and that it is ready at the time of pick-up. ";
                                 emailData.content2 = "Order No. : " + data.orderid;
                                 emailData.subject = "Pickup reminder - TheStylease";
@@ -285,7 +300,9 @@ var models = {
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
+                        emailData.fromname = 'orders@thestylease.com';
                         emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
                         emailData.content1 = "Our staff is out for pick-up of your order. They will be arriving shortly, do ensure you are ready with the parcel. You totally slayed this event, see you soon for the next one!";
                         emailData.content2 = "Order No. : " + data.orderid;
                         emailData.subject = "Out for pick-up! - TheStylease";
@@ -303,6 +320,7 @@ var models = {
                     if (data.orderstatus === "Completed") {
                         var smsData = {};
                         smsData.mobile = data.mobile;
+
                         smsData.content = "Your deposit of Rs " + data.total + " against TheStylease.Com Order No.:  " + data.orderid + " has been credited to your account. Hope you had a great experience with us. Thank You!";
 
                         Config.sendSMS(smsData, function (err, smsRespo) {
@@ -317,7 +335,9 @@ var models = {
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
+                        emailData.fromname = 'orders@thestylease.com';
                         emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
                         emailData.content1 = "Hope you’re having a good day! This is to notify you that we have returned your deposit for Rs. " + data.refundabledeposit + " against Order " + data.orderid;
                         emailData.content2 = "We look forward to helping you style again soon";
                         emailData.subject = "Deposit returned notification - TheStylease";
@@ -335,7 +355,9 @@ var models = {
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
+                        emailData.fromname = 'orders@thestylease.com';
                         emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
                         emailData.content1 = "This is to notify you that we have received your request to cancel the order. We will get in touch with you shortly. For any queries contact us on +91 97351 88624 or mail us at info@thestylease.com.";
                         emailData.content2 = "";
                         emailData.subject = "Transaction cancelled - TheStylease";
@@ -354,7 +376,9 @@ var models = {
                         var emailData = {};
                         emailData.email = data.email;
                         emailData.filename = "mailer.ejs";
+                        emailData.fromname = 'orders@thestylease.com';
                         emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
                         emailData.content1 = "Now that all the parties are done and dusted, this is your update on the refund policy. As per our policy we will return the deposit refund against order number " + data.orderid + " , within the next 7 working days.";
                         emailData.content2 = " ";
                         emailData.subject = "Refund notification - TheStylease";
@@ -455,72 +479,72 @@ var models = {
                             }
 
 
-                            // var emailData = {};
-                            // var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
-                            //     "July", "Aug", "Sep", "Oct", "Nov", "Dec"
-                            // ];
-                            // var dd = new Date(data.cartproduct[0].timeFrom);
-                            // var month = monthNames[dd.getMonth()];
-                            // var year = dd.getFullYear();
-                            // var day = dd.getDate();
-                            // var timeFrom = month + " " + day + ", " + year;
-                            // var ddt = new Date(data.cartproduct[0].timeTo);
-                            // var monthd = monthNames[ddt.getMonth()];
-                            // var yeard = ddt.getFullYear();
-                            // var dayd = ddt.getDate();
-                            // var timeTo = monthd + " " + dayd + ", " + yeard;
+                            var emailData = {};
+                            var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
+                                "July", "Aug", "Sep", "Oct", "Nov", "Dec"
+                            ];
+                            var dd = new Date(data.cartproduct[0].timeFrom);
+                            var month = monthNames[dd.getMonth()];
+                            var year = dd.getFullYear();
+                            var day = dd.getDate();
+                            var timeFrom = month + " " + day + ", " + year;
+                            var ddt = new Date(data.cartproduct[0].timeTo);
+                            var monthd = monthNames[ddt.getMonth()];
+                            var yeard = ddt.getFullYear();
+                            var dayd = ddt.getDate();
+                            var timeTo = monthd + " " + dayd + ", " + yeard;
 
-                            // var smsData = {};
-                            // smsData.mobile = data.mobile;
-                            // smsData.content = "Your TheStylease.Com Order No.: " + created.orderid + " has been successfully placed. It will be delivered to your address on " + timeFrom + ". Thank you. Happy styling!";
+                            var smsData = {};
+                            smsData.mobile = data.mobile;
+                            smsData.content = "Your TheStylease.Com Order No.: " + created.orderid + " has been successfully placed. It will be delivered to your address on " + timeFrom + ". Thank you. Happy styling!";
 
-                            // Config.sendSMS(smsData, function (err, smsRespo) {
-                            //     if (err) {
-                            //         console.log(err);
-                            //         callback(err, null);
-                            //     } else {
-                            //         console.log("sms sent");
-                            //         // callback(null, smsRespo);
-                            //     }
-                            // });
-                            // emailData.email = data.email;
-                            // emailData.timeFrom = timeFrom;
-                            // emailData.timeTo = timeTo;
-                            // emailData.filename = "invoice.ejs";
-                            // emailData.name = data.firstname + " " + data.lastname;
-                            // emailData.cartproduct = data.cartproduct;
-                            // emailData.billingAddressFlat = data.billingAddressFlat;
-                            // emailData.billingAddressStreet = data.billingAddressStreet;
-                            // emailData.billingAddressLandmark = data.billingAddressLandmark;
-                            // emailData.billingAddressPin = data.billingAddressPin;
-                            // emailData.billingAddressCity = data.billingAddressCity;
-                            // emailData.billingAddressState = data.billingAddressState;
-                            // emailData.billingAddressCountry = data.billingAddressCountry;
-                            // emailData.mobile = data.mobile;
-                            // emailData.shippingAddressFlat = data.shippingAddressFlat;
-                            // emailData.shippingAddressStreet = data.shippingAddressStreet;
-                            // emailData.shippingAddressLandmark = data.shippingAddressLandmark;
-                            // emailData.shippingAddressPin = data.shippingAddressPin;
-                            // emailData.shippingAddressCity = data.shippingAddressCity;
-                            // emailData.shippingAddressState = data.shippingAddressState;
-                            // emailData.shippingAddressCountry = data.shippingAddressCountry;
-                            // emailData.total = created.total;
-                            // emailData.subtotal = created.subtotal;
-                            // emailData.servicetax = created.servicetax;
-                            // emailData.refundabledeposit = created.refundabledeposit;
-                            // emailData.content1 = "Your payment for Rs." + created.total + " has been successfully received on our end. Your outfit will be out for dispatch on your selected date.";
-                            // emailData.orderno = created.orderid;
-                            // emailData.subject = "Order confirmation - TheStylease";
-                            // // console.log("eee", emailData);
-                            // Config.email(emailData, function (err, emailRespo) {
-                            //     if (err) {
-                            //         console.log(err);
-                            //         callback(err, null);
-                            //     } else {
-                            //         callback(null, created);
-                            //     }
-                            // });
-                            callback(null, created);
+                            Config.sendSMS(smsData, function (err, smsRespo) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    console.log("sms sent");
+                                    // callback(null, smsRespo);
+                                }
+                            });
+                            emailData.email = data.email;
+                            emailData.timeFrom = timeFrom;
+                            emailData.timeTo = timeTo;
+                            emailData.filename = "invoice.ejs";
+                            emailData.name = data.firstname + " " + data.lastname;
+                            emailData.cartproduct = data.cartproduct;
+                            emailData.billingAddressFlat = data.billingAddressFlat;
+                            emailData.billingAddressStreet = data.billingAddressStreet;
+                            emailData.billingAddressLandmark = data.billingAddressLandmark;
+                            emailData.billingAddressPin = data.billingAddressPin;
+                            emailData.billingAddressCity = data.billingAddressCity;
+                            emailData.billingAddressState = data.billingAddressState;
+                            emailData.billingAddressCountry = data.billingAddressCountry;
+                            emailData.mobile = data.mobile;
+                            emailData.shippingAddressFlat = data.shippingAddressFlat;
+                            emailData.shippingAddressStreet = data.shippingAddressStreet;
+                            emailData.shippingAddressLandmark = data.shippingAddressLandmark;
+                            emailData.shippingAddressPin = data.shippingAddressPin;
+                            emailData.shippingAddressCity = data.shippingAddressCity;
+                            emailData.shippingAddressState = data.shippingAddressState;
+                            emailData.shippingAddressCountry = data.shippingAddressCountry;
+                            emailData.total = created.total;
+                            emailData.subtotal = created.subtotal;
+                            emailData.servicetax = created.servicetax;
+                            emailData.refundabledeposit = created.refundabledeposit;
+                            emailData.content1 = "Your payment for Rs." + created.total + " has been successfully received on our end. Your outfit will be out for dispatch on your selected date.";
+                            emailData.orderno = created.orderid;
+                            emailData.subject = "Order confirmation - Stylease";
+                            // console.log("eee", emailData);
+                            Config.email(emailData, function (err, emailRespo) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    callback(null, created);
+                                }
+                            });
+                            // callback(null, created);
                         } else {
                             callback({
                                 message: "Not created"
