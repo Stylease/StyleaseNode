@@ -583,16 +583,19 @@ var models = {
     getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
-        var checkfor = new RegExp(data.search, "i");
+        // var checkfor = new RegExp(data.search, "i");
+        if (data.search === "") {
+            var search = {}
+        } else {
+            var search = {
+                orderstatus: data.search
+            }
+        }
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
             function (callback1) {
-                Order.count({
-                    email: {
-                        "$regex": checkfor
-                    }
-                }).exec(function (err, number) {
+                Order.count(search).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -606,11 +609,7 @@ var models = {
                 });
             },
             function (callback1) {
-                Order.find({
-                    email: {
-                        "$regex": checkfor
-                    }
-                }, {}).sort({
+                Order.find(search, {}).sort({
                     name: 1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("user", "_id  name", null, {
                     sort: {

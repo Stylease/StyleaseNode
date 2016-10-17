@@ -2,7 +2,10 @@ var mongoose = require('mongoose');
 var objectid = require("mongodb").ObjectId;
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    timestamp: Date,
+    timestamp: {
+        type: Date,
+        default: Date.now
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -70,6 +73,7 @@ var models = {
                     console.log(err);
                     callback(err, null);
                 } else {
+                    data.timestamp = new Date();
                     if (data4 && data4.length > 0) {
                         console.log("in edit");
                         //update existing product
@@ -460,6 +464,18 @@ var models = {
                 callback(err, null)
             } else {
                 callback(null, found)
+            }
+        });
+    },
+
+    pendingItemsinCart: function (data, callback) {
+        Cart.find({}).exec(function (err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                console.log(found);
+                callback(null, found);
             }
         });
     },

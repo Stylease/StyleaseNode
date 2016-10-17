@@ -250,4 +250,15 @@ module.exports = {
             });
         }
     },
+
+    pendingItemsinCart: function (req, res) {
+        if (req.body) {
+            Cart.pendingItemsinCart(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
 };
