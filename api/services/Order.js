@@ -479,72 +479,72 @@ var models = {
                             }
 
 
-                            var emailData = {};
-                            var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
-                                "July", "Aug", "Sep", "Oct", "Nov", "Dec"
-                            ];
-                            var dd = new Date(data.cartproduct[0].timeFrom);
-                            var month = monthNames[dd.getMonth()];
-                            var year = dd.getFullYear();
-                            var day = dd.getDate();
-                            var timeFrom = month + " " + day + ", " + year;
-                            var ddt = new Date(data.cartproduct[0].timeTo);
-                            var monthd = monthNames[ddt.getMonth()];
-                            var yeard = ddt.getFullYear();
-                            var dayd = ddt.getDate();
-                            var timeTo = monthd + " " + dayd + ", " + yeard;
+                            // var emailData = {};
+                            // var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
+                            //     "July", "Aug", "Sep", "Oct", "Nov", "Dec"
+                            // ];
+                            // var dd = new Date(data.cartproduct[0].timeFrom);
+                            // var month = monthNames[dd.getMonth()];
+                            // var year = dd.getFullYear();
+                            // var day = dd.getDate();
+                            // var timeFrom = month + " " + day + ", " + year;
+                            // var ddt = new Date(data.cartproduct[0].timeTo);
+                            // var monthd = monthNames[ddt.getMonth()];
+                            // var yeard = ddt.getFullYear();
+                            // var dayd = ddt.getDate();
+                            // var timeTo = monthd + " " + dayd + ", " + yeard;
 
-                            var smsData = {};
-                            smsData.mobile = data.mobile;
-                            smsData.content = "Your TheStylease.Com Order No.: " + created.orderid + " has been successfully placed. It will be delivered to your address on " + timeFrom + ". Thank you. Happy styling!";
+                            // var smsData = {};
+                            // smsData.mobile = data.mobile;
+                            // smsData.content = "Your TheStylease.Com Order No.: " + created.orderid + " has been successfully placed. It will be delivered to your address on " + timeFrom + ". Thank you. Happy styling!";
 
-                            Config.sendSMS(smsData, function (err, smsRespo) {
-                                if (err) {
-                                    console.log(err);
-                                    callback(err, null);
-                                } else {
-                                    console.log("sms sent");
-                                    // callback(null, smsRespo);
-                                }
-                            });
-                            emailData.email = data.email;
-                            emailData.timeFrom = timeFrom;
-                            emailData.timeTo = timeTo;
-                            emailData.filename = "invoice.ejs";
-                            emailData.name = data.firstname + " " + data.lastname;
-                            emailData.cartproduct = data.cartproduct;
-                            emailData.billingAddressFlat = data.billingAddressFlat;
-                            emailData.billingAddressStreet = data.billingAddressStreet;
-                            emailData.billingAddressLandmark = data.billingAddressLandmark;
-                            emailData.billingAddressPin = data.billingAddressPin;
-                            emailData.billingAddressCity = data.billingAddressCity;
-                            emailData.billingAddressState = data.billingAddressState;
-                            emailData.billingAddressCountry = data.billingAddressCountry;
-                            emailData.mobile = data.mobile;
-                            emailData.shippingAddressFlat = data.shippingAddressFlat;
-                            emailData.shippingAddressStreet = data.shippingAddressStreet;
-                            emailData.shippingAddressLandmark = data.shippingAddressLandmark;
-                            emailData.shippingAddressPin = data.shippingAddressPin;
-                            emailData.shippingAddressCity = data.shippingAddressCity;
-                            emailData.shippingAddressState = data.shippingAddressState;
-                            emailData.shippingAddressCountry = data.shippingAddressCountry;
-                            emailData.total = created.total;
-                            emailData.subtotal = created.subtotal;
-                            emailData.servicetax = created.servicetax;
-                            emailData.refundabledeposit = created.refundabledeposit;
-                            emailData.content1 = "Your payment for Rs." + created.total + " has been successfully received on our end. Your outfit will be out for dispatch on your selected date.";
-                            emailData.orderno = created.orderid;
-                            emailData.subject = "Order confirmation - Stylease";
-                            // console.log("eee", emailData);
-                            Config.email(emailData, function (err, emailRespo) {
-                                if (err) {
-                                    console.log(err);
-                                    callback(err, null);
-                                } else {
-                                    callback(null, created);
-                                }
-                            });
-                            // callback(null, created);
+                            // Config.sendSMS(smsData, function (err, smsRespo) {
+                            //     if (err) {
+                            //         console.log(err);
+                            //         callback(err, null);
+                            //     } else {
+                            //         console.log("sms sent");
+                            //         // callback(null, smsRespo);
+                            //     }
+                            // });
+                            // emailData.email = data.email;
+                            // emailData.timeFrom = timeFrom;
+                            // emailData.timeTo = timeTo;
+                            // emailData.filename = "invoice.ejs";
+                            // emailData.name = data.firstname + " " + data.lastname;
+                            // emailData.cartproduct = data.cartproduct;
+                            // emailData.billingAddressFlat = data.billingAddressFlat;
+                            // emailData.billingAddressStreet = data.billingAddressStreet;
+                            // emailData.billingAddressLandmark = data.billingAddressLandmark;
+                            // emailData.billingAddressPin = data.billingAddressPin;
+                            // emailData.billingAddressCity = data.billingAddressCity;
+                            // emailData.billingAddressState = data.billingAddressState;
+                            // emailData.billingAddressCountry = data.billingAddressCountry;
+                            // emailData.mobile = data.mobile;
+                            // emailData.shippingAddressFlat = data.shippingAddressFlat;
+                            // emailData.shippingAddressStreet = data.shippingAddressStreet;
+                            // emailData.shippingAddressLandmark = data.shippingAddressLandmark;
+                            // emailData.shippingAddressPin = data.shippingAddressPin;
+                            // emailData.shippingAddressCity = data.shippingAddressCity;
+                            // emailData.shippingAddressState = data.shippingAddressState;
+                            // emailData.shippingAddressCountry = data.shippingAddressCountry;
+                            // emailData.total = created.total;
+                            // emailData.subtotal = created.subtotal;
+                            // emailData.servicetax = created.servicetax;
+                            // emailData.refundabledeposit = created.refundabledeposit;
+                            // emailData.content1 = "Your payment for Rs." + created.total + " has been successfully received on our end. Your outfit will be out for dispatch on your selected date.";
+                            // emailData.orderno = created.orderid;
+                            // emailData.subject = "Order confirmation - Stylease";
+                            // // console.log("eee", emailData);
+                            // Config.email(emailData, function (err, emailRespo) {
+                            //     if (err) {
+                            //         console.log(err);
+                            //         callback(err, null);
+                            //     } else {
+                            //         callback(null, created);
+                            //     }
+                            // });
+                            callback(null, created);
                         } else {
                             callback({
                                 message: "Not created"
