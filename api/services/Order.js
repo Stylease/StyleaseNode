@@ -173,7 +173,7 @@ var models = {
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "We’re as excited as you are. Your order is now out for delivery and will shortly be arriving at the selected location";
                         emailData.content2 = "Order No. : " + data.orderid;
-                        emailData.subject = "Out for delivery - Stylease";
+                        emailData.subject = "Out for delivery - TheStylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
@@ -191,7 +191,7 @@ var models = {
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "We have received confirmation that your order has been delivered. For any comments or queries contact us on +91 97351 88624 or mail us at info@thestylease.com";
                         emailData.content2 = "Order No. : " + data.orderid;
-                        emailData.subject = "Successfully delivered - Stylease";
+                        emailData.subject = "Successfully delivered - TheStylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
@@ -209,7 +209,7 @@ var models = {
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "Thank you for taking care of our outfit like it was one of your own. We have received the parcel. Your deposit amount of Rs." + data.refundabledeposit + " will be refunded within the next 7 working days. We will share the details shortly";
                         emailData.content2 = "Order No. : " + data.orderid;
-                        emailData.subject = "Order picked up - Stylease";
+                        emailData.subject = "Order picked up - TheStylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
@@ -250,7 +250,7 @@ var models = {
                                 emailData.name = data.firstname + " " + data.lastname;
                                 emailData.content1 = "Thanks for taking our outfits and accessories out with you and creating some amazing memories. We are sure you shined like a star.This is a gentle reminder that our staff will be at the " + data.shippingAddressFlat + " " + data.shippingAddressStreet + " " + data.shippingAddressLandmark + " " + data.shippingAddressCity + " " + data.shippingAddressPin + " " + data.shippingAddressState + " " + data.shippingAddressCountry + "for pick-up tomorrow. Ensure that your garment and accessories are packed in the same garment bag you received it in and that it is ready at the time of pick-up. ";
                                 emailData.content2 = "Order No. : " + data.orderid;
-                                emailData.subject = "Pickup reminder - Stylease";
+                                emailData.subject = "Pickup reminder - TheStylease";
                                 // console.log("eee", emailData);
                                 Config.email(emailData, function (err, emailRespo) {
                                     if (err) {
@@ -288,7 +288,7 @@ var models = {
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "Our staff is out for pick-up of your order. They will be arriving shortly, do ensure you are ready with the parcel. You totally slayed this event, see you soon for the next one!";
                         emailData.content2 = "Order No. : " + data.orderid;
-                        emailData.subject = "Out for pick-up! - Stylease";
+                        emailData.subject = "Out for pick-up! - TheStylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
@@ -320,7 +320,7 @@ var models = {
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "Hope you’re having a good day! This is to notify you that we have returned your deposit for Rs. " + data.refundabledeposit + " against Order " + data.orderid;
                         emailData.content2 = "We look forward to helping you style again soon";
-                        emailData.subject = "Deposit returned notification - Stylease";
+                        emailData.subject = "Deposit returned notification - TheStylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
@@ -338,7 +338,7 @@ var models = {
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "This is to notify you that we have received your request to cancel the order. We will get in touch with you shortly. For any queries contact us on +91 97351 88624 or mail us at info@thestylease.com.";
                         emailData.content2 = "";
-                        emailData.subject = "Transaction cancelled - Stylease";
+                        emailData.subject = "Transaction cancelled - TheStylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
@@ -357,7 +357,7 @@ var models = {
                         emailData.name = data.firstname + " " + data.lastname;
                         emailData.content1 = "Now that all the parties are done and dusted, this is your update on the refund policy. As per our policy we will return the deposit refund against order number " + data.orderid + " , within the next 7 working days.";
                         emailData.content2 = " ";
-                        emailData.subject = "Refund notification - Stylease";
+                        emailData.subject = "Refund notification - TheStylease";
                         // console.log("eee", emailData);
                         Config.email(emailData, function (err, emailRespo) {
                             if (err) {
