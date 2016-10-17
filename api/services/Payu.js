@@ -39,8 +39,8 @@ var models = {
                         firstname: firstname,
                         email: email,
                         phone: phone,
-                        surl: sails.getBaseUrl() + '/payu/successError',
-                        furl: sails.getBaseUrl() + '/payu/successError',
+                        surl: 'http://admin.thestylease.com/payu/successError',
+                        furl: 'http://admin.thestylease.com/payu/successError',
                         hash: hashtext
                     }
                 }, callback);
