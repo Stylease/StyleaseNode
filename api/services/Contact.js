@@ -52,6 +52,7 @@ var models = {
                     emailData.name = data.name;
                     emailData.email = 'contact@thestylease.com';
                     emailData.useremail = data.email;
+                    emailData.fromname = 'contact@thestylease.com';
                     emailData.mobile = data.mobile;
                     emailData.message = data.message;
                     emailData.filename = "contact.ejs";
