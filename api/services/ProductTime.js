@@ -168,6 +168,26 @@ var models = {
             }
         });
     },
+
+    getBookedProductOffline: function (data, callback) {
+        if (data !== undefined) {
+            var matchobj = {
+                product: {
+                    $in: data.product
+                }
+            };
+        } else {
+            var matchobj = {};
+        }
+        ProductTime.find(matchobj).exec(function (err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, found);
+            }
+        });
+    },
 };
 
 module.exports = _.assign(module.exports, models);

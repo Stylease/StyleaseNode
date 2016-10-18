@@ -1,6 +1,6 @@
 var request = require('request');
 module.exports = {
-    sort: function(req, res) {
+    sort: function (req, res) {
         function callback(err, data) {
             Config.GlobalCallback(err, data, res);
         }
@@ -14,7 +14,7 @@ module.exports = {
         }
     },
 
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body) {
             ProductTime.saveData(req.body, res.callback);
         } else {
@@ -24,7 +24,7 @@ module.exports = {
             });
         }
     },
-    getOne: function(req, res) {
+    getOne: function (req, res) {
 
         if (req.body) {
             ProductTime.getOne(req.body, res.callback);
@@ -36,7 +36,7 @@ module.exports = {
         }
     },
 
-    delete: function(req, res) {
+    delete: function (req, res) {
         if (req.body) {
             console.log(req.body);
             ProductTime.deleteData(req.body, res.callback);
@@ -48,7 +48,7 @@ module.exports = {
         }
     },
 
-    getAll: function(req, res) {
+    getAll: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -61,7 +61,7 @@ module.exports = {
             });
         }
     },
-    getLimited: function(req, res) {
+    getLimited: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -73,6 +73,23 @@ module.exports = {
                     value: false,
                     data: "Invalid Params"
                 });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+
+    getBookedProductByCart: function (req, res) {
+        if (req.body) {
+            if (req.session.user) {
+                ProductTime.getBookedProductOnline(req.body, res.callback);
+            } else {
+                req.body = req.session.cart;
+                console.log("req body", req.body);
+                ProductTime.getBookedProductOffline(req.body, res.callback);
             }
         } else {
             res.json({
