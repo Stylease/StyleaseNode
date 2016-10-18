@@ -36,6 +36,7 @@ module.exports = {
     },
     readFile: function (req, res) {
         res.setHeader("Cache-Control", "public, max-age=2592000");
+        res.setHeader("Expires", new Date(Date.now() + 2592000000).toUTCString());
         Config.readUploaded(req.query.file, req.query.width, req.query.height, req.query.style, res);
     }
 };
