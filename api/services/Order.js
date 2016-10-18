@@ -814,6 +814,92 @@ var models = {
                 callback(null, found);
             }
         })
+    },
+
+    getPickupreminder: function (data, callback) {
+        var nextday = new Date();
+        nextday.setDate(nextday.getDate() + 1);
+        var currdate = new Date();
+        nextday.setHours(18, 0, 0, 0);
+        currdate.setHours(18, 0, 0, 0);
+        console.log("ccc", currdate, nextday);
+
+        Order.find({
+            // date: {
+            //     $gte: currdate,
+            //     $lt: nextday
+            // }
+            cartproduct: {
+                $elemMatch: {
+                    timeTo: {
+                        $gte: currdate,
+                        $lt: nextday
+                    }
+                }
+            }
+        }).exec(function (err, respo) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                // callback(null, respo);
+                async.each(respo, function (data, callback1) {
+                    if (data.email) {
+                        console.log("bbb", data.email);
+                        var smsData = {};
+                        smsData.mobile = data.mobile;
+                        smsData.content = "Hi! this is a gentle reminder that pick up for Order No.: " + data.orderid + " is scheduled for tomorrow.Please keep the order ready in the package provided to you our delivery person will come and pick it up. We hope you had a great event!";
+
+                        Config.sendSMS(smsData, function (err, smsRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                console.log("sms sent", smsRespo);
+                                // callback(null, smsRespo);
+                            }
+                        });
+                        var emailData = {};
+                        emailData.email = data.email;
+                        emailData.filename = "pickup.ejs";
+                        emailData.fromname = 'orders@thestylease.com';
+                        emailData.name = data.firstname + " " + data.lastname;
+                        emailData.content3 = "http://thestylease.com/newsite/testing/#/orders";
+                        emailData.shippingAddressFlat = data.shippingAddressFlat;
+                        emailData.shippingAddressStreet = data.shippingAddressStreet;
+                        emailData.shippingAddressLandmark = data.shippingAddressLandmark;
+                        emailData.shippingAddressCity = data.shippingAddressCity;
+                        emailData.shippingAddressPin = data.shippingAddressPin;
+                        emailData.shippingAddressState = data.shippingAddressState;
+                        emailData.shippingAddressCountry = data.shippingAddressCountry;
+                        emailData.content1 = "Thanks for taking our outfits and accessories out with you and creating some amazing memories. We are sure you shined like a star.This is a gentle reminder that our staff will be at the ";
+                        emailData.content2 = "for pick-up tomorrow. Ensure that your garment and accessories are packed in the same garment bag you received it in and that it is ready at the time of pick-up. ";
+                        emailData.content4 = "Order No. : " + data.orderid;
+                        emailData.subject = "Pickup reminder - TheStylease";
+                        // console.log("eee", emailData);
+                        Config.email(emailData, function (err, emailRespo) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                // callback(null, updated);
+                                callback1(null, data.email);
+                            }
+                        });
+
+                    } else {
+                        callback1(null, "Done");
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        callback(null, "Done");
+                    }
+                });
+            }
+        });
     }
 
 

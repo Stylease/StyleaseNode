@@ -305,7 +305,7 @@ var models = {
                     options: {
                         limit: 6,
                         sort: {
-                            order: 1
+                            "images.order": 1
                         }
                     }
                 }).lean().exec(function (err, found) {
@@ -384,23 +384,20 @@ var models = {
 
         if (data.sort === "Recent Addition") {
             var sortfilter = {
-                _id: -1,
-                "images.order": 1
+                _id: -1
             }
         } else if (data.sort === "Price : Low - High") {
             var sortfilter = {
-                fourdayrentalamount: 1,
-                "images.order": 1
+                fourdayrentalamount: 1
             }
         } else if (data.sort === "Price : High - Low") {
+            console.log('High to low')
             var sortfilter = {
-                fourdayrentalamount: -1,
-                "images.order": 1
+                fourdayrentalamount: -1
             }
         } else if (data.sort === "Popularity") {
             var sortfilter = {
-                booked: 1,
-                "images.order": 1
+                booked: 1
             }
         }
         if (data.subcategory.length == 0 || data.subcategory == null) {

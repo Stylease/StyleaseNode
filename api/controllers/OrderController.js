@@ -1,7 +1,7 @@
 var request = require('request');
 module.exports = {
 
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body) {
             if (req.session.user) {
                 console.log("userss", req.session.user._id);
@@ -17,7 +17,7 @@ module.exports = {
             });
         }
     },
-    getOne: function(req, res) {
+    getOne: function (req, res) {
 
         if (req.body) {
             Order.getOne(req.body, res.callback);
@@ -29,7 +29,7 @@ module.exports = {
         }
     },
 
-    getOrderByUser: function(req, res) {
+    getOrderByUser: function (req, res) {
         if (req.body) {
             if (req.session.user) {
                 req.body.user = req.session.user._id;
@@ -49,7 +49,7 @@ module.exports = {
         }
     },
 
-    getOrderById:function(req, res) {
+    getOrderById: function (req, res) {
         if (req.body) {
             Order.getOrderById(req.body, res.callback);
         } else {
@@ -60,7 +60,7 @@ module.exports = {
         }
     },
 
-    delete: function(req, res) {
+    delete: function (req, res) {
         if (req.body) {
             console.log(req.body);
             Order.deleteData(req.body, res.callback);
@@ -72,7 +72,7 @@ module.exports = {
         }
     },
 
-    getAll: function(req, res) {
+    getAll: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -85,7 +85,7 @@ module.exports = {
             });
         }
     },
-    getLimited: function(req, res) {
+    getLimited: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -105,21 +105,21 @@ module.exports = {
             });
         }
     },
-    getLimitedByUser: function(req, res) {
+    getLimitedByUser: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
         if (req.body) {
             if (req.body.pagesize && req.body.pagenumber) {
-              if(req.session.user){
-                req.body.user = req.session.user._id;
-                  Order.getLimitedByUser(req.body, res.callback);
-              }else {
-                res.json({
-                  value: false,
-                  data: "User Not logged in"
-                });
-              }
+                if (req.session.user) {
+                    req.body.user = req.session.user._id;
+                    Order.getLimitedByUser(req.body, res.callback);
+                } else {
+                    res.json({
+                        value: false,
+                        data: "User Not logged in"
+                    });
+                }
 
             } else {
                 res.json({
@@ -135,12 +135,24 @@ module.exports = {
         }
     },
 
-    getAllDetails: function(req, res) {
+    getAllDetails: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
         if (req.body) {
             Order.getAllDetails(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+
+
+    getPickupreminder: function (req, res) {
+        if (req.body) {
+            Order.getPickupreminder(req.body, res.callback);
         } else {
             res.json({
                 value: false,
