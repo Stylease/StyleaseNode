@@ -119,7 +119,7 @@ var models = {
                     console.log(err);
                     callback(err, null);
                 } else {
-                    callback(null, emailRespo);
+                    // callback(null, emailRespo);
                 }
             });
         });
@@ -131,7 +131,7 @@ var models = {
         if (status == 'failure') {
             orderstatus = 'Cancelled'
         } else {
-            orderstatus = 'Processing'
+            orderstatus = 'Order Confirmed'
         }
         Order.findOneAndUpdate({
             orderid: orderid
