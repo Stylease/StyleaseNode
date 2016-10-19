@@ -178,6 +178,9 @@ var models = {
             var matchobj = {
                 product: {
                     $in: productarr
+                },
+                timeTo: {
+                    $gte: new Date()
                 }
             };
         } else {
@@ -211,6 +214,9 @@ var models = {
                 var matchobj = {
                     product: {
                         $in: productarr
+                    },
+                    timeTo: {
+                        $gte: new Date()
                     }
                 };
                 ProductTime.find(matchobj).exec(function (err, prodata) {
