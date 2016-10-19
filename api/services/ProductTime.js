@@ -170,10 +170,14 @@ var models = {
     },
 
     getBookedProductOffline: function (data, callback) {
+        var productarr = [];
         if (data !== undefined) {
+            _.each(data, function (pro) {
+                productarr.push(pro.product);
+            });
             var matchobj = {
                 product: {
-                    $in: data.product
+                    $in: productarr
                 }
             };
         } else {
@@ -187,6 +191,10 @@ var models = {
                 callback(null, found);
             }
         });
+    },
+
+    getBookedProductOnline: function (data, callback) {
+
     },
 };
 

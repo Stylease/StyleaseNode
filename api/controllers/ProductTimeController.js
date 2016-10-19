@@ -88,7 +88,6 @@ module.exports = {
                 ProductTime.getBookedProductOnline(req.body, res.callback);
             } else {
                 req.body = req.session.cart;
-                console.log("req body", req.body);
                 ProductTime.getBookedProductOffline(req.body, res.callback);
             }
         } else {

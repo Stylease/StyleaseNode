@@ -145,7 +145,7 @@ module.exports = {
                                 });
                             } else {
                                 callback({
-                                    message: "Some error in html"
+                                    message: "Email Not Sent"
                                 }, null);
                             }
                         }
