@@ -39,10 +39,11 @@ module.exports = {
             var transactionid = data.mihpayid;
             var orderid = data.txnid;
             var status = data.status;
-            Payu.sendMail(orderid);
 
             function callback2(err, data) {
                 if (data) {
+                    Payu.sendMail(orderid);
+
                     // go to success url
                     res.redirect("http://thestylease.com/newsite/testing/#/thankyou/" + data.orderid);
                 } else {
