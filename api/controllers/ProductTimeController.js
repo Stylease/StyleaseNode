@@ -85,6 +85,7 @@ module.exports = {
     getBookedProductByCart: function (req, res) {
         if (req.body) {
             if (req.session.user) {
+                req.body.user = req.session.user._id;
                 ProductTime.getBookedProductOnline(req.body, res.callback);
             } else {
                 req.body = req.session.cart;

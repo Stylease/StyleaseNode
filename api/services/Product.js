@@ -379,7 +379,8 @@ var models = {
             // },
             color: {
                 $in: data.color
-            }
+            },
+            status: true
         };
 
         if (data.sort === "Recent Addition") {

@@ -194,7 +194,35 @@ var models = {
     },
 
     getBookedProductOnline: function (data, callback) {
-
+        Cart.findOne({
+            user: data.user
+        }).exec(function (err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                // callback(null, found.cartproduct);
+                var productarr = [];
+                if (found && found.cartproduct.length > 0) {
+                    _.each(found.cartproduct, function (pro) {
+                        productarr.push(pro.product);
+                    });
+                }
+                var matchobj = {
+                    product: {
+                        $in: productarr
+                    }
+                };
+                ProductTime.find(matchobj).exec(function (err, prodata) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        callback(null, prodata);
+                    }
+                });
+            }
+        });
     },
 };
 
