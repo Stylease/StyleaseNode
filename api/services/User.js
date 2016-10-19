@@ -210,7 +210,7 @@ var models = {
                             emailData.fromname = "contact@thestylease.com";
                             emailData.content1 = "Congratulations on successfully signing up. We’re glad we can be your fashion brand on speed dial.";
                             emailData.content2 = " Enjoy the world of couture and embrace the latest fashions at your next event.";
-                            emailData.content3 = "http://thestylease.com/newsite/testing/#/home";
+                            emailData.content3 = "http://thestylease.com/#/home";
                             emailData.subject = "Sign Up Successful";
                             console.log("eee", emailData);
                             Config.email(emailData, function (err, emailRespo) {

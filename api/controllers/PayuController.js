@@ -29,9 +29,9 @@ module.exports = {
             function callback1(err, data) {
                 if (data) {
                     // go to fail url
-                    res.redirect("http://thestylease.com/newsite/testing/#/sorry/" + data.orderid);
+                    res.redirect("http://thestylease.com/#/sorry/" + data.orderid);
                 } else {
-                    res.redirect("http://thestylease.com/newsite/testing/#/sorry/" + data.orderid);
+                    res.redirect("http://thestylease.com/#/sorry/" + data.orderid);
                 }
             }
             Payu.updateOrderStatus(transactionid, orderid, status, callback1);
@@ -45,9 +45,9 @@ module.exports = {
                     Payu.sendMail(orderid);
 
                     // go to success url
-                    res.redirect("http://thestylease.com/newsite/testing/#/thankyou/" + data.orderid);
+                    res.redirect("http://thestylease.com/#/thankyou/" + data.orderid);
                 } else {
-                    res.redirect("http://thestylease.com/newsite/testing/#/sorry/" + data.orderid);
+                    res.redirect("http://thestylease.com/#/sorry/" + data.orderid);
                 }
             }
             Payu.updateOrderStatus(transactionid, orderid, status, callback2);
