@@ -47,7 +47,7 @@ module.exports = {
                     // go to success url
                     res.redirect("http://thestylease.com/newsite/testing/#/thankyou/" + data.orderid);
                 } else {
-                    res.redirect("http://thestylease.com/newsite/testing/#/sorry");
+                    res.redirect("http://thestylease.com/newsite/testing/#/sorry" + data.orderid);
                 }
             }
             Payu.updateOrderStatus(transactionid, orderid, status, callback2);
