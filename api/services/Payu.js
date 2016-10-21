@@ -55,6 +55,7 @@ var models = {
         console.log("iddd", id);
         Order.findOne({
             orderid: id
+                // orderid: "1"
         }).populate("cartproduct.product", "name images fourdayrentalamount eightdayrentalamount").exec(function (err, data) {
             console.log("dddd", data);
             var emailData = {};
@@ -85,6 +86,7 @@ var models = {
                     // callback(null, smsRespo);
                 }
             });
+            emailData.fromname = 'orders@thestylease.com';
             emailData.email = data.email;
             emailData.timeFrom = timeFrom;
             emailData.timeTo = timeTo;
