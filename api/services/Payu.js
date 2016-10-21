@@ -58,6 +58,51 @@ var models = {
                 // orderid: "1"
         }).populate("cartproduct.product", "name images fourdayrentalamount eightdayrentalamount").exec(function (err, data) {
             console.log("dddd", data);
+
+            function callme(num) {
+                if (num === data.cartproduct.length) {
+                    console.log("producttime completed");
+                    // callback(null, "Done");
+                } else {
+                    var create = data.toObject();
+                    var mydata = {};
+                    mydata = create.cartproduct[num];
+                    delete mydata._id;
+                    console.log("mydata", mydata._id);
+                    //update product booking
+                    Product.update({
+                        _id: mydata.product
+                    }, {
+                        $inc: {
+                            booked: 1
+                        }
+                    }).exec(function (err, booked) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            // console.log("booked update");
+                        }
+                    });
+
+                    ProductTime.saveData(mydata, function (err, data4) {
+                        // console.log("data save");
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            // console.log("aaaaa");
+                            num++;
+                            callme(num);
+                            // console.log("save products to ProductTime");
+                        }
+                    });
+                }
+            }
+
+            if (data.cartproduct.length > 0) {
+                callme(0);
+            }
             var emailData = {};
             var monthNames = ["Jan", "Feb", "Mar", "April", "May", "June",
                 "July", "Aug", "Sep", "Oct", "Nov", "Dec"
