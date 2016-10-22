@@ -197,7 +197,7 @@ var models = {
         data.otptimestamp = Date.now();
         var user = this(data);
         user.email = data.email;
-        this.count({
+        User.count({
             // "email": user.email
             mobile: data.mobile
         }).exec(function (err, data2) {
@@ -227,7 +227,52 @@ var models = {
                         }
                     });
                 } else {
-                    callback("User already Exists", false);
+                    User.findOne({
+                        mobile: data.mobile,
+                        otpstatus: false
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            if (found) {
+
+                                User.update({
+                                    _id: found._id
+                                }, {
+                                    $set: {
+                                        otptimestamp: data.otptimestamp,
+                                        otp: data.otp
+                                    }
+                                }, function (err, data3) {
+                                    if (err) {
+                                        console.log(err);
+                                        callback(err, null);
+                                    } else {
+                                        var smsData = {};
+                                        smsData.mobile = data.mobile;
+                                        smsData.content = data.otp + " is your TheStylease.com verification code.";
+                                        Config.sendSMS(smsData, function (err, smsRespo) {
+                                            if (err) {
+                                                console.log(err);
+                                                callback(err, null);
+                                            } else {
+                                                console.log(smsRespo, "sms sent");
+                                                // callback(null, smsRespo);
+                                                callback(null, found);
+                                            }
+                                        });
+                                    }
+                                });
+
+
+
+                            } else {
+                                callback("User already Exists", false);
+                            }
+                        }
+                    });
+
                 }
             }
         });
@@ -694,15 +739,15 @@ var models = {
                                     console.log(err);
                                     callback(err, null);
                                 } else {
-                                    callback(null, data3);
+                                    // callback(null, data3);
                                 }
                             });
-                            callback(null, data3);
+                            // callback(null, data3);
                         }
                     });
                 } else {
                     callback(null, {
-                        message: "OTP expired"
+                        message: "Invalid OTP"
                     });
                 }
             }
