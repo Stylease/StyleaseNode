@@ -193,7 +193,7 @@ var models = {
         if (data.password && data.password !== "") {
             data.password = md5(data.password);
         }
-        data.otp = (Math.random() + "").substring(2, 10);
+        data.otp = (Math.random() + "").substring(2, 6);
         data.otptimestamp = Date.now();
         var user = this(data);
         user.email = data.email;
