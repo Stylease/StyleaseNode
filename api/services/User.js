@@ -277,6 +277,57 @@ var models = {
             }
         });
     },
+
+    resendOtp: function (data, callback) {
+        data.otp = (Math.random() + "").substring(2, 6);
+        data.otptimestamp = Date.now();
+        User.findOne({
+            mobile: data.mobile
+        }).exec(function (err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                if (found) {
+
+                    User.update({
+                        _id: found._id
+                    }, {
+                        $set: {
+                            otptimestamp: data.otptimestamp,
+                            otp: data.otp
+                        }
+                    }, function (err, data3) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            var smsData = {};
+                            smsData.mobile = data.mobile;
+                            smsData.content = data.otp + " is your TheStylease.com verification code.";
+                            Config.sendSMS(smsData, function (err, smsRespo) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    // console.log(smsRespo, "sms sent");
+                                    // callback(null, smsRespo);
+                                    callback(null, found);
+                                }
+                            });
+                        }
+                    });
+
+
+
+                } else {
+                    callback("User not found", false);
+                }
+            }
+        });
+
+    },
+
     saveData: function (data, callback) {
         //        delete data.password;
         var user = this(data);

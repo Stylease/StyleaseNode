@@ -91,6 +91,38 @@ module.exports = {
         }
     },
 
+    resendOtp: function (req, res) {
+        if (req.body) {
+            if (req.body.mobile && req.body.mobile != "") {
+                User.resendOtp(req.body, function (err, data) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: {
+                                message: "Otp sent"
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Call"
+            });
+        }
+    },
+
     checkOtp: function (req, res) {
         if (req.body) {
             if (req.body.mobile && req.body.mobile != "") {
