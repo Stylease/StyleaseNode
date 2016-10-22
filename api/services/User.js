@@ -149,6 +149,12 @@ var schema = new Schema({
             }
         }],
         index: true
+    },
+    otp: String,
+    otptimestamp: Date,
+    otpstatus: {
+        type: Boolean,
+        default: false
     }
 
 });
@@ -187,10 +193,13 @@ var models = {
         if (data.password && data.password !== "") {
             data.password = md5(data.password);
         }
+        data.otp = (Math.random() + "").substring(2, 10);
+        data.otptimestamp = Date.now();
         var user = this(data);
         user.email = data.email;
         this.count({
-            "email": user.email
+            // "email": user.email
+            mobile: data.mobile
         }).exec(function (err, data2) {
             if (err) {
                 callback(err, data);
@@ -201,27 +210,20 @@ var models = {
                         if (err) {
                             callback(err, null);
                         } else {
-                            console.log(" TT ");
-                            console.log(data3);
-                            var emailData = {};
-                            emailData.email = data.email;
-                            emailData.filename = "mailer.ejs";
-                            emailData.name = data.name;
-                            emailData.fromname = "contact@thestylease.com";
-                            emailData.content1 = "Congratulations on successfully signing up. We’re glad we can be your fashion brand on speed dial.";
-                            emailData.content2 = " Enjoy the world of couture and embrace the latest fashions at your next event.";
-                            emailData.content3 = "http://thestylease.com/#/home";
-                            emailData.subject = "Sign Up Successful";
-                            console.log("eee", emailData);
-                            Config.email(emailData, function (err, emailRespo) {
+                            var smsData = {};
+                            smsData.mobile = data.mobile;
+                            smsData.content = data.otp + " is your TheStylease.com verification code.";
+                            Config.sendSMS(smsData, function (err, smsRespo) {
                                 if (err) {
                                     console.log(err);
                                     callback(err, null);
                                 } else {
+                                    console.log(smsRespo, "sms sent");
+                                    // callback(null, smsRespo);
                                     callback(null, data3);
                                 }
                             });
-                            // callback(null, data3);
+
                         }
                     });
                 } else {
@@ -600,7 +602,8 @@ var models = {
         d.setMinutes(d.getMinutes() - 180);
         User.findOne({
             email: data.email,
-            password: data.password
+            password: data.password,
+            otpstatus: true
         }).exec(function (err, found) {
             if (err) {
                 console.log(err);
@@ -635,6 +638,77 @@ var models = {
             }
         });
     },
+
+    checkOtp: function (data, callback) {
+        var d = new Date();
+        d.setMinutes(d.getMinutes() - 10);
+        User.findOne({
+            mobile: data.mobile,
+            otp: data.otp,
+            otptimestamp: {
+                $gte: d
+            }
+        }, function (err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                if (data2 !== null) {
+                    callback(null, data2);
+                    User.update({
+                        _id: data2._id
+                    }, {
+                        $set: {
+                            otpstatus: true
+                        }
+                    }, function (err, data3) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            var smsData = {};
+                            smsData.mobile = data2.mobile;
+                            smsData.content = "Welcome to TheStylease.com! Rent from a wide range of exclusive designer wear and accessories. Happy styling!";
+
+                            Config.sendSMS(smsData, function (err, smsRespo) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    // console.log("sms sent");
+                                    // callback(null, smsRespo);
+                                }
+                            });
+                            var emailData = {};
+                            emailData.email = data2.email;
+                            emailData.filename = "mailer.ejs";
+                            emailData.name = data2.name;
+                            emailData.fromname = "contact@thestylease.com";
+                            emailData.content1 = "Congratulations on successfully signing up. We’re glad we can be your fashion brand on speed dial.";
+                            emailData.content2 = " Enjoy the world of couture and embrace the latest fashions at your next event.";
+                            emailData.content3 = "http://thestylease.com/#/home";
+                            emailData.subject = "Sign Up Successful";
+                            console.log("eee", emailData);
+                            Config.email(emailData, function (err, emailRespo) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    callback(null, data3);
+                                }
+                            });
+                            callback(null, data3);
+                        }
+                    });
+                } else {
+                    callback(null, {
+                        message: "OTP expired"
+                    });
+                }
+            }
+        });
+    },
+
     getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);

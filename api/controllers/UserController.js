@@ -19,7 +19,6 @@ module.exports = {
 
     save: function (req, res) {
         if (req.body) {
-            // User.saveData(req.body, res.callback);
             User.saveData(req.body, function (err, respo) {
                 if (err) {
                     res.json({
@@ -28,7 +27,6 @@ module.exports = {
                     });
                 } else {
                     req.session.user = respo;
-                    // console.log("sess",req.session.user );
                     res.json({
                         value: true,
                         data: respo
@@ -66,7 +64,7 @@ module.exports = {
     register: function (req, res) {
         if (req.body) {
             console.log(req.body);
-            if (req.body.email && req.body.email !== "" && req.body.password && req.body.password !== "") {
+            if (req.body.mobile && req.body.mobile !== "" && req.body.email && req.body.email !== "" && req.body.password && req.body.password !== "") {
                 User.register(req.body, function (err, respo) {
                     if (err) {
                         res.json({
@@ -97,7 +95,7 @@ module.exports = {
             } else {
                 res.json({
                     value: false,
-                    data: "Invalid Email ID"
+                    data: "Invalid Email ID or Mobile No."
                 });
             }
         } else {
@@ -107,8 +105,47 @@ module.exports = {
             });
         }
     },
-    getOne: function (req, res) {
 
+    checkOtp: function (req, res) {
+        if (req.body) {
+            if (req.body.mobile && req.body.mobile != "") {
+                User.checkOtp(req.body, function (err, data) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        if (data._id) {
+                            req.session.user = data;
+                            res.json({
+                                value: true,
+                                data: {
+                                    message: "signup success"
+                                }
+                            });
+                        } else {
+                            res.json({
+                                value: false,
+                                data: data
+                            });
+                        }
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Call"
+            });
+        }
+    },
+    getOne: function (req, res) {
         if (req.body) {
             User.getOne(req.body, res.callback);
         } else {
