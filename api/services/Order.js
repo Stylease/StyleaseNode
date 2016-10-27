@@ -27,10 +27,7 @@ var schema = new Schema({
         type: String,
         default: ""
     },
-    coupon: {
-        type: String,
-        default: ""
-    },
+    
     timestamp: Date,
     billingAddressFlat: {
         type: String,
@@ -103,9 +100,16 @@ var schema = new Schema({
         pickupTime: String,
     }],
 
-    subtotal: {
+    rentalamount: {
         type: Number,
         default: 0
+    },  subtotal: {
+        type: Number,
+        default: 0
+    },
+   coupon: {
+        type: String,
+        default: ""
     },
     discount:{
   type: Number,
@@ -422,7 +426,7 @@ var models = {
                     if (_.isEmpty(found)) {
                         order.orderid = 1;
                     } else {
-                        order.orderid = found.orderid + 1;
+                         order.orderid = found.orderid + 1;
                     }
                     order.save(function (err, created) {
                         if (err) {

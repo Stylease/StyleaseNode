@@ -129,6 +129,7 @@ var models = {
 
      checkCoupon: function(data, callback) {
         this.findOne({
+            status:true,
             name: data.name,
              minamt: { $lte: data.amt },
              maxamt: { $gte: data.amt } 
@@ -139,6 +140,7 @@ var models = {
             } else{
               var founddata ={};
                    if (found) {
+                     founddata.coupon = found.name;
                      founddata.discount = found.discount;
                      founddata.discountamount = (data.amt *found.discount)/100;
                       callback(null, founddata);
