@@ -107,6 +107,14 @@ var schema = new Schema({
         type: Number,
         default: 0
     },
+    discount:{
+  type: Number,
+        default: 0
+    }, 
+     discountamount:{
+  type: Number,
+        default: 0
+    },
     servicetax: {
         type: Number,
         default: 0
