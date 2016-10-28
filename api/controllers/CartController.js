@@ -261,4 +261,15 @@ module.exports = {
             });
         }
     },
+
+     checkoutCheck: function (req, res) {
+        if (req.body) {
+            Cart.checkoutCheck(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
 };

@@ -150,6 +150,7 @@ module.exports = {
     },
 
 
+
     getPickupreminder: function (req, res) {
         if (req.body) {
             Order.getPickupreminder(req.body, res.callback);

@@ -19,7 +19,7 @@ var schema = new Schema({
         default: 0
     },
     maxamt: {
-         type: Number,
+        type: Number,
         default: 0
     }
 });
@@ -27,12 +27,12 @@ var schema = new Schema({
 module.exports = mongoose.model('Coupon', schema);
 
 var models = {
-    sort: function(data, callback) {
+    sort: function (data, callback) {
         function callSave(num) {
             Coupon.saveData({
                 _id: data[num],
                 order: num + 1
-            }, function(err, respo) {
+            }, function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -54,7 +54,7 @@ var models = {
             callback(null, {});
         }
     },
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         //        delete data.password;
         var coupon = this(data);
         if (data._id) {
@@ -62,7 +62,7 @@ var models = {
                 _id: data._id
             }, {
                 $set: data
-            }).exec(function(err, updated) {
+            }).exec(function (err, updated) {
                 if (err) {
                     callback(err, null);
                 } else if (updated) {
@@ -72,7 +72,7 @@ var models = {
                 }
             });
         } else {
-            coupon.save(function(err, created) {
+            coupon.save(function (err, created) {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
@@ -83,10 +83,10 @@ var models = {
             });
         }
     },
-    deleteData: function(data, callback) {
+    deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -96,10 +96,10 @@ var models = {
             }
         });
     },
-    getAll: function(data, callback) {
+    getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -110,12 +110,12 @@ var models = {
             }
         });
     },
-    getOne: function(data, callback) {
+    getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -127,46 +127,55 @@ var models = {
         });
     },
 
-     checkCoupon: function(data, callback) {
+    checkCoupon: function (data, callback) {
         this.findOne({
-            status:true,
+            status: true,
             name: data.name,
-             minamt: { $lte: data.amt },
-             maxamt: { $gte: data.amt } 
-        }).exec(function(err, found) {
+            minamt: {
+                $lte: data.amt
+            }
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
-            } else{
-              var founddata ={};
-                   if (found) {
-                     founddata.coupon = found.name;
-                     founddata.discount = found.discount;
-                     founddata.discountamount = (data.amt *found.discount)/100;
-                      callback(null, founddata);
+            } else {
+                var founddata = {};
+                console.log("aaa", found);
+                if (found) {
+                    founddata.coupon = found.name;
+                    founddata.discount = found.discount;
+                    founddata.discountamount = (data.amt * found.discount) / 100;
+
+                    if (founddata.discountamount >= found.maxamt) {
+                        founddata.discountamount = found.maxamt;
+                        callback(null, founddata);
+                    } else {
+                        callback(null, founddata);
+                    }
+                    //   callback(null, founddata);
 
                 } else {
-                     callback({
+                    callback({
                         message: "Please enter valid coupon"
                     }, null);
-                   
+
                 }
-        }
+            }
         });
     },
-    getLimited: function(data, callback) {
+    getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Coupon.count({
                     name: {
                         "$regex": checkfor
                     }
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -179,14 +188,14 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Coupon.find({
                     name: {
                         "$regex": checkfor
                     }
                 }, {}).sort({
                     order: 1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function(err, data2) {
+                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -203,7 +212,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);

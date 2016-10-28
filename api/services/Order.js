@@ -828,6 +828,19 @@ var models = {
         })
     },
 
+      checkoutCheck: function (data, callback) {
+        Order.find({
+            orderid: data.orderid
+        }).exec(function (err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, found);
+            }
+        })
+    },
+
     getPickupreminder: function (data, callback) {
         var nextday = new Date();
         nextday.setDate(nextday.getDate() + 1);

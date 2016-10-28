@@ -492,16 +492,12 @@ var models = {
                 // callback(null, found);
                 // console.log("cartproducts", found.cartproduct);
                 if (found && found.cartproduct) {
-                    console.log("in cartp");
-
-                    function callme(num) {
-                        console.log("cartproduct", found.cartproduct.length, "num", num);
-                        if (num === found.cartproduct.length) {
+                       function callme(num) {
+                            if (num === found.cartproduct.length) {
                             // console.log("cart completed");
                             callback(null, "Done");
                         } else {
-                            console.log("in else", data);
-                            var mydata = {};
+                              var mydata = {};
                             mydata.cartproduct = {};
                             mydata.user = data.user;
                             // mydata.cartproduct = found.cartproduct[num];
@@ -561,8 +557,20 @@ var models = {
                 }
             }
         });
+},
 
 
+  checkoutCheck: function (data, callback) {
+        ProductTime.find({
+            orderid: data.orderid
+        }).exec(function (err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, found);
+            }
+        })
     },
 };
 
