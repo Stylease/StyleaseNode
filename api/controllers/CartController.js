@@ -262,9 +262,17 @@ module.exports = {
         }
     },
 
-     checkoutCheck: function (req, res) {
+    checkoutCheck: function (req, res) {
         if (req.body) {
-            Cart.checkoutCheck(req.body, res.callback);
+            if (req.session.user) {
+                req.body.user = req.session.user._id;
+                Cart.checkoutCheck(req.body, res.callback);
+            }else{
+                res.json({
+                value: false,
+                data: "User not logged in"
+            }); 
+            }
         } else {
             res.json({
                 value: false,

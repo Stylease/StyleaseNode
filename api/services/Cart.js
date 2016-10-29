@@ -252,7 +252,7 @@ var models = {
             function (callback1) {
                 Cart.find({
                     user: data.user
-                }, {}).populate("cartproduct.product", "name price fourdayrentalamount eightdayrentalamount fourdaysecuritydeposit eightdaysecuritydeposit images").lean().exec(function (err, data2) {
+                }, {}).populate("cartproduct.product", "name price fourdayrentalamount eightdayrentalamount fourdaysecuritydeposit eightdaysecuritydeposit images").lean().sort({"cartproduct._id":-1}).exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -492,12 +492,12 @@ var models = {
                 // callback(null, found);
                 // console.log("cartproducts", found.cartproduct);
                 if (found && found.cartproduct) {
-                       function callme(num) {
-                            if (num === found.cartproduct.length) {
+                    function callme(num) {
+                        if (num === found.cartproduct.length) {
                             // console.log("cart completed");
                             callback(null, "Done");
                         } else {
-                              var mydata = {};
+                            var mydata = {};
                             mydata.cartproduct = {};
                             mydata.user = data.user;
                             // mydata.cartproduct = found.cartproduct[num];
@@ -557,20 +557,98 @@ var models = {
                 }
             }
         });
-},
+    },
 
 
-  checkoutCheck: function (data, callback) {
-        ProductTime.find({
-            orderid: data.orderid
-        }).exec(function (err, found) {
+    checkoutCheck: function (data, callback) {
+        Cart.findOne({
+            user: data.user
+        }).exec(function (err, userdata) {
             if (err) {
-                console.log(err);
                 callback(err, null);
             } else {
-                callback(null, found);
+                var bookedarr = [];
+                // callback(null, userdata);
+                console.log(userdata.cartproduct, "user");
+                if (userdata.cartproduct) {
+                    console.log("in ifff");
+
+                    function callme(num) {
+                        console.log("inn num", num, userdata.cartproduct.length);
+                        if (num === userdata.cartproduct.length) {
+                            // console.log("find completed");
+                            if(bookedarr.length>0){
+                                 callback(null, bookedarr);
+                                }else{
+                                    callback({message:"empty"}, null);
+                                }
+
+                           
+                        } else {
+                            var pro = {};
+                            pro.product = userdata.cartproduct[num].product;
+                            pro.timeFrom = userdata.cartproduct[num].timeFrom;
+                            pro.timeTo = userdata.cartproduct[num].timeTo;
+                            findbookedpro(pro, num);
+                        }
+                    }
+
+                    function findbookedpro(pro, num) {
+                        ProductTime.findOne({
+                            product: pro.product,
+                            timeFrom: {
+                                $gte: pro.timeFrom,
+                                $lt: pro.timeTo
+                            }
+                        }).exec(function (err, found) {
+                            if (err) {
+                                console.log(err);
+                                callback(err, null);
+                            } else {
+                                if(found){
+                                bookedarr.push(found.product);
+                                }
+                                //    console("null", bookedarr);
+                             
+                                num++;
+                                callme(num);
+                            }
+                        });
+                    }
+
+                    callme(0);
+
+
+                    // _.each(userdata.cartproduct, function (pro) {
+                    //     ProductTime.find({
+                    //         product: pro.product,
+                    //         timeFrom: {$gte: pro.timeFrom, $lt: pro.timeTo}
+                    //     }).exec(function (err, found) {
+                    //         if (err) {
+                    //             console.log(err);
+                    //             callback(err, null);
+                    //         } else {
+                    //             // callback(null, found);
+                    //             bookedarr.push(found);
+
+                    //         }
+                    //     });
+                    // });
+                } else {
+                    callback(null, userdata);
+                }
             }
-        })
+        });
+        // ProductTime.find({
+        //     orderid: data.orderid
+        // }).exec(function (err, found) {
+        //     if (err) {
+        //         console.log(err);
+        //         callback(err, null);
+        //     } else {
+        //         callback(null, found);
+        //     }
+        // });
     },
 };
 
