@@ -417,7 +417,7 @@ var models = {
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
             function (callback) {
-                Product.find(matchobj).select('_id name fourdayrentalamount eightdayrentalamount images subcategory').sort(sortfilter).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
+                Product.find(matchobj).select('_id name designer fourdayrentalamount eightdayrentalamount images subcategory').populate('designer','name').sort(sortfilter).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
