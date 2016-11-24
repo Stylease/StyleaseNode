@@ -625,9 +625,11 @@ var models = {
             var search = {}
         } else {
             var search = {
-                orderstatus: data.search
-            }
+                orderstatus: data.status,
+                coupon:data.coupon
+              }
         }
+        console.log("Sss", search);
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
