@@ -230,6 +230,20 @@ var models = {
             }
         });
     },
+
+
+    getOneProduct: function (data, callback) {
+        ProductTime.find({
+            product: data.product
+        }).exec(function (err, prodata) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, prodata);
+            }
+        });
+    }
 };
 
 module.exports = _.assign(module.exports, models);

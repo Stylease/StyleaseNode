@@ -621,16 +621,20 @@ var models = {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         // var checkfor = new RegExp(data.search, "i");
-        if (data.search === "") {
-            var search = {}
+        if (data.search.status === "") {
+            var search = {
+                 coupon:data.coupon
+            }
         } else {
             var search = {
                 orderstatus: data.status,
                 coupon:data.coupon
               }
         }
-        console.log("Sss", search);
-        var newreturns = {};
+        if(search.coupon === "" || search.coupon== undefined){
+            delete search.coupon;
+        }
+         var newreturns = {};
         newreturns.data = [];
         async.parallel([
             function (callback1) {

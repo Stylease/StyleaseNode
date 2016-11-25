@@ -99,5 +99,16 @@ module.exports = {
         }
     },
 
+    getOneProduct: function (req, res) {
+        if (req.body) {
+            ProductTime.getOneProduct(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    }
+
 
 };
