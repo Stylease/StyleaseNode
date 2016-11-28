@@ -240,7 +240,16 @@ var models = {
                 console.log(err);
                 callback(err, null);
             } else {
-                callback(null, prodata);
+                console.log("Aaa",prodata);
+                  callback(null, prodata);
+                // if (prodata.length > 0) {
+                //     callback(null, prodata);
+                // } else {
+                //     callback({
+                //         message: "No data found"
+                //     }, null);
+                // }
+
             }
         });
     }

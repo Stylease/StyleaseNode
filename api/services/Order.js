@@ -621,7 +621,7 @@ var models = {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         // var checkfor = new RegExp(data.search, "i");
-        if (data.search.status === "") {
+        if (data.status === "") {
             var search = {
                  coupon:data.coupon
             }
