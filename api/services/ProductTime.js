@@ -233,23 +233,56 @@ var models = {
 
 
     getOneProduct: function (data, callback) {
-        ProductTime.find({
-            product: data.product
-        }).exec(function (err, prodata) {
+            data.pagenumber = parseInt(data.pagenumber);
+        data.pagesize = parseInt(data.pagesize);
+        var checkfor = new RegExp(data.search, "i");
+        var newreturns = {};
+        newreturns.data = [];
+        async.parallel([
+            function (callback1) {
+                ProductTime.count({
+                    product: data._id
+                }).exec(function (err, number) {
+                    if (err) {
+                        console.log(err);
+                        callback1(err, null);
+                    } else if (number) {
+                        newreturns.totalpages = Math.ceil(number / data.pagesize);
+                        callback1(null, newreturns);
+                    } else {
+                        newreturns.totalpages = 0;
+                        callback1(null, newreturns);
+                    }
+                });
+            },
+            function (callback1) {
+                ProductTime.find({
+                    product: data._id
+                }, {}).sort({
+                    _id: -1
+                }).populate("product", "name").skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback1(err, null);
+                    } else {
+                        if (data2 && data2.length > 0) {
+                            newreturns.data = data2;
+                            newreturns.pagenumber = data.pagenumber;
+                            callback1(null, newreturns);
+                        } else {
+                            callback1({
+                                message: "No data found"
+                            }, null);
+                        }
+                    }
+                });
+            }
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
             } else {
-                console.log("Aaa",prodata);
-                  callback(null, prodata);
-                // if (prodata.length > 0) {
-                //     callback(null, prodata);
-                // } else {
-                //     callback({
-                //         message: "No data found"
-                //     }, null);
-                // }
-
+                callback(null, newreturns);
             }
         });
     }
