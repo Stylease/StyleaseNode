@@ -14,6 +14,10 @@ module.exports = {
         }
     },
 
+    generateExcel: function (req, res) {
+        Product.generateExcel(res);
+    },
+
     save: function (req, res) {
         if (req.body) {
             Product.saveData(req.body, res.callback);

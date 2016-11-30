@@ -154,6 +154,87 @@ var models = {
             callback(null, {});
         }
     },
+
+
+    generateExcel: function (res) {
+        var Model = this;
+        var newObj;
+        var aggText = [];
+        var catObj = [];
+        var Array2 = [];
+        Model.find().populate("category", "name").populate("subcategory", "name").populate("designer", "name")
+            .populate("suggestedProduct", "name").populate("color", "name").populate("size", "name").exec(function (err, data) {
+                var excelData = [];
+                _.each(data, function (n) {
+                    var obj = {};
+                    var arrCategory = [];
+                    _.each(n.category, function (m) {
+                        arrCategory.push(m.name);
+                    });
+                    var arrSubCategory = [];
+                    _.each(n.subcategory, function (m) {
+                        arrSubCategory.push(m.name);
+                    });
+                    var arrSuggested = [];
+                    var suggObj;
+                    if (n.suggestedProduct) {
+                        _.each(n.suggestedProduct, function (m) {
+                            arrSuggested.push(m.name);
+                        });
+                    }
+                    var arrColor = [];
+                    _.each(n.color, function (m) {
+                        arrColor.push(m.name); //
+                    });
+
+                    var arrSize = [];
+                    _.each(n.size, function (m) {
+                        arrSize.push(m.name);
+
+                    });
+                    var arrImage = [];
+                    _.each(n.images, function (m) {
+                        arrImage.push(m.image);
+                    });
+
+
+                    console.log("_id", n._id);
+                    obj.name = n.name;
+                    obj.sku = n.sku;
+                    // obj.subcategory = n.subcategory;
+                    obj.category = arrCategory.toString();
+                    obj.subcategory = arrSubCategory.toString();
+                    if (n.designer) {
+                        obj.designer = n.designer.name;
+
+                    }
+                    obj.color = arrColor.toString();
+                    obj.size = arrSize.toString();
+                    obj.details = n.details;
+                    obj.care = n.care;
+                    obj.notes = n.notes;
+                    obj.additionalnotes = n.additionalnotes;
+                    obj.quantity = n.quantity;
+                    obj.booked = n.booked;
+                    obj.price = n.price;
+                    obj.size = n.size;
+                    obj.fourdayrentalamount = n.fourdayrentalamount;
+                    obj.eightdayrentalamount = n.eightdayrentalamount;
+                    obj.fourdaysecuritydeposit = n.fourdaysecuritydeposit;
+                    obj.eightdaysecuritydeposit = n.eightdaysecuritydeposit;
+                    obj.order = n.order;
+                    obj.suggestedProduct = arrSuggested.toString();
+                    obj.images = arrImage.toString();
+                    excelData.push(obj);
+
+
+                });
+                Config.generateExcel("Product", excelData, res);
+            });
+    },
+
+
+
     saveData: function (data, callback) {
         // console.log("pro", data.suggestedProduct);
         //delete data.password;
@@ -417,7 +498,7 @@ var models = {
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
             function (callback) {
-                Product.find(matchobj).select('_id name designer fourdayrentalamount eightdayrentalamount images subcategory').populate('designer','name').sort(sortfilter).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
+                Product.find(matchobj).select('_id name designer fourdayrentalamount eightdayrentalamount images subcategory').populate('designer', 'name').sort(sortfilter).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);

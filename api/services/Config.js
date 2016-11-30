@@ -15,6 +15,8 @@ var moment = require('moment');
 var MaxImageSize = 1200;
 var request = require("request");
 var requrl = "http://localhost:81/";
+var json2xls = require('json2xls');
+
 // var requrl = "http://130.211.245.224/:81/";
 var gfs = Grid(mongoose.connections[0].db, mongoose);
 gfs.mongo = mongoose.mongo;
@@ -33,6 +35,44 @@ module.exports = {
             });
         }
     },
+
+    generateExcel: function (name, found, res) {
+        name = _.kebabCase(name);
+        var excelData = [];
+        _.each(found, function (singleData) {
+            var singleExcel = {};
+            _.each(singleData, function (n, key) {
+                if (key != "__v" && key != "createdAt" && key != "updatedAt") {
+                    singleExcel[_.capitalize(key)] = n;
+                }
+            });
+            excelData.push(singleExcel);
+        });
+        var xls = json2xls(excelData);
+        var folder = "././.tmp/";
+        var path = name + "-" + moment().format("MMM-DD-YYYY-hh-mm-ss-a") + ".xlsx";
+        var finalPath = folder + path;
+        fs.writeFile(finalPath, xls, 'binary', function (err) {
+            if (err) {
+                res.callback(err, null);
+            } else {
+                fs.readFile(finalPath, function (err, excel) {
+                    if (err) {
+                        res.callback(err, null);
+                    } else {
+                        res.set('Content-Type', "application/octet-stream");
+                        res.set('Content-Disposition', "attachment;filename=" + path);
+                        res.send(excel);
+                        fs.unlink(finalPath);
+                    }
+                });
+            }
+        });
+
+    },
+
+
+
     uploadFile: function (filename, callback) {
 
         var id = mongoose.Types.ObjectId();
