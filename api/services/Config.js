@@ -14,10 +14,10 @@ var lodash = require('lodash');
 var moment = require('moment');
 var MaxImageSize = 1200;
 var request = require("request");
-var requrl = "http://localhost:81/";
+// var requrl = "http://localhost:81/";
 var json2xls = require('json2xls');
 
-// var requrl = "http://130.211.245.224/:81/";
+var requrl = "http://130.211.245.224/:81/"; 
 var gfs = Grid(mongoose.connections[0].db, mongoose);
 gfs.mongo = mongoose.mongo;
 
