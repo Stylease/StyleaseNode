@@ -157,12 +157,7 @@ var models = {
 
 
     generateExcel: function (res) {
-        var Model = this;
-        var newObj;
-        var aggText = [];
-        var catObj = [];
-        var Array2 = [];
-        Model.find().populate("category", "name").populate("subcategory", "name").populate("designer", "name")
+         Product.find().populate("category", "name").populate("subcategory", "name").populate("designer", "name")
             .populate("suggestedProduct", "name").populate("color", "name").populate("size", "name").exec(function (err, data) {
                 var excelData = [];
                 _.each(data, function (n) {
@@ -217,7 +212,6 @@ var models = {
                     obj.quantity = n.quantity;
                     obj.booked = n.booked;
                     obj.price = n.price;
-                    obj.size = n.size;
                     obj.fourdayrentalamount = n.fourdayrentalamount;
                     obj.eightdayrentalamount = n.eightdayrentalamount;
                     obj.fourdaysecuritydeposit = n.fourdaysecuritydeposit;

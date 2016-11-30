@@ -1,6 +1,8 @@
 var request = require('request');
 module.exports = {
-
+  generateExcel: function (req, res) {
+        Order.generateExcel(res);
+    },
     save: function (req, res) {
         if (req.body) {
             if (req.session.user) {

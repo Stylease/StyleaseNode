@@ -27,7 +27,7 @@ var schema = new Schema({
         type: String,
         default: ""
     },
-    
+
     timestamp: Date,
     billingAddressFlat: {
         type: String,
@@ -103,20 +103,21 @@ var schema = new Schema({
     rentalamount: {
         type: Number,
         default: 0
-    },  subtotal: {
+    },
+    subtotal: {
         type: Number,
         default: 0
     },
-   coupon: {
+    coupon: {
         type: String,
         default: ""
     },
-    discount:{
-  type: Number,
+    discount: {
+        type: Number,
         default: 0
-    }, 
-     discountamount:{
-  type: Number,
+    },
+    discountamount: {
+        type: Number,
         default: 0
     },
     servicetax: {
@@ -152,6 +153,36 @@ var schema = new Schema({
 module.exports = mongoose.model('Order', schema);
 
 var models = {
+
+
+    generateExcel: function (res) {
+        Order.find({}).populate("user", "name").populate("cartproduct.product", "name").exec(function (err, data) {
+            console.log("ddd", data);
+
+
+            var excelData = [];
+            _.each(data, function (orderdata) {
+                var obj = {};
+                obj.OrderId = orderdata.orderid;
+                obj.OrderStatus = orderdata.orderstatus;
+                obj.User = orderdata.user.name;
+                obj.PaymentMode = orderdata.paymentmode;
+                obj.TransactionId = orderdata.transactionid;
+                obj.Total = orderdata.total;
+                var arrCartproduct = [];
+                _.each(orderdata.cartproduct, function (cartpro) {
+                    // arrCartproduct.push(cartpro.product.name);
+                     obj.cartproduct = cartpro.product.name;
+                     excelData.push(obj);
+                     console.log(excelData, "Aa");
+                });
+               
+               
+            });
+            Config.generateExcel("Order", excelData, res);
+
+        });
+    },
 
     saveData: function (data, callback) {
         //        delete data.password;
@@ -426,7 +457,7 @@ var models = {
                     if (_.isEmpty(found)) {
                         order.orderid = 1;
                     } else {
-                         order.orderid = found.orderid + 1;
+                        order.orderid = found.orderid + 1;
                     }
                     order.save(function (err, created) {
                         if (err) {
@@ -623,18 +654,18 @@ var models = {
         // var checkfor = new RegExp(data.search, "i");
         if (data.status === "") {
             var search = {
-                 coupon:data.coupon
+                coupon: data.coupon
             }
         } else {
             var search = {
                 orderstatus: data.status,
-                coupon:data.coupon
-              }
+                coupon: data.coupon
+            }
         }
-        if(search.coupon === "" || search.coupon== undefined){
+        if (search.coupon === "" || search.coupon == undefined) {
             delete search.coupon;
         }
-         var newreturns = {};
+        var newreturns = {};
         newreturns.data = [];
         async.parallel([
             function (callback1) {
@@ -834,7 +865,7 @@ var models = {
         })
     },
 
-      checkoutCheck: function (data, callback) {
+    checkoutCheck: function (data, callback) {
         Order.find({
             orderid: data.orderid
         }).exec(function (err, found) {
