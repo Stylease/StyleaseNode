@@ -157,7 +157,7 @@ var models = {
 
 
     generateExcel: function (res) {
-         Product.find().populate("category", "name").populate("subcategory", "name").populate("designer", "name")
+        Product.find().populate("category", "name").populate("subcategory", "name").populate("designer", "name")
             .populate("suggestedProduct", "name").populate("color", "name").populate("size", "name").exec(function (err, data) {
                 var excelData = [];
                 _.each(data, function (n) {
@@ -226,6 +226,33 @@ var models = {
                 Config.generateExcel("Product", excelData, res);
             });
     },
+
+
+    importExcel: function (res) {
+
+        var abc = Config.importExcel("assets/abcd.xlsx");
+        // console.log(abc);
+      async.each(abc, function (j, callback) {
+         console.log("category", j.category);
+            // Product.saveData(j, function (err, updated) {
+            //     if (err) {
+            //         console.log(err);
+            //         // callback(err, null);
+            //     } else {
+            //         //   callback(null, updated);
+            //     }
+            // });
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                // callback(err, null);
+            } else {
+                // callback(null, "Excel Imported Successfully");
+            }
+        });
+
+    },
+
 
 
 

@@ -14,10 +14,11 @@ var lodash = require('lodash');
 var moment = require('moment');
 var MaxImageSize = 1200;
 var request = require("request");
-// var requrl = "http://localhost:81/";
+var requrl = "http://localhost:81/";
 var json2xls = require('json2xls');
+var xlsx = require('node-xlsx').default;
 
-var requrl = "http://130.211.245.224/:81/"; 
+// var requrl = "http://130.211.245.224/:81/";
 var gfs = Grid(mongoose.connections[0].db, mongoose);
 gfs.mongo = mongoose.mongo;
 
@@ -43,7 +44,8 @@ module.exports = {
             var singleExcel = {};
             _.each(singleData, function (n, key) {
                 if (key != "__v" && key != "createdAt" && key != "updatedAt") {
-                    singleExcel[_.capitalize(key)] = n;
+                    // singleExcel[_.capitalize(key)] = n;
+                    singleExcel[key] = n;
                 }
             });
             excelData.push(singleExcel);
@@ -71,6 +73,23 @@ module.exports = {
 
     },
 
+
+    importExcel: function (name) {
+        console.log("name", name);
+        var jsonExcel = xlsx.parse(name);
+        console.log(":jsonExcel",jsonExcel);
+        var retVal = [];
+        var firstRow = _.slice(jsonExcel[0].data, 0, 1)[0];
+        var excelDataToExport = _.slice(jsonExcel[0].data, 1);
+        var dataObj = [];
+        _.each(excelDataToExport, function (val, key) {
+            dataObj.push({});
+            _.each(val, function (value, key2) {
+                dataObj[key][firstRow[key2]] = value;
+            });
+        });
+        return dataObj;
+    },
 
 
     uploadFile: function (filename, callback) {

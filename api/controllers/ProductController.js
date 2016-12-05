@@ -18,6 +18,11 @@ module.exports = {
         Product.generateExcel(res);
     },
 
+
+    importExcel: function (req, res) {
+        Product.importExcel(res);
+    },
+
     save: function (req, res) {
         if (req.body) {
             Product.saveData(req.body, res.callback);
