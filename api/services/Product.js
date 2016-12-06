@@ -231,25 +231,26 @@ var models = {
     importExcel: function (res) {
 
         var abc = Config.importExcel("assets/abcd.xlsx");
-        // console.log(abc);
-      async.each(abc, function (j, callback) {
-         console.log("category", j.category);
-            // Product.saveData(j, function (err, updated) {
-            //     if (err) {
-            //         console.log(err);
-            //         // callback(err, null);
-            //     } else {
-            //         //   callback(null, updated);
-            //     }
-            // });
-        }, function (err) {
-            if (err) {
-                console.log(err);
-                // callback(err, null);
-            } else {
-                // callback(null, "Excel Imported Successfully");
-            }
-        });
+        console.log("abccccccc",abc);
+    //   async.each(abc, function (j, callback) {
+    //      console.log("category", j.subcategory);
+
+    //         // Product.saveData(j, function (err, updated) {
+    //         //     if (err) {
+    //         //         console.log(err);
+    //         //         // callback(err, null);
+    //         //     } else {
+    //         //         //   callback(null, updated);
+    //         //     }
+    //         // });
+    //     }, function (err) {
+    //         if (err) {
+    //             console.log(err);
+    //             // callback(err, null);
+    //         } else {
+    //             // callback(null, "Excel Imported Successfully");
+    //         }
+    //     });
 
     },
 
