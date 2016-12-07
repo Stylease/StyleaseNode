@@ -231,26 +231,53 @@ var models = {
     importExcel: function (res) {
 
         var abc = Config.importExcel("assets/abcd.xlsx");
-        console.log("abccccccc",abc);
-    //   async.each(abc, function (j, callback) {
-    //      console.log("category", j.subcategory);
 
-    //         // Product.saveData(j, function (err, updated) {
-    //         //     if (err) {
-    //         //         console.log(err);
-    //         //         // callback(err, null);
-    //         //     } else {
-    //         //         //   callback(null, updated);
-    //         //     }
-    //         // });
-    //     }, function (err) {
-    //         if (err) {
-    //             console.log(err);
-    //             // callback(err, null);
-    //         } else {
-    //             // callback(null, "Excel Imported Successfully");
-    //         }
-    //     });
+        // console.log("abc", abc);
+
+        async.each(abc, function (j, callback) {
+            var str = j.subcategory;
+            var myarray = str.split(',');
+            // console.log("myarray", myarray);
+
+            Subcategory.find({
+                name: {
+                    $in: myarray
+                }
+            }).exec(function (err, found) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    subcatarr = [];
+                    _.each(found, function (subcat) {
+                        subcatarr.push(subcat._id.toString());
+                    });
+                     j.subcategory = subcatarr;
+                    j.category = [];
+                }
+            });
+
+            setTimeout(function () {
+                console.log("jjjjjj", j);
+                Product.saveData(j, function (err, updated) {
+                    if (err) {
+                        console.log(err);
+                        // callback(err, null);
+                    } else {
+                        //   callback(null, updated);
+                    }
+                });
+            }, 3000);
+
+
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                // callback(err, null);
+            } else {
+                callback(null, "Excel Imported Successfully");
+            }
+        });
 
     },
 
@@ -503,9 +530,8 @@ var models = {
             var sortfilter = {
                 booked: 1
             }
-        }
-        else{
-             var sortfilter = {
+        } else {
+            var sortfilter = {
                 _id: -1
             }
         }

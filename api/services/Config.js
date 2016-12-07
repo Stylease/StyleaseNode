@@ -83,14 +83,10 @@ module.exports = {
         var excelDataToExport = _.slice(jsonExcel[0].data, 1);
         var dataObj = [];
         _.each(excelDataToExport, function (val, key) {
-            console.log("log val", val);
-            console.log("log key", key);
-            dataObj.push({});
+             dataObj.push({});
             _.each(val, function (value, key2) {
                 dataObj[key][firstRow[key2]] = value;
-                console.log("val of log", value);
-                console.log("val of key", key2);
-            });
+                });
         });
         return dataObj;
     },
