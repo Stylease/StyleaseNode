@@ -220,69 +220,83 @@ var models = {
                     obj.suggestedProduct = arrSuggested.toString();
                     obj.images = arrImage.toString();
                     excelData.push(obj);
-
-
                 });
                 Config.generateExcel("Product", excelData, res);
             });
     },
-
-
-    importExcel: function (res) {
-
-        var abc = Config.importExcel("assets/abcd.xlsx");
-
-        // console.log("abc", abc);
-
-        async.each(abc, function (j, callback) {
-            var str = j.subcategory;
-            var myarray = str.split(',');
+    import: function (data, callback) {
+        var Model = this;
+        var retVal = [];
+        async.eachSeries(data, function (n, callback) {
+            var strsubcat = n.subcategory;
+            var subcatarray = strsubcat.split(',');
+            var strcat = n.category;
+            var catarray = strcat.split(',');
             // console.log("myarray", myarray);
-
-            Subcategory.find({
-                name: {
-                    $in: myarray
-                }
-            }).exec(function (err, found) {
+            async.parallel([function (callback1) {
+                Subcategory.find({
+                    name: {
+                        $in: subcatarray
+                    }
+                }).exec(function (err, found) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        subcatarr = [];
+                        _.each(found, function (subcat) {
+                            subcatarr.push(subcat._id.toString());
+                        });
+                        n.subcategory = subcatarr;
+                        callback1(null, "done");
+                    }
+                });
+            }, function (callback1) {
+                Category.find({
+                    name: {
+                        $in: catarray
+                    }
+                }).exec(function (err, found) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        catarr = [];
+                        _.each(found, function (cat) {
+                            catarr.push(cat._id.toString());
+                        });
+                        n.category = catarr;
+                        callback1(null, "done");
+                    }
+                });
+            }], function (err, respo) {
                 if (err) {
                     console.log(err);
-                    callback(err, null);
+                    callback1(err, null);
                 } else {
-                    subcatarr = [];
-                    _.each(found, function (subcat) {
-                        subcatarr.push(subcat._id.toString());
+                    Model(n).save(n, function (err, data) {
+                        if (err) {
+                            err.val = data;
+                            retVal.push(err);
+                        } else {
+                            retVal.push(data._id);
+                        }
+                        callback();
                     });
-                     j.subcategory = subcatarr;
-                    j.category = [];
                 }
             });
 
-            setTimeout(function () {
-                console.log("jjjjjj", j);
-                Product.saveData(j, function (err, updated) {
-                    if (err) {
-                        console.log(err);
-                        // callback(err, null);
-                    } else {
-                        //   callback(null, updated);
-                    }
-                });
-            }, 3000);
-
-
         }, function (err) {
             if (err) {
-                console.log(err);
-                // callback(err, null);
+                callback(err, data);
             } else {
-                callback(null, "Excel Imported Successfully");
+                callback(err, {
+                    total: retVal.length,
+                    value: retVal
+                });
             }
         });
-
     },
-
-
-
 
     saveData: function (data, callback) {
         // console.log("pro", data.suggestedProduct);

@@ -19,9 +19,21 @@ module.exports = {
     },
 
 
-    importExcel: function (req, res) {
-        Product.importExcel(res);
+    import: function (req, res) {
+        if (req.body.file) {
+            Config.importGS(req.body.file, function (err, data) {
+                if (err) {
+                    callback(err, callback);
+                } else {
+                    // req.model.import(data, res.callback);
+                    Product.import(data, res.callback);
+                }
+            });
+        } else {
+            res.callback("Incorrect Data Format");
+        }
     },
+
 
     save: function (req, res) {
         if (req.body) {

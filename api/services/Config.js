@@ -73,22 +73,60 @@ module.exports = {
 
     },
 
+  import: function (name) {
+        var jsonExcel = xlsx.parse(name);
+        var retVal = [];
+        console.log("jsonExcel",jsonExcel);
+        var firstRow = _.slice(jsonExcel[0].data, 0, 1)[0];
+        var excelDataToExport = _.slice(jsonExcel[0].data, 1);
+        var dataObj = [];
+        _.each(excelDataToExport, function (val, key) {
+            dataObj.push({});
+            _.each(val, function (value, key2) {
+                dataObj[key][firstRow[key2]] = value;
+            });
+        });
+        return dataObj;
+    },
 
     importExcel: function (name) {
         console.log("name", name);
         var jsonExcel = xlsx.parse(name);
-        console.log(":jsonExcel",jsonExcel);
+        console.log(":jsonExcel", jsonExcel);
         var retVal = [];
         var firstRow = _.slice(jsonExcel[0].data, 0, 1)[0];
         var excelDataToExport = _.slice(jsonExcel[0].data, 1);
         var dataObj = [];
         _.each(excelDataToExport, function (val, key) {
-             dataObj.push({});
+            dataObj.push({});
             _.each(val, function (value, key2) {
                 dataObj[key][firstRow[key2]] = value;
-                });
+            });
         });
         return dataObj;
+    },
+
+
+    importGS: function (filename, callback) {
+        var readstream = gfs.createReadStream({
+            filename: filename
+        });
+        readstream.on('error', function (err) {
+            res.json({
+                value: false,
+                error: err
+            });
+        });
+        var buffers = [];
+        console.log("buffers", buffers);
+        readstream.on('data', function (buffer) {
+            buffers.push(buffer);
+        });
+        readstream.on('end', function () {
+            var buffer = Buffer.concat(buffers);
+            console.log("buffer", buffer);
+            callback(null, Config.import(buffer));
+        });
     },
 
 
