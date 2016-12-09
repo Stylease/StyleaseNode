@@ -192,8 +192,6 @@ var models = {
                         arrImage.push(m.image);
                     });
 
-
-                    console.log("_id", n._id);
                     obj.name = n.name;
                     obj.sku = n.sku;
                     // obj.subcategory = n.subcategory;
@@ -228,64 +226,167 @@ var models = {
         var Model = this;
         var retVal = [];
         async.eachSeries(data, function (n, callback) {
-             var strsubcat = n.subcategory;
+            var strsubcat = n.subcategory;
             var subcatarray = strsubcat.split(',');
             var strcat = n.category;
-            var catarray = strcat.split(',');
+            console.log("category", strcat);
+            if (!_.isEmpty(strcat)) {
+                var catarray = strcat.split(',');
+            }
+
+            var strcolor = n.color;
+            if (!_.isEmpty(strcolor)) {
+                var colorarray = strcolor.split(',');
+            }
+
+            var strsize = n.size;
+            if (!_.isEmpty(strsize)) {
+                var sizearray = strsize.split(',');
+            }
+
+            // var strsuggested = n.suggestedProduct;
+            // if (!_.isEmpty(strsuggested)) {
+            //     var suggestedarray = strsuggested.split(',');
+            // }
+            n.suggestedProduct = [];
             var strimages = n.images;
-            console.log("images", strimages);
-            var stimg =  strimages.split(',');
-            console.log("stimg", stimg);
+            if (!_.isEmpty(strimages)) {
+                var stimg = strimages.split(',');
+            }
             async.parallel([function (callback1) {
-                Subcategory.find({
-                    name: {
-                        $in: subcatarray
-                    }
-                }).exec(function (err, found) {
-                    if (err) {
-                        console.log(err);
-                        callback(err, null);
-                    } else {
-                        subcatarr = [];
-                        _.each(found, function (subcat) {
-                            subcatarr.push(subcat._id.toString());
+                    Subcategory.find({
+                        name: {
+                            $in: subcatarray
+                        }
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            subcatarr = [];
+                            _.each(found, function (subcat) {
+                                subcatarr.push(subcat._id.toString());
+                            });
+                            // n.subcategory = [];
+                            n.subcategory = subcatarr;
+                            callback1(null, "done");
+                        }
+                    });
+                }, function (callback1) {
+                    Category.find({
+                        name: {
+                            $in: catarray
+                        }
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            catarr = [];
+                            _.each(found, function (cat) {
+                                catarr.push(cat._id.toString());
+                            });
+                            // n.category = [];
+                            n.category = catarr;
+                            callback1(null, "done");
+                        }
+                    });
+                },
+                function (callback1) {
+                    Designer.findOne({
+                        name: n.designer
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            if (_.isEmpty(found)) {
+                                n.designer = null;
+                            } else {
+                                n.designer = found._id;
+                            }
+
+                            callback1(null, "done");
+                        }
+                    });
+                },
+                function (callback1) {
+                    Color.find({
+                        name: {
+                            $in: colorarray
+                        }
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            colarray = [];
+                            _.each(found, function (color) {
+                                colarray.push(color._id.toString());
+                            });
+                            // n.category = [];
+                            n.color = colarray;
+                            callback1(null, "done");
+                        }
+                    });
+                },
+                function (callback1) {
+                    Size.find({
+                        name: {
+                            $in: sizearray
+                        }
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            sizearr = [];
+                            _.each(found, function (size) {
+                                sizearr.push(size._id.toString());
+                            });
+                            // n.category = [];
+                            n.size = sizearr;
+                            callback1(null, "done");
+                        }
+                    });
+                }
+                // ,
+                //  function (callback1) {
+                //     Product.find({
+                //         name: {
+                //             $in: suggestedarray
+                //         }
+                //     }).exec(function (err, found) {
+                //         if (err) {
+                //             console.log(err);
+                //             callback(err, null);
+                //         } else {
+                //             console.log("aaaaa",found);
+                //             sugesarr = [];
+                //             _.each(found, function (suges) {
+                //                 sugesarr.push(suges._id.toString());
+                //             });
+                //             // n.sugesegory = [];
+                //             n.suggestedProduct = sugesarr;
+                //             callback1(null, "done");
+                //         }
+                //     });
+                // }
+
+                ,
+                function (callback1) {
+                    imagesarr = [];
+                    var i = 0;
+                    _.each(stimg, function (img) {
+                        i++;
+                        imagesarr.push({
+                            "image": img.toString(),
+                            "order": i
                         });
-                        // n.subcategory = [];
-                        n.subcategory = subcatarr;
-                        callback1(null, "done");
-                    }
-                });
-            }, function (callback1) {
-                Category.find({
-                    name: {
-                        $in: catarray
-                    }
-                }).exec(function (err, found) {
-                    if (err) {
-                        console.log(err);
-                        callback(err, null);
-                    } else {
-                        catarr = [];
-                        _.each(found, function (cat) {
-                            catarr.push(cat._id.toString());
-                        });
-                        // n.category = [];
-                        n.category = catarr;
-                        callback1(null, "done");
-                    }
-                });
-            }
-            ,
-            function(callback1){
-                imagesarr = [];
-                var i = 0;
-                        _.each(stimg, function (img) {
-                            i++;
-                            imagesarr.push({"image":img.toString(),"order":i});
-                        });
-                         n.images = imagesarr;
-                        callback1(null, "done");
-            }
+                    });
+                    n.images = imagesarr;
+                    callback1(null, "done");
+                }
             ], function (err, respo) {
                 if (err) {
                     console.log(err);

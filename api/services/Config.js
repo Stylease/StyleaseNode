@@ -73,10 +73,10 @@ module.exports = {
 
     },
 
-  import: function (name) {
+    import: function (name) {
         var jsonExcel = xlsx.parse(name);
         var retVal = [];
-        console.log("jsonExcel",jsonExcel);
+        console.log("jsonExcel", jsonExcel);
         var firstRow = _.slice(jsonExcel[0].data, 0, 1)[0];
         var excelDataToExport = _.slice(jsonExcel[0].data, 1);
         var dataObj = [];
@@ -130,10 +130,94 @@ module.exports = {
     },
 
 
-    uploadFile: function (filedata, filename, callback) {
+    uploadFile: function (filename, callback) {
+
+        var id = mongoose.Types.ObjectId();
+        var extension = filename.split(".").pop();
+        extension = extension.toLowerCase();
+        if (extension == "jpeg") {
+            extension = "jpg";
+        }
+
+        var newFilename = id + "." + extension;
+
+
+        var writestream = gfs.createWriteStream({
+            filename: newFilename
+        });
+        var imageStream = fs.createReadStream(filename);
+
+        function writer2(metaValue) {
+            var writestream2 = gfs.createWriteStream({
+                filename: newFilename,
+                metadata: metaValue
+            });
+            writestream2.on('finish', function () {
+                callback(null, {
+                    name: newFilename
+                });
+                fs.unlink(filename);
+            });
+            fs.createReadStream(filename).pipe(writestream2);
+        }
+
+        if (extension == "png" || extension == "jpg" || extension == "gif") {
+            lwip.open(filename, extension, function (err, image) {
+                var upImage = {
+                    width: image.width(),
+                    height: image.height(),
+                    ratio: image.width() / image.height()
+                };
+
+                if (upImage.width > upImage.height) {
+                    if (upImage.width > MaxImageSize) {
+                        image.resize(MaxImageSize, MaxImageSize / (upImage.width / upImage.height), function (err, image2) {
+                            upImage = {
+                                width: image2.width(),
+                                height: image2.height(),
+                                ratio: image2.width() / image2.height()
+                            };
+                            image2.writeFile(filename, function (err) {
+                                writer2(upImage);
+                            });
+                        });
+                    } else {
+                        writer2(upImage);
+                    }
+                } else {
+                    if (upImage.height > MaxImageSize) {
+                        image.resize((upImage.width / upImage.height) * MaxImageSize, MaxImageSize, function (err, image2) {
+                            upImage = {
+                                width: image2.width(),
+                                height: image2.height(),
+                                ratio: image2.width() / image2.height()
+                            };
+                            image2.writeFile(filename, function (err) {
+                                writer2(upImage);
+                            });
+                        });
+                    } else {
+                        writer2(upImage);
+                    }
+                }
+            });
+        } else {
+            imageStream.pipe(writestream);
+        }
+
+        writestream.on('finish', function () {
+            callback(null, {
+                name: newFilename
+            });
+            fs.unlink(filename);
+        });
+    },
+
+
+    uploadAllFile: function (filedata, filename, callback) {
         console.log("filedata", filedata);
-       
-console.log("filename", filename);
+
+        console.log("filename", filename);
         var id = mongoose.Types.ObjectId();
         var extension = filename.split(".").pop();
         extension = extension.toLowerCase();
@@ -141,8 +225,6 @@ console.log("filename", filename);
             extension = "jpg";
         }
         var newFilename = filedata;
-        // var newFilename = id + "." + extension;
-
         var writestream = gfs.createWriteStream({
             filename: newFilename
         });
