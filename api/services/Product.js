@@ -232,6 +232,8 @@ var models = {
             var subcatarray = strsubcat.split(',');
             var strcat = n.category;
             var catarray = strcat.split(',');
+            var strimages = n.images;
+            console.log("?images". strimages);
             // console.log("myarray", myarray);
             async.parallel([function (callback1) {
                 Subcategory.find({
@@ -269,20 +271,26 @@ var models = {
                         callback1(null, "done");
                     }
                 });
-            }], function (err, respo) {
+            }
+            // ,
+            // function(callback1){
+            //     Config.uploadFile();
+            // }
+            ], function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback1(err, null);
                 } else {
-                    Model(n).save(n, function (err, data) {
-                        if (err) {
-                            err.val = data;
-                            retVal.push(err);
-                        } else {
-                            retVal.push(data._id);
-                        }
-                        callback();
-                    });
+                    // Model(n).save(n, function (err, data) {
+                    //     if (err) {
+                    //         err.val = data;
+                    //         retVal.push(err);
+                    //     } else {
+                    //         retVal.push(data._id);
+                    //     }
+                    //     callback();
+                    // });
+                    callback();
                 }
             });
 

@@ -10,6 +10,7 @@ module.exports = {
         function callback2(err) {
             Config.GlobalCallback(err, fileNames, res);
         }
+        console.log("test");
         var fileNames = [];
         req.file("file").upload({
             maxBytes: 10000000 // 10 MB Storage 1 MB = 10^6
@@ -34,6 +35,8 @@ module.exports = {
             }
         });
     },
+
+    
     readFile: function (req, res) {
         res.setHeader("Cache-Control", "public, max-age=2592000");
         res.setHeader("Expires", new Date(Date.now() + 2592000000).toUTCString());
