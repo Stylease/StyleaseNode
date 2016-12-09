@@ -244,7 +244,7 @@ module.exports = {
             fs.createReadStream(filename).pipe(writestream2);
         }
 
-        if (extension == "png" || extension == "jpg" || extension == "gif") {
+        if (extension == "png" || extension == "jpg" || extension == "gif" ) {
             lwip.open(filename, extension, function (err, image) {
                 var upImage = {
                     width: image.width(),
