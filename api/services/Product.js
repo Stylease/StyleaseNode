@@ -228,14 +228,14 @@ var models = {
         var Model = this;
         var retVal = [];
         async.eachSeries(data, function (n, callback) {
-            console.log("images", n.images);
-            var strsubcat = n.subcategory;
+             var strsubcat = n.subcategory;
             var subcatarray = strsubcat.split(',');
             var strcat = n.category;
             var catarray = strcat.split(',');
             var strimages = n.images;
-            console.log("?images". strimages);
-            // console.log("myarray", myarray);
+            console.log("images", strimages);
+            var stimg =  strimages.split(',');
+            console.log("stimg", stimg);
             async.parallel([function (callback1) {
                 Subcategory.find({
                     name: {
@@ -250,8 +250,8 @@ var models = {
                         _.each(found, function (subcat) {
                             subcatarr.push(subcat._id.toString());
                         });
-                        n.subcategory = [];
-                        // n.subcategory = subcatarr;
+                        // n.subcategory = [];
+                        n.subcategory = subcatarr;
                         callback1(null, "done");
                     }
                 });
@@ -269,31 +269,38 @@ var models = {
                         _.each(found, function (cat) {
                             catarr.push(cat._id.toString());
                         });
-                        n.category = [];
-                        // n.category = catarr;
+                        // n.category = [];
+                        n.category = catarr;
                         callback1(null, "done");
                     }
                 });
             }
-            // ,
-            // function(callback1){
-            //     Config.uploadFile();
-            // }
+            ,
+            function(callback1){
+                imagesarr = [];
+                var i = 0;
+                        _.each(stimg, function (img) {
+                            i++;
+                            imagesarr.push({"image":img.toString(),"order":i});
+                        });
+                         n.images = imagesarr;
+                        callback1(null, "done");
+            }
             ], function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback1(err, null);
                 } else {
-                    // Model(n).save(n, function (err, data) {
-                    //     if (err) {
-                    //         err.val = data;
-                    //         retVal.push(err);
-                    //     } else {
-                    //         retVal.push(data._id);
-                    //     }
-                    //     callback();
-                    // });
-                    callback();
+                    Model(n).save(n, function (err, data) {
+                        if (err) {
+                            err.val = data;
+                            retVal.push(err);
+                        } else {
+                            retVal.push(data._id);
+                        }
+                        callback();
+                    });
+                    // callback();
                 }
             });
 

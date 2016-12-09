@@ -112,10 +112,10 @@ module.exports = {
             filename: filename
         });
         readstream.on('error', function (err) {
-            res.json({
-                value: false,
-                error: err
-            });
+            // res.json({
+            //     value: false,
+            //     error: err
+            // });
         });
         var buffers = [];
         console.log("buffers", buffers);
