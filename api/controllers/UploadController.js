@@ -10,18 +10,19 @@ module.exports = {
         function callback2(err) {
             Config.GlobalCallback(err, fileNames, res);
         }
-        console.log("test");
+        console.log("test", req.file);
         var fileNames = [];
         req.file("file").upload({
             maxBytes: 10000000 // 10 MB Storage 1 MB = 10^6
         }, function (err, uploadedFile) {
             if (uploadedFile && uploadedFile.length > 0) {
                 async.each(uploadedFile, function (n, callback) {
-                    Config.uploadFile(n.fd, function (err, value) {
+                    console.log("nnn",n);
+                    Config.uploadFile( n.filename, n.fd, function (err, value) {
                         if (err) {
                             callback(err);
                         } else {
-                            // console.log(value.name);
+                            console.log("value",value.name);
                             fileNames.push(value.name);
                             callback(null);
                         }

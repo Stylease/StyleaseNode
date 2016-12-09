@@ -130,15 +130,18 @@ module.exports = {
     },
 
 
-    uploadFile: function (filename, callback) {
-
+    uploadFile: function (filedata, filename, callback) {
+        console.log("filedata", filedata);
+       
+console.log("filename", filename);
         var id = mongoose.Types.ObjectId();
         var extension = filename.split(".").pop();
         extension = extension.toLowerCase();
         if (extension == "jpeg") {
             extension = "jpg";
         }
-        var newFilename = id + "." + extension;
+        var newFilename = filedata;
+        // var newFilename = id + "." + extension;
 
         var writestream = gfs.createWriteStream({
             filename: newFilename

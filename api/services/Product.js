@@ -228,6 +228,7 @@ var models = {
         var Model = this;
         var retVal = [];
         async.eachSeries(data, function (n, callback) {
+            console.log("images", n.images);
             var strsubcat = n.subcategory;
             var subcatarray = strsubcat.split(',');
             var strcat = n.category;
@@ -249,7 +250,8 @@ var models = {
                         _.each(found, function (subcat) {
                             subcatarr.push(subcat._id.toString());
                         });
-                        n.subcategory = subcatarr;
+                        n.subcategory = [];
+                        // n.subcategory = subcatarr;
                         callback1(null, "done");
                     }
                 });
@@ -267,7 +269,8 @@ var models = {
                         _.each(found, function (cat) {
                             catarr.push(cat._id.toString());
                         });
-                        n.category = catarr;
+                        n.category = [];
+                        // n.category = catarr;
                         callback1(null, "done");
                     }
                 });
