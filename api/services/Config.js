@@ -17,6 +17,8 @@ var request = require("request");
 var requrl = "http://localhost:81/";
 var json2xls = require('json2xls');
 var xlsx = require('node-xlsx').default;
+var http = require('http');
+
 
 // var requrl = "http://130.211.245.224/:81/";
 var gfs = Grid(mongoose.connections[0].db, mongoose);
@@ -131,7 +133,7 @@ module.exports = {
 
 
     uploadFile: function (filename, callback) {
-// console.log("filename in config", filename);
+        // console.log("filename in config", filename);
         var id = mongoose.Types.ObjectId();
         var extension = filename.split(".").pop();
         extension = extension.toLowerCase();
@@ -244,7 +246,7 @@ module.exports = {
             fs.createReadStream(filename).pipe(writestream2);
         }
 
-        if (extension == "png" || extension == "jpg" || extension == "gif" ) {
+        if (extension == "png" || extension == "jpg" || extension == "gif") {
             lwip.open(filename, extension, function (err, image) {
                 var upImage = {
                     width: image.width(),
@@ -491,4 +493,21 @@ module.exports = {
             }, null);
         }
     },
+
+    downloadFromUrl: function (url, callback) {
+        var dest = "./.tmp/" + moment().valueOf() + "-" + _.last(url.split("/"));
+        var file = fs.createWriteStream(dest);
+        var request = http.get(url, function (response) {
+            response.pipe(file);
+
+            file.on('finish', function () {
+                callback(null,dest);
+            });
+        }).on('error', function (err) { // Handle errors
+            
+            console.log(err);    
+            fs.unlink(dest); // Delete the file async. (But we don't check the result)
+            callback(err);
+        });
+    }
 };
