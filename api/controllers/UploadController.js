@@ -73,6 +73,7 @@ module.exports = {
         Config.readUploaded(req.query.file, req.query.width, req.query.height, req.query.style, res);
     },
     test: function(req,res) {
-        Config.uploadFile("./app.js",res.callback);
+        
+        //Config.uploadFile("./app.js",res.callback);
     }
 };
