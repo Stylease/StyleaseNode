@@ -71,17 +71,7 @@ module.exports = {
         res.setHeader("Cache-Control", "public, max-age=2592000");
         res.setHeader("Expires", new Date(Date.now() + 2592000000).toUTCString());
         Config.readUploaded(req.query.file, req.query.width, req.query.height, req.query.style, res);
-    },
-
-    test: function (req, res) {
-        Config.downloadFromUrl("http://www.google.co.in/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png", function (err, data) {
-            if (err) {
-                res.callback(err, data);
-            } else {
-                Config.uploadFile(data, res.callback);
-            }
-        });
-  }
+    }
 };
 
 

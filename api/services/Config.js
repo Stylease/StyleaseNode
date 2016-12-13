@@ -499,14 +499,11 @@ module.exports = {
         var file = fs.createWriteStream(dest);
         var request = http.get(url, function (response) {
             response.pipe(file);
-
             file.on('finish', function () {
-                callback(null,dest);
+                Config.uploadFile(dest, callback);
             });
-        }).on('error', function (err) { // Handle errors
-            
-            console.log(err);    
-            fs.unlink(dest); // Delete the file async. (But we don't check the result)
+        }).on('error', function (err) {
+            fs.unlink(dest);
             callback(err);
         });
     }
