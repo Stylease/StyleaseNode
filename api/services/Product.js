@@ -28,14 +28,8 @@ var schema = new Schema({
         default: ""
     },
     images: [{
-        image: {
-            type: String,
-            default: ""
-        },
-        order: {
-            type: Number,
-            default: 0
-        }
+        image: String,
+        order: Number
     }],
     details: {
         type: String,
@@ -376,49 +370,32 @@ var models = {
 
                 ,
                 function (callback1) {
-                    imagesarr = [];
+                    var imagesarr = [];
                     var i = 0;
-                    var imgurl = "https://storage.cloud.google.com/styleaseproducts/";
-                    console.log("stimg", stimg);
-                       async.every(stimg, function (filename, callback) {
-                        console.log("fileeee", filename);
-                        var newimg = imgurl + filename;
-                        
-                    
-                        // Config.uploadFile(newimg, function (respo) {
-                        //     console.log(respo);
-                        // });
+                    var imgurl = "http://storage.googleapis.com/styleaseproducts/";
+                    if (stimg) {
+                        async.each(stimg, function (filename, callback) {
+                            var newImg = imgurl + filename;
+                            Config.downloadFromUrl(newImg, function (err, resimg) {
+                                if (err) {
+                                    callback(null, "not went");
+                                } else {
+                                    imagesarr.push({
+                                        "image": resimg.name,
+                                        "order": i
+                                    });
+                                    callback(null, resimg);
+                                }
+                            });
+                        }, function (err, result) {
+                            n.images = imagesarr;
+                            callback1(null, "done");
+                        });
 
-                         // if (filename && filename !== "") {
-                        //     request.post({
-                        //         url: requrl + "Upload/",
-                        //         data: {
-                        //             "file": newimg
-                        //         }
-                        //     }, function (err, http, body) {
-                        //         if (err) {
-                        //             console.log(err);
-                        //             callback(err, null);
-                        //         } else {
-                        //             if (body && body.value !== false) {
-                        //                 console.log("testtttttt", body);
-                        //             } else {
-
-                        //             }
-                        //         }
-                        //     });
-                        // } else {
-                        //     callback({
-                        //         message: "Please provide params"
-                        //     }, null);
-                        // }
-                    }, function (err, result) {
-                        // if result is true then every file exists
-                    });
-
-                    // n.images = imagesarr;
-                    callback1(null, "done");
-                }
+                    } else {
+                        callback1(null, "done");
+                    }
+            }
             ], function (err, respo) {
                 if (err) {
                     console.log(err);
