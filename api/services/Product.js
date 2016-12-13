@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var requrl = "http://localhost:81/";
+var FileReader = require('filereader');
 var objectid = require("mongodb").ObjectId;
 var schema = new Schema({
     category: [{
@@ -229,7 +231,6 @@ var models = {
             var strsubcat = n.subcategory;
             var subcatarray = strsubcat.split(',');
             var strcat = n.category;
-            console.log("category", strcat);
             if (!_.isEmpty(strcat)) {
                 var catarray = strcat.split(',');
             }
@@ -377,14 +378,45 @@ var models = {
                 function (callback1) {
                     imagesarr = [];
                     var i = 0;
-                    _.each(stimg, function (img) {
-                        i++;
-                        imagesarr.push({
-                            "image": img.toString(),
-                            "order": i
-                        });
+                    var imgurl = "https://storage.cloud.google.com/styleaseproducts/";
+                    console.log("stimg", stimg);
+                       async.every(stimg, function (filename, callback) {
+                        console.log("fileeee", filename);
+                        var newimg = imgurl + filename;
+                        
+                    
+                        // Config.uploadFile(newimg, function (respo) {
+                        //     console.log(respo);
+                        // });
+
+                         // if (filename && filename !== "") {
+                        //     request.post({
+                        //         url: requrl + "Upload/",
+                        //         data: {
+                        //             "file": newimg
+                        //         }
+                        //     }, function (err, http, body) {
+                        //         if (err) {
+                        //             console.log(err);
+                        //             callback(err, null);
+                        //         } else {
+                        //             if (body && body.value !== false) {
+                        //                 console.log("testtttttt", body);
+                        //             } else {
+
+                        //             }
+                        //         }
+                        //     });
+                        // } else {
+                        //     callback({
+                        //         message: "Please provide params"
+                        //     }, null);
+                        // }
+                    }, function (err, result) {
+                        // if result is true then every file exists
                     });
-                    n.images = imagesarr;
+
+                    // n.images = imagesarr;
                     callback1(null, "done");
                 }
             ], function (err, respo) {

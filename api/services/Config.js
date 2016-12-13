@@ -131,7 +131,7 @@ module.exports = {
 
 
     uploadFile: function (filename, callback) {
-
+// console.log("filename in config", filename);
         var id = mongoose.Types.ObjectId();
         var extension = filename.split(".").pop();
         extension = extension.toLowerCase();
