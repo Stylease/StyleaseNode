@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var ObjectID = require('mongodb').ObjectID;
 var schema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
@@ -172,12 +173,12 @@ var models = {
                 var arrCartproduct = [];
                 _.each(orderdata.cartproduct, function (cartpro) {
                     // arrCartproduct.push(cartpro.product.name);
-                     obj.cartproduct = cartpro.product.name;
-                     excelData.push(obj);
-                     console.log(excelData, "Aa");
+                    obj.cartproduct = cartpro.product.name;
+                    excelData.push(obj);
+                    console.log(excelData, "Aa");
                 });
-               
-               
+
+
             });
             Config.generateExcel("Order", excelData, res);
 
@@ -626,6 +627,72 @@ var models = {
             }
         });
     },
+    test: function (data, callback) {
+        var subcategoryArray = [];
+        var objArray = [];
+        if (data.designer && data.designer !== '') {
+            var obj = {
+                'product.designer': ObjectID(data.designer)
+            };
+             objArray.push(obj);
+        }
+        if (data.subcategory && data.subcategory !== '') {
+            subcategoryArray.push(ObjectID(data.subcategory));
+            console.log(subcategoryArray);
+            var obj = {
+                'product.subcategory': {
+                    $in: subcategoryArray
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.status && data.status !== '') {
+            var obj = {
+                orderstatus: {
+                    $regex: data.status
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.coupon && data.coupon !== '') {
+            var obj = {
+                coupon: {
+                    $regex: data.coupon
+                }
+            };
+             objArray.push(obj);
+        }
+        if (data.coupon == '' && data.status == '' && data.subcategory == '' && data.designer == '') {
+            var obj = {
+                orderstatus: {
+                    $regex: ''
+                }
+            };
+            objArray.push(obj);
+        }
+        console.log("obj aray", objArray);
+        this.aggregate([{
+            $unwind: "$cartproduct"
+        }, {
+            "$lookup": {
+                "from": "products",
+                "localField": "cartproduct.product",
+                "foreignField": "_id",
+                "as": "product"
+            }
+        }, {
+            $match: {
+                $and: objArray
+            }
+        }]).exec(function (err, response) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, response);
+            }
+        })
+    },
     getAllDetails: function (data, callback) {
         this.find({}, {
             password: 0
@@ -649,27 +716,26 @@ var models = {
         });
     },
     getLimited: function (data, callback) {
+        var obj = {};
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         // var checkfor = new RegExp(data.search, "i");
-        if (data.status === "") {
-            var search = {
-                coupon: data.coupon
-            }
-        } else {
-            var search = {
-                orderstatus: data.status,
-                coupon: data.coupon
-            }
-        }
-        if (search.coupon === "" || search.coupon == undefined) {
-            delete search.coupon;
-        }
+        //     if (data.coupon && data.coupon !=='') {
+        //     var obj = {
+        //         coupon: data.coupon
+        //     }
+        // } 
+        //     if (data.status && data.status !=='') {
+        //     var obj = {
+        //         orderstatus: data.status
+        //     }
+        // } 
+        console.log(obj, data);
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
             function (callback1) {
-                Order.count(search).exec(function (err, number) {
+                Order.count(obj).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -683,15 +749,18 @@ var models = {
                 });
             },
             function (callback1) {
-                Order.find(search, {}).sort({
+
+                Order.find(obj, {}).sort({
                     name: 1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("user", "_id  name", null, {
                     sort: {
                         "name": 1
                     }
-                }).populate("cartproduct.product", "_id  name fourdayrentalamount eightdayrentalamount", null, {
-                    sort: {
-                        "name": 1
+                }).populate("cartproduct.product", "_id  name fourdayrentalamount designer eightdayrentalamount", null, {
+                    "cartproduct": {
+                        $elemMatch: {
+                            "product.designer": "5800a8367b8b5e154ba44d7c"
+                        }
                     }
                 }).sort({
                     _id: -1
@@ -717,10 +786,84 @@ var models = {
                 console.log(err);
                 callback(err, null);
             } else {
-                callback(null, newreturns);
+               callback(null, newreturns);
             }
         });
     },
+    // getLimited: function (data, callback) {
+    //     data.pagenumber = parseInt(data.pagenumber);
+    //     data.pagesize = parseInt(data.pagesize);
+    //     // var checkfor = new RegExp(data.search, "i");
+    //     if (data.status === "") {
+    //         var search = {
+    //             coupon: data.coupon
+    //         }
+    //     } 
+    //     else {
+    //         var search = {
+    //             orderstatus: data.status,
+    //             coupon: data.coupon
+    //         }
+    //     }
+    //     if (search.coupon === "" || search.coupon == undefined) {
+    //         delete search.coupon;
+    //     }
+    //     var newreturns = {};
+    //     newreturns.data = [];
+    //     async.parallel([
+    //         function (callback1) {
+    //             Order.count(search).exec(function (err, number) {
+    //                 if (err) {
+    //                     console.log(err);
+    //                     callback1(err, null);
+    //                 } else if (number) {
+    //                     newreturns.totalpages = Math.ceil(number / data.pagesize);
+    //                     callback1(null, newreturns);
+    //                 } else {
+    //                     newreturns.totalpages = 0;
+    //                     callback1(null, newreturns);
+    //                 }
+    //             });
+    //         },
+    //         function (callback1) {
+    //             Order.find(search, {}).sort({
+    //                 name: 1
+    //             }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("user", "_id  name", null, {
+    //                 sort: {
+    //                     "name": 1
+    //                 }
+    //             }).populate("cartproduct.product", "_id  name fourdayrentalamount eightdayrentalamount", null, {
+    //                 sort: {
+    //                     "name": 1
+    //                 }
+    //             }).sort({
+    //                 _id: -1
+    //             }).lean().exec(function (err, data2) {
+    //                 if (err) {
+    //                     console.log(err);
+    //                     callback1(err, null);
+    //                 } else {
+    //                     if (data2 && data2.length > 0) {
+    //                         newreturns.data = data2;
+    //                         newreturns.pagenumber = data.pagenumber;
+    //                         callback1(null, newreturns);
+    //                     } else {
+    //                         callback1({
+    //                             message: "No data found"
+    //                         }, null);
+    //                     }
+    //                 }
+    //             });
+    //         }
+    //     ], function (err, respo) {
+    //         if (err) {
+    //             console.log(err);
+    //             callback(err, null);
+    //         } else {
+    //             callback(null, newreturns);
+    //         }
+    //     });
+    // },
     getLimitedByUser: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
