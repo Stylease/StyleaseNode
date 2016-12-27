@@ -513,7 +513,7 @@ var models = {
     getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function (err, found) {
+        }).sort({name:1}).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
