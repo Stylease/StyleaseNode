@@ -1,6 +1,6 @@
 var request = require('request');
 module.exports = {
-  generateExcel: function (req, res) {
+    generateExcel: function (req, res) {
         Order.generateExcel(res);
     },
     save: function (req, res) {
@@ -61,7 +61,7 @@ module.exports = {
             });
         }
     },
-      test: function (req, res) {
+    test: function (req, res) {
         if (req.body) {
             Order.test(req.body, res.callback);
         } else {
@@ -98,9 +98,6 @@ module.exports = {
         }
     },
     getLimited: function (req, res) {
-        function callback(err, data) {
-            Global.response(err, data, res);
-        }
         if (req.body) {
             if (req.body.pagesize && req.body.pagenumber) {
                 Order.getLimited(req.body, res.callback);

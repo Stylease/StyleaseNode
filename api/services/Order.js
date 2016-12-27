@@ -634,7 +634,7 @@ var models = {
             var obj = {
                 'product.designer': ObjectID(data.designer)
             };
-             objArray.push(obj);
+            objArray.push(obj);
         }
         if (data.subcategory && data.subcategory !== '') {
             subcategoryArray.push(ObjectID(data.subcategory));
@@ -660,38 +660,60 @@ var models = {
                     $regex: data.coupon
                 }
             };
-             objArray.push(obj);
+            objArray.push(obj);
         }
-        if (data.coupon == '' && data.status == '' && data.subcategory == '' && data.designer == '') {
+        if (data.search && data.search !== '') {
             var obj = {
-                orderstatus: {
+                firstname: {
+                    $regex: data.search
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.price && data.price !== '') {
+            var pricearr = data.price.split('-');
+            var obj = {
+                total: {
+                    $gte: parseInt(pricearr[0]),
+                    $lte: parseInt(pricearr[1])
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.coupon == '' && data.status == '' && data.subcategory == '' && data.designer == '' && data.search == '' && data.price == '') {
+            var obj = {
+                firstname: {
                     $regex: ''
                 }
             };
             objArray.push(obj);
         }
         console.log("obj aray", objArray);
-        this.aggregate([{
-            $unwind: "$cartproduct"
-        }, {
-            "$lookup": {
-                "from": "products",
-                "localField": "cartproduct.product",
-                "foreignField": "_id",
-                "as": "product"
+        Order.aggregate([{
+                $unwind: "$cartproduct"
+            }, {
+                "$lookup": {
+                    "from": "products",
+                    "localField": "cartproduct.product",
+                    "foreignField": "_id",
+                    "as": "product"
+                }
+            }, {
+                $match: {
+                    $and: objArray
+                }
             }
-        }, {
-            $match: {
-                $and: objArray
-            }
-        }]).exec(function (err, response) {
+
+        ]).exec(function (err, response) {
             if (err) {
                 console.log(err);
                 callback(err, null);
             } else {
+                console.log(" res ");
+                console.log(response);
                 callback(null, response);
             }
-        })
+        });
     },
     getAllDetails: function (data, callback) {
         this.find({}, {
@@ -786,7 +808,7 @@ var models = {
                 console.log(err);
                 callback(err, null);
             } else {
-               callback(null, newreturns);
+                callback(null, newreturns);
             }
         });
     },
