@@ -157,10 +157,8 @@ var models = {
 
 
     generateExcel: function (res) {
-        Order.find({}).populate("user", "name").populate("cartproduct.product", "name").exec(function (err, data) {
-            console.log("ddd", data);
-
-
+        Order.find({}).populate("user", "name").populate("cartproduct.product", "name fourdayrentalamount eightdayrentalamount").exec(function (err, data) {
+            // console.log("ddd", data);
             var excelData = [];
             _.each(data, function (orderdata) {
                 var obj = {};
@@ -173,12 +171,13 @@ var models = {
                 var arrCartproduct = [];
                 _.each(orderdata.cartproduct, function (cartpro) {
                     // arrCartproduct.push(cartpro.product.name);
-                    obj.cartproduct = cartpro.product.name;
+                    console.log("cartpro", cartpro);
+                    obj.ProductName = cartpro.product.name;
+                    obj.Price = cartpro.product.fourdayrentalamount;
+                    // obj.ProductName = cartpro.product.fourdayrentalamount;
                     excelData.push(obj);
-                    console.log(excelData, "Aa");
+                    // console.log(excelData, "Aa");
                 });
-
-
             });
             Config.generateExcel("Order", excelData, res);
 
