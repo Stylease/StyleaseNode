@@ -213,7 +213,7 @@ var models = {
                     excelData.push(sendobj);
                 });
                 // excelData.push(obj);
-                });
+            });
             Config.generateExcel("Order", excelData, res);
 
         });
@@ -965,6 +965,167 @@ var models = {
                 }).sort({
                     _id: -1
                 }).lean().exec(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback1(err, null);
+                    } else {
+                        if (data2 && data2.length > 0) {
+                            newreturns.data = data2;
+                            newreturns.pagenumber = data.pagenumber;
+                            callback1(null, newreturns);
+                        } else {
+                            callback1({
+                                message: "No data found"
+                            }, null);
+                        }
+                    }
+                });
+            }
+        ], function (err, respo) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, newreturns);
+            }
+        });
+    },
+    getLimitedWithFilter: function (data, callback) {
+        var subcategoryArray = [];
+        var objArray = [];
+        if (data.designer && data.designer !== '') {
+            var obj = {
+                'product.designer': ObjectID(data.designer)
+            };
+            objArray.push(obj);
+        }
+        if (data.subcategory && data.subcategory !== '') {
+            subcategoryArray.push(ObjectID(data.subcategory));
+            console.log(subcategoryArray);
+            var obj = {
+                'product.subcategory': {
+                    $in: subcategoryArray
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.status && data.status !== '') {
+            var obj = {
+                orderstatus: {
+                    $regex: data.status
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.coupon && data.coupon !== '') {
+            var obj = {
+                coupon: {
+                    $regex: data.coupon
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.search && data.search !== '') {
+
+            var obj = {
+                $or: [{
+                    firstname: {
+                        $regex: data.search
+                    }
+                }, {
+                    lastname: {
+                        $regex: data.search
+                    }
+                }, {
+                    mobile: {
+                        $regex: data.search
+                    }
+                }]
+            };
+            objArray.push(obj);
+        }
+        if (data.price && data.price !== '') {
+            var pricearr = data.price.split('-');
+            var obj = {
+                total: {
+                    $gte: parseInt(pricearr[0]),
+                    $lte: parseInt(pricearr[1])
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.coupon == '' && data.status == '' && data.subcategory == '' && data.designer == '' && data.search == '' && data.price == '') {
+            var obj = {
+                firstname: {
+                    $regex: ''
+                }
+            };
+            objArray.push(obj);
+        }
+        var newreturns = {};
+        newreturns.data = [];
+        async.parallel([
+            function (callback1) {
+                Order.aggregate([{
+                        $unwind: "$cartproduct"
+                    }, {
+                        "$lookup": {
+                            "from": "products",
+                            "localField": "cartproduct.product",
+                            "foreignField": "_id",
+                            "as": "product"
+                        }
+                    }, {
+                        $match: {
+                            $and: objArray
+                        }
+                    }, {
+                        $group: {
+                            _id: null,
+                            totalPrice: {
+                                $sum: {
+                                    $multiply: ["$price", "$quantity"]
+                                }
+                            },
+                            averageQuantity: {
+                                $avg: "$quantity"
+                            },
+                            count: {
+                                $sum: 1
+                            }
+                        }
+                    }
+
+                ]).exec(function (err, number) {
+                    if (err) {
+                        console.log(err);
+                        callback1(err, null);
+                    } else if (number) {
+                        newreturns.totalpages = Math.ceil(number / data.pagesize);
+                        callback1(null, newreturns);
+                    } else {
+                        newreturns.totalpages = 0;
+                        callback1(null, newreturns);
+                    }
+                });
+            },
+            function (callback1) {
+                Order.aggregate([{
+                        $unwind: "$cartproduct"
+                    }, {
+                        "$lookup": {
+                            "from": "products",
+                            "localField": "cartproduct.product",
+                            "foreignField": "_id",
+                            "as": "product"
+                        }
+                    }, {
+                        $match: {
+                            $and: objArray
+                        }
+                    }
+
+                ]).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
