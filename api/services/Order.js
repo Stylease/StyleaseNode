@@ -1082,14 +1082,6 @@ var models = {
                     }, {
                         $group: {
                             _id: null,
-                            totalPrice: {
-                                $sum: {
-                                    $multiply: ["$price", "$quantity"]
-                                }
-                            },
-                            averageQuantity: {
-                                $avg: "$quantity"
-                            },
                             count: {
                                 $sum: 1
                             }
@@ -1101,7 +1093,15 @@ var models = {
                         console.log(err);
                         callback1(err, null);
                     } else if (number) {
-                        newreturns.totalpages = Math.ceil(number / data.pagesize);
+                        console.log(" number ");
+                        console.log(number);
+                        console.log(number[0].count);
+                        if (_.isEmpty(number[0].count)) {
+                            newreturns.totalpages = 0;
+                        } else {
+                            newreturns.totalpages = Math.ceil(number[0].count / data.pagesize);
+                        }
+
                         callback1(null, newreturns);
                     } else {
                         newreturns.totalpages = 0;
@@ -1125,12 +1125,14 @@ var models = {
                         }
                     }
 
-                ]).lean().exec(function (err, data2) {
+                ]).exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
                     } else {
                         if (data2 && data2.length > 0) {
+                            console.log(" ##### ");
+                            console.log(data2);
                             newreturns.data = data2;
                             newreturns.pagenumber = data.pagenumber;
                             callback1(null, newreturns);

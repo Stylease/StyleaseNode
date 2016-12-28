@@ -61,9 +61,9 @@ module.exports = {
             });
         }
     },
-    test: function (req, res) {
+    getLimitedWithFilter: function (req, res) {
         if (req.body) {
-            Order.test(req.body, res.callback);
+            Order.getLimitedWithFilter(req.body, res.callback);
         } else {
             res.json({
                 value: false,
