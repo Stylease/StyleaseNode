@@ -47,6 +47,7 @@ module.exports = {
             _.each(singleData, function (n, key) {
                 if (key != "__v" && key != "createdAt" && key != "updatedAt") {
                     // singleExcel[_.capitalize(key)] = n;
+                    // console.log("in excel", n);
                     singleExcel[key] = n;
                 }
             });

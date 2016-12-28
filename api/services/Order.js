@@ -162,23 +162,58 @@ var models = {
             var excelData = [];
             _.each(data, function (orderdata) {
                 var obj = {};
+                var sendobj = {};
                 obj.OrderId = orderdata.orderid;
                 obj.OrderStatus = orderdata.orderstatus;
                 obj.User = orderdata.user.name;
                 obj.PaymentMode = orderdata.paymentmode;
                 obj.TransactionId = orderdata.transactionid;
                 obj.Total = orderdata.total;
-                var arrCartproduct = [];
+                obj.DeliveryCharge = orderdata.deliverycharge;
+                obj.RefundableDeposit = orderdata.refundabledeposit;
+                obj.ServiceTax = orderdata.servicetax;
+                obj.DiscountAmount = orderdata.discountamount;
+                obj.Discount = orderdata.discount;
+                obj.Coupon = orderdata.coupon;
+                obj.SubTotal = orderdata.subtotal;
+                obj.Rentalamount = orderdata.Rentalamount;
+                obj.FirstName = orderdata.firstname;
+                obj.LastName = orderdata.lastname;
+                obj.Mobile = orderdata.mobile;
+                obj.Email = orderdata.email;
+                obj.Date = orderdata.date;
+                obj.BillingAddressFlat = orderdata.billingAddressFlat;
+                obj.BillingAddressLandmark = orderdata.billingAddressLandmark;
+                obj.BillingAddressStreet = orderdata.billingAddressStreet;
+                obj.BillingAddressCity = orderdata.billingAddressCity;
+                obj.BillingAddressPin = orderdata.billingAddressPin;
+                obj.BillingAddressCountry = orderdata.billingAddressCountry;
+                obj.ShippingAddressFlat = orderdata.shippingAddressFlat;
+                obj.ShippingAddressLandmark = orderdata.shippingAddressLandmark;
+                obj.ShippingAddressStreet = orderdata.shippingAddressStreet;
+                obj.ShippingAddressCity = orderdata.shippingAddressCity;
+                obj.ShippingAddressPin = orderdata.shippingAddressPin;
+                obj.ShippingAddressState = orderdata.shippingAddressState;
+                obj.ShippingAddressCountry = orderdata.shippingAddressCountry;
                 _.each(orderdata.cartproduct, function (cartpro) {
                     // arrCartproduct.push(cartpro.product.name);
-                    console.log("cartpro", cartpro);
                     obj.ProductName = cartpro.product.name;
-                    obj.Price = cartpro.product.fourdayrentalamount;
-                    // obj.ProductName = cartpro.product.fourdayrentalamount;
-                    excelData.push(obj);
-                    // console.log(excelData, "Aa");
+                    obj.Size = cartpro.size;
+                    obj.DesignBy = cartpro.by;
+                    if (cartpro.duration == 4) {
+                        obj.Price = cartpro.product.fourdayrentalamount;
+                    } else {
+                        obj.Price = cartpro.product.eightdayrentalamount;
+                    }
+                    obj.Duration = cartpro.duration;
+                    obj.RentalDate = cartpro.timeFrom;
+                    obj.DeliveryTime = cartpro.deliveryTime;
+                    obj.PickupTime = cartpro.pickupTime;
+                    sendobj = _.cloneDeep(obj);
+                    excelData.push(sendobj);
                 });
-            });
+                // excelData.push(obj);
+                });
             Config.generateExcel("Order", excelData, res);
 
         });
