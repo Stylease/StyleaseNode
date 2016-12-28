@@ -1142,10 +1142,10 @@ var models = {
                             $project: {
                                 "orderid": 1,
                                 "user": "$user.name",
-                                "orderstatus":1,
-                                "paymentmode":1,
-                                "date":1,
-                                "total":1,
+                                "orderstatus": 1,
+                                "paymentmode": 1,
+                                "date": 1,
+                                "total": 1,
                                 "cartproduct.product._id": "$cartproduct.product._id",
                                 "cartproduct.duration": "$cartproduct.duration",
                                 "cartproduct.timeFrom": "$cartproduct.timeFrom",
@@ -1184,8 +1184,6 @@ var models = {
                                 }
                             }
                         }
-
-
                     ]).exec(function (err, data2) {
                         if (err) {
                             console.log(err);
