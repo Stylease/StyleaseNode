@@ -1065,93 +1065,91 @@ var models = {
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function (callback1) {
-                Order.aggregate([{
-                        $unwind: "$cartproduct"
-                    }, {
-                        "$lookup": {
-                            "from": "products",
-                            "localField": "cartproduct.product",
-                            "foreignField": "_id",
-                            "as": "product"
-                        }
-                    }, {
-                        $match: {
-                            $and: objArray
-                        }
-                    }, {
-                        $group: {
-                            _id: null,
-                            count: {
-                                $sum: 1
+                function (callback1) {
+                    Order.aggregate([{
+                            $unwind: "$cartproduct"
+                        }, {
+                            "$lookup": {
+                                "from": "products",
+                                "localField": "cartproduct.product",
+                                "foreignField": "_id",
+                                "as": "product"
+                            }
+                        }, {
+                            $match: {
+                                $and: objArray
+                            }
+                        }, {
+                            $group: {
+                                _id: null,
+                                count: {
+                                    $sum: 1
+                                }
                             }
                         }
-                    }
 
-                ]).exec(function (err, number) {
-                    if (err) {
-                        console.log(err);
-                        callback1(err, null);
-                    } else if (number) {
-                        console.log(" number ");
-                        console.log(number);
-                        console.log(number[0].count);
-                        if (_.isEmpty(number[0].count)) {
-                            newreturns.totalpages = 0;
-                        } else {
-                            newreturns.totalpages = Math.ceil(number[0].count / data.pagesize);
-                        }
+                    ]).exec(function (err, number) {
+                        if (err) {
+                            console.log(err);
+                            callback1(err, null);
+                        } else if (number) {
+                            if ((number === undefined || number.length == 0)) {
+                                newreturns.totalpages = 0;
+                            } else {
+                                newreturns.totalpages = Math.ceil(number[0].count / data.pagesize);
+                            }
 
-                        callback1(null, newreturns);
-                    } else {
-                        newreturns.totalpages = 0;
-                        callback1(null, newreturns);
-                    }
-                });
-            },
-            function (callback1) {
-                Order.aggregate([{
-                        $unwind: "$cartproduct"
-                    }, {
-                        "$lookup": {
-                            "from": "products",
-                            "localField": "cartproduct.product",
-                            "foreignField": "_id",
-                            "as": "product"
-                        }
-                    }, {
-                        $match: {
-                            $and: objArray
-                        }
-                    }
-
-                ]).exec(function (err, data2) {
-                    if (err) {
-                        console.log(err);
-                        callback1(err, null);
-                    } else {
-                        if (data2 && data2.length > 0) {
-                            console.log(" ##### ");
-                            console.log(data2);
-                            newreturns.data = data2;
-                            newreturns.pagenumber = data.pagenumber;
                             callback1(null, newreturns);
                         } else {
-                            callback1({
-                                message: "No data found"
-                            }, null);
+                            newreturns.totalpages = 0;
+                            callback1(null, newreturns);
                         }
-                    }
-                });
-            }
-        ], function (err, respo) {
-            if (err) {
-                console.log(err);
-                callback(err, null);
-            } else {
-                callback(null, newreturns);
-            }
-        });
+                    });
+                },
+                function (callback1) {
+                    Order.aggregate([{
+                            $unwind: "$cartproduct"
+                        }, {
+                            "$lookup": {
+                                "from": "products",
+                                "localField": "cartproduct.product",
+                                "foreignField": "_id",
+                                "as": "product"
+                            }
+                        }, {
+                            $match: {
+                                $and: objArray
+                            }
+                        }
+
+                    ]).exec(function (err, data2) {
+                        if (err) {
+                            console.log(err);
+                            callback1(err, null);
+                        } else {
+                            if (data2 && data2.length > 0) {
+                                console.log(" ##### ");
+                                console.log(data2);
+                                newreturns.data = data2;
+                                newreturns.pagenumber = data.pagenumber;
+                                callback1(null, newreturns);
+                            } else {
+                                callback1({
+                                    message: "No data found"
+                                }, null);
+                            }
+                        }
+                    });
+                }
+            ],
+            function (err, respo) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    callback(null, newreturns);
+                }
+            });
     },
     getOne: function (data, callback) {
         this.findOne({
