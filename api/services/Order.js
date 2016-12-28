@@ -730,13 +730,16 @@ var models = {
                     "from": "products",
                     "localField": "cartproduct.product",
                     "foreignField": "_id",
-                    "as": "product"
-                }
-            }, {
-                $match: {
-                    $and: objArray
+                    "as": "cartproduct.product"
                 }
             }
+            // , {
+            //     $unwind: "$product"
+            // }, {
+            //     $match: {
+            //         $and: objArray
+            //     }
+            // }
 
         ]).exec(function (err, response) {
             if (err) {
@@ -1073,7 +1076,7 @@ var models = {
                                 "from": "products",
                                 "localField": "cartproduct.product",
                                 "foreignField": "_id",
-                                "as": "product"
+                                "as": "pro"
                             }
                         }, {
                             $match: {
@@ -1114,13 +1117,74 @@ var models = {
                                 "from": "products",
                                 "localField": "cartproduct.product",
                                 "foreignField": "_id",
-                                "as": "product"
+                                "as": "cartproduct.product"
                             }
                         }, {
+                            "$lookup": {
+                                "from": "users",
+                                "localField": "user",
+                                "foreignField": "_id",
+                                "as": "user"
+                            }
+                        }, {
+                            $unwind: "$cartproduct.product"
+
+                        }, {
+                            $unwind: "$user"
+
+                        },
+
+                        {
                             $match: {
                                 $and: objArray
                             }
+                        }, {
+                            $project: {
+                                "orderid": 1,
+                                "user": "$user.name",
+                                "orderstatus":1,
+                                "paymentmode":1,
+                                "date":1,
+                                "total":1,
+                                "cartproduct.product._id": "$cartproduct.product._id",
+                                "cartproduct.duration": "$cartproduct.duration",
+                                "cartproduct.timeFrom": "$cartproduct.timeFrom",
+                                "cartproduct.timeTo": "$cartproduct.timeTo",
+                                "cartproduct.deliveryTime": "$cartproduct.deliveryTime",
+                                "cartproduct.pickupTime": "$cartproduct.pickupTime",
+                                "cartproduct.product.designer": "$cartproduct.product.designer",
+                                "cartproduct.product.name": "$cartproduct.product.name",
+                                "cartproduct.product.fourdayrentalamount": "$cartproduct.product.fourdayrentalamount",
+                                "cartproduct.product.eightdayrentalamount": "$cartproduct.product.eightdayrentalamount"
+                            }
+                        }, {
+                            $group: {
+                                _id: "$orderid",
+                                orderid: {
+                                    $first: '$orderid'
+                                },
+                                user: {
+                                    $first: '$user'
+                                },
+                                orderstatus: {
+                                    $first: '$orderstatus'
+                                },
+                                paymentmode: {
+                                    $first: '$paymentmode'
+                                },
+                                date: {
+                                    $first: '$date'
+                                },
+                                total: {
+                                    $first: '$total'
+                                },
+
+                                "cartproduct": {
+                                    $push: "$cartproduct"
+                                }
+                            }
                         }
+
 
                     ]).exec(function (err, data2) {
                         if (err) {
