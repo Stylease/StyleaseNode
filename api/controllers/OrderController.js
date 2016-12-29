@@ -3,6 +3,10 @@ module.exports = {
     generateExcel: function (req, res) {
         Order.generateExcel(res);
     },
+
+        generateExcelByDesigner: function (req, res) {
+        Order.generateExcelByDesigner(req.query,res);
+    },
     save: function (req, res) {
         if (req.body) {
             if (req.session.user) {

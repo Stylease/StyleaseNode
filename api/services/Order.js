@@ -156,18 +156,19 @@ module.exports = mongoose.model('Order', schema);
 var models = {
 
 
-    generateExcelByDesigner: function (res) {
-        // if (data.designer) {
-        //     var matchdesigner = {
-        //         "cartproduct.product.designer": ObjectID(data.designer)
-        //     }
-        // } else {
-        //     var matchdesigner = {}
-        // }
-
-         var matchdesigner = {
-                "cartproduct.product.designer": ObjectID("5800990d7b8b5e154ba44d5d")
+    generateExcelByDesigner: function (data, res) {
+        console.log("designer", data.designer);
+        if (data) {
+            var matchdesigner = {
+                "cartproduct.product.designer": ObjectID(data.designer)
             }
+        } else {
+            var matchdesigner = {}
+        }
+
+        //  var matchdesigner = {
+        //         "cartproduct.product.designer": ObjectID("5800990d7b8b5e154ba44d5d")
+        //     }
         Order.aggregate([{
             $unwind: "$cartproduct"
         }, {
@@ -199,15 +200,42 @@ var models = {
                 "user": "$user.name",
                 "orderstatus": 1,
                 "paymentmode": 1,
+                "transactionid": 1,
+                "deliverycharge": 1,
+                "refundabledeposit": 1,
+                "servicetax": 1,
+                "discountamount": 1,
+                "discount": 1,
+                "coupon": 1,
+                "subtotal": 1,
+                "Rentalamount": 1,
+                "firstname": 1,
+                "lastname": 1,
+                "mobile": 1,
+                "email": 1,
                 "date": 1,
                 "total": 1,
+                "billingAddressFlat": 1,
+                "billingAddressLandmark": 1,
+                "billingAddressStreet": 1,
+                "billingAddressCity": 1,
+                "billingAddressPin": 1,
+                "billingAddressCountry": 1,
+                "shippingAddressFlat": 1,
+                "shippingAddressLandmark": 1,
+                "shippingAddressStreet": 1,
+                "shippingAddressCity": 1,
+                "shippingAddressPin": 1,
+                "shippingAddressState": 1,
+                "shippingAddressCountry": 1,
                 "cartproduct.product._id": "$cartproduct.product._id",
                 "cartproduct.duration": "$cartproduct.duration",
                 "cartproduct.timeFrom": "$cartproduct.timeFrom",
                 "cartproduct.timeTo": "$cartproduct.timeTo",
                 "cartproduct.deliveryTime": "$cartproduct.deliveryTime",
                 "cartproduct.pickupTime": "$cartproduct.pickupTime",
-                "cartproduct.product.designer": "$cartproduct.product.designer",
+                "cartproduct.by": "$cartproduct.by",
+                "cartproduct.size": "$cartproduct.size",
                 "cartproduct.product.name": "$cartproduct.product.name",
                 "cartproduct.product.fourdayrentalamount": "$cartproduct.product.fourdayrentalamount",
                 "cartproduct.product.eightdayrentalamount": "$cartproduct.product.eightdayrentalamount"
@@ -228,6 +256,73 @@ var models = {
                 orderstatus: {
                     $first: '$orderstatus'
                 },
+                transactionid: {
+                    $first: '$transactionid'
+                },
+                deliverycharge: {
+                    $first: '$deliverycharge'
+                },
+                refundabledeposit: {
+                    $first: '$refundabledeposit'
+                },
+                coupon: {
+                    $first: '$coupon'
+                },
+                subtotal: {
+                    $first: '$subtotal'
+                },
+                Rentalamount: {
+                    $first: '$Rentalamount'
+                },
+                firstname: {
+                    $first: '$firstname'
+                },
+                lastname: {
+                    $first: '$lastname'
+                },
+                email: {
+                    $first: '$email'
+                },
+                mobile: {
+                    $first: '$mobile'
+                },
+                 billingAddressFlat: {
+                    $first: '$billingAddressFlat'
+                }, billingAddressLandmark: {
+                    $first: '$billingAddressLandmark'
+                }, billingAddressStreet: {
+                    $first: '$billingAddressStreet'
+                }, billingAddressCity: {
+                    $first: '$billingAddressCity'
+                }, billingAddressPin: {
+                    $first: '$billingAddressPin'
+                }, billingAddressCountry: {
+                    $first: '$billingAddressCountry'
+                }, shippingAddressFlat: {
+                    $first: '$shippingAddressFlat'
+                }, shippingAddressLandmark: {
+                    $first: '$shippingAddressLandmark'
+                }, shippingAddressStreet: {
+                    $first: '$shippingAddressStreet'
+                }, shippingAddressCity: {
+                    $first: '$shippingAddressCity'
+                }, shippingAddressPin: {
+                    $first: '$shippingAddressPin'
+                }, shippingAddressState: {
+                    $first: '$shippingAddressState'
+                }, shippingAddressCountry: {
+                    $first: '$shippingAddressCountry'
+                },
+                discountamount: {
+                    $first: '$discountamount'
+                },
+                discount: {
+                    $first: '$discount'
+                },
+                servicetax: {
+                    $first: '$servicetax'
+                },
+
                 paymentmode: {
                     $first: '$paymentmode'
                 },
@@ -247,62 +342,62 @@ var models = {
                 // callback(err, null)
             } else {
                 // callback(null, found)
-                 var excelData = [];
-            _.each(found, function (orderdata) {
-                var obj = {};
-                var sendobj = {};
-                obj.OrderId = orderdata.orderid;
-                // obj.OrderStatus = orderdata.orderstatus;
-                obj.User = orderdata.user;
-                // obj.PaymentMode = orderdata.paymentmode;
-                // obj.TransactionId = orderdata.transactionid;
-                // obj.Total = orderdata.total;
-                // obj.DeliveryCharge = orderdata.deliverycharge;
-                // obj.RefundableDeposit = orderdata.refundabledeposit;
-                // obj.ServiceTax = orderdata.servicetax;
-                // obj.DiscountAmount = orderdata.discountamount;
-                // obj.Discount = orderdata.discount;
-                // obj.Coupon = orderdata.coupon;
-                // obj.SubTotal = orderdata.subtotal;
-                // obj.Rentalamount = orderdata.Rentalamount;
-                // obj.FirstName = orderdata.firstname;
-                // obj.LastName = orderdata.lastname;
-                // obj.Mobile = orderdata.mobile;
-                // obj.Email = orderdata.email;
-                // obj.Date = orderdata.date;
-                // obj.BillingAddressFlat = orderdata.billingAddressFlat;
-                // obj.BillingAddressLandmark = orderdata.billingAddressLandmark;
-                // obj.BillingAddressStreet = orderdata.billingAddressStreet;
-                // obj.BillingAddressCity = orderdata.billingAddressCity;
-                // obj.BillingAddressPin = orderdata.billingAddressPin;
-                // obj.BillingAddressCountry = orderdata.billingAddressCountry;
-                // obj.ShippingAddressFlat = orderdata.shippingAddressFlat;
-                // obj.ShippingAddressLandmark = orderdata.shippingAddressLandmark;
-                // obj.ShippingAddressStreet = orderdata.shippingAddressStreet;
-                // obj.ShippingAddressCity = orderdata.shippingAddressCity;
-                // obj.ShippingAddressPin = orderdata.shippingAddressPin;
-                // obj.ShippingAddressState = orderdata.shippingAddressState;
-                // obj.ShippingAddressCountry = orderdata.shippingAddressCountry;
-                _.each(orderdata.cartproduct, function (cartpro) {
-                    // arrCartproduct.push(cartpro.product.name);
-                    obj.ProductName = cartpro.product.name;
-                    obj.Size = cartpro.size;
-                    obj.DesignBy = cartpro.by;
-                    if (cartpro.duration == 4) {
-                        obj.Price = cartpro.product.fourdayrentalamount;
-                    } else {
-                        obj.Price = cartpro.product.eightdayrentalamount;
-                    }
-                    obj.Duration = cartpro.duration;
-                    obj.RentalDate = cartpro.timeFrom;
-                    obj.DeliveryTime = cartpro.deliveryTime;
-                    obj.PickupTime = cartpro.pickupTime;
-                    sendobj = _.cloneDeep(obj);
-                    excelData.push(sendobj);
+                var excelData = [];
+                _.each(found, function (orderdata) {
+                    var obj = {};
+                    var sendobj = {};
+                    obj.OrderId = orderdata.orderid;
+                    obj.OrderStatus = orderdata.orderstatus;
+                    obj.User = orderdata.user;
+                    obj.PaymentMode = orderdata.paymentmode;
+                    obj.TransactionId = orderdata.transactionid;
+                    obj.Total = orderdata.total;
+                    obj.DeliveryCharge = orderdata.deliverycharge;
+                    obj.RefundableDeposit = orderdata.refundabledeposit;
+                    obj.ServiceTax = orderdata.servicetax;
+                    obj.DiscountAmount = orderdata.discountamount;
+                    obj.Discount = orderdata.discount;
+                    obj.Coupon = orderdata.coupon;
+                    obj.SubTotal = orderdata.subtotal;
+                    obj.Rentalamount = orderdata.Rentalamount;
+                    obj.FirstName = orderdata.firstname;
+                    obj.LastName = orderdata.lastname;
+                    obj.Mobile = orderdata.mobile;
+                    obj.Email = orderdata.email;
+                    obj.Date = orderdata.date;
+                    obj.BillingAddressFlat = orderdata.billingAddressFlat;
+                    obj.BillingAddressLandmark = orderdata.billingAddressLandmark;
+                    obj.BillingAddressStreet = orderdata.billingAddressStreet;
+                    obj.BillingAddressCity = orderdata.billingAddressCity;
+                    obj.BillingAddressPin = orderdata.billingAddressPin;
+                    obj.BillingAddressCountry = orderdata.billingAddressCountry;
+                    obj.ShippingAddressFlat = orderdata.shippingAddressFlat;
+                    obj.ShippingAddressLandmark = orderdata.shippingAddressLandmark;
+                    obj.ShippingAddressStreet = orderdata.shippingAddressStreet;
+                    obj.ShippingAddressCity = orderdata.shippingAddressCity;
+                    obj.ShippingAddressPin = orderdata.shippingAddressPin;
+                    obj.ShippingAddressState = orderdata.shippingAddressState;
+                    obj.ShippingAddressCountry = orderdata.shippingAddressCountry;
+                    _.each(orderdata.cartproduct, function (cartpro) {
+                        // arrCartproduct.push(cartpro.product.name);
+                        obj.ProductName = cartpro.product.name;
+                        obj.Size = cartpro.size;
+                        obj.DesignBy = cartpro.by;
+                        if (cartpro.duration == 4) {
+                            obj.Price = cartpro.product.fourdayrentalamount;
+                        } else {
+                            obj.Price = cartpro.product.eightdayrentalamount;
+                        }
+                        obj.Duration = cartpro.duration;
+                        obj.RentalDate = cartpro.timeFrom;
+                        obj.DeliveryTime = cartpro.deliveryTime;
+                        obj.PickupTime = cartpro.pickupTime;
+                        sendobj = _.cloneDeep(obj);
+                        excelData.push(sendobj);
+                    });
+                    // // excelData.push(obj);
                 });
-                // // excelData.push(obj);
-            });
-            Config.generateExcel("Order", excelData, res);
+                Config.generateExcel("Order", excelData, res);
             }
         });
     },
