@@ -156,9 +156,161 @@ module.exports = mongoose.model('Order', schema);
 var models = {
 
 
+    generateExcelByDesigner: function (res) {
+        // if (data.designer) {
+        //     var matchdesigner = {
+        //         "cartproduct.product.designer": ObjectID(data.designer)
+        //     }
+        // } else {
+        //     var matchdesigner = {}
+        // }
+
+         var matchdesigner = {
+                "cartproduct.product.designer": ObjectID("5800990d7b8b5e154ba44d5d")
+            }
+        Order.aggregate([{
+            $unwind: "$cartproduct"
+        }, {
+            "$lookup": {
+                "from": "products",
+                "localField": "cartproduct.product",
+                "foreignField": "_id",
+                "as": "cartproduct.product"
+            }
+        }, {
+            "$lookup": {
+                "from": "users",
+                "localField": "user",
+                "foreignField": "_id",
+                "as": "user"
+            }
+        }, {
+            $unwind: "$cartproduct.product"
+
+        }, {
+            $unwind: "$user"
+
+        }, {
+            $match: matchdesigner
+        }, {
+            $project: {
+                "orderid": 1,
+                "oid": "$_id",
+                "user": "$user.name",
+                "orderstatus": 1,
+                "paymentmode": 1,
+                "date": 1,
+                "total": 1,
+                "cartproduct.product._id": "$cartproduct.product._id",
+                "cartproduct.duration": "$cartproduct.duration",
+                "cartproduct.timeFrom": "$cartproduct.timeFrom",
+                "cartproduct.timeTo": "$cartproduct.timeTo",
+                "cartproduct.deliveryTime": "$cartproduct.deliveryTime",
+                "cartproduct.pickupTime": "$cartproduct.pickupTime",
+                "cartproduct.product.designer": "$cartproduct.product.designer",
+                "cartproduct.product.name": "$cartproduct.product.name",
+                "cartproduct.product.fourdayrentalamount": "$cartproduct.product.fourdayrentalamount",
+                "cartproduct.product.eightdayrentalamount": "$cartproduct.product.eightdayrentalamount"
+            }
+        }, {
+            $group: {
+                _id: "$orderid",
+                orderid: {
+                    $first: '$orderid'
+                },
+                oid: {
+                    $first: '$oid'
+                },
+
+                user: {
+                    $first: '$user'
+                },
+                orderstatus: {
+                    $first: '$orderstatus'
+                },
+                paymentmode: {
+                    $first: '$paymentmode'
+                },
+                date: {
+                    $first: '$date'
+                },
+                total: {
+                    $first: '$total'
+                },
+
+                "cartproduct": {
+                    $push: "$cartproduct"
+                }
+            }
+        }], function (err, found) {
+            if (err) {
+                // callback(err, null)
+            } else {
+                // callback(null, found)
+                 var excelData = [];
+            _.each(found, function (orderdata) {
+                var obj = {};
+                var sendobj = {};
+                obj.OrderId = orderdata.orderid;
+                // obj.OrderStatus = orderdata.orderstatus;
+                obj.User = orderdata.user;
+                // obj.PaymentMode = orderdata.paymentmode;
+                // obj.TransactionId = orderdata.transactionid;
+                // obj.Total = orderdata.total;
+                // obj.DeliveryCharge = orderdata.deliverycharge;
+                // obj.RefundableDeposit = orderdata.refundabledeposit;
+                // obj.ServiceTax = orderdata.servicetax;
+                // obj.DiscountAmount = orderdata.discountamount;
+                // obj.Discount = orderdata.discount;
+                // obj.Coupon = orderdata.coupon;
+                // obj.SubTotal = orderdata.subtotal;
+                // obj.Rentalamount = orderdata.Rentalamount;
+                // obj.FirstName = orderdata.firstname;
+                // obj.LastName = orderdata.lastname;
+                // obj.Mobile = orderdata.mobile;
+                // obj.Email = orderdata.email;
+                // obj.Date = orderdata.date;
+                // obj.BillingAddressFlat = orderdata.billingAddressFlat;
+                // obj.BillingAddressLandmark = orderdata.billingAddressLandmark;
+                // obj.BillingAddressStreet = orderdata.billingAddressStreet;
+                // obj.BillingAddressCity = orderdata.billingAddressCity;
+                // obj.BillingAddressPin = orderdata.billingAddressPin;
+                // obj.BillingAddressCountry = orderdata.billingAddressCountry;
+                // obj.ShippingAddressFlat = orderdata.shippingAddressFlat;
+                // obj.ShippingAddressLandmark = orderdata.shippingAddressLandmark;
+                // obj.ShippingAddressStreet = orderdata.shippingAddressStreet;
+                // obj.ShippingAddressCity = orderdata.shippingAddressCity;
+                // obj.ShippingAddressPin = orderdata.shippingAddressPin;
+                // obj.ShippingAddressState = orderdata.shippingAddressState;
+                // obj.ShippingAddressCountry = orderdata.shippingAddressCountry;
+                _.each(orderdata.cartproduct, function (cartpro) {
+                    // arrCartproduct.push(cartpro.product.name);
+                    obj.ProductName = cartpro.product.name;
+                    obj.Size = cartpro.size;
+                    obj.DesignBy = cartpro.by;
+                    if (cartpro.duration == 4) {
+                        obj.Price = cartpro.product.fourdayrentalamount;
+                    } else {
+                        obj.Price = cartpro.product.eightdayrentalamount;
+                    }
+                    obj.Duration = cartpro.duration;
+                    obj.RentalDate = cartpro.timeFrom;
+                    obj.DeliveryTime = cartpro.deliveryTime;
+                    obj.PickupTime = cartpro.pickupTime;
+                    sendobj = _.cloneDeep(obj);
+                    excelData.push(sendobj);
+                });
+                // // excelData.push(obj);
+            });
+            Config.generateExcel("Order", excelData, res);
+            }
+        });
+    },
+
     generateExcel: function (res) {
-        Order.find({}).populate("user", "name").populate("cartproduct.product", "name fourdayrentalamount eightdayrentalamount").exec(function (err, data) {
-            // console.log("ddd", data);
+
+        Order.find().populate("user", "name").populate("cartproduct.product", "name fourdayrentalamount eightdayrentalamount").exec(function (err, data) {
+            console.log("ddd", data);
             var excelData = [];
             _.each(data, function (orderdata) {
                 var obj = {};
@@ -221,8 +373,10 @@ var models = {
 
     saveData: function (data, callback) {
         //        delete data.password;
+        delete data.user;
         var order = this(data);
         if (data._id) {
+
             this.findOneAndUpdate({
                 _id: data._id
             }, data).exec(function (err, updated) {
@@ -998,7 +1152,7 @@ var models = {
         var objArray = [];
         if (data.designer && data.designer !== '') {
             var obj = {
-                'product.designer': ObjectID(data.designer)
+                'cartproduct.product.designer': ObjectID(data.designer)
             };
             objArray.push(obj);
         }
@@ -1006,7 +1160,7 @@ var models = {
             subcategoryArray.push(ObjectID(data.subcategory));
             console.log(subcategoryArray);
             var obj = {
-                'product.subcategory': {
+                'cartproduct.product.subcategory': {
                     $in: subcategoryArray
                 }
             };
@@ -1141,6 +1295,7 @@ var models = {
                         }, {
                             $project: {
                                 "orderid": 1,
+                                "oid": "$_id",
                                 "user": "$user.name",
                                 "orderstatus": 1,
                                 "paymentmode": 1,
@@ -1163,6 +1318,10 @@ var models = {
                                 orderid: {
                                     $first: '$orderid'
                                 },
+                                oid: {
+                                    $first: '$oid'
+                                },
+
                                 user: {
                                     $first: '$user'
                                 },
@@ -1242,8 +1401,9 @@ var models = {
                             n.sizename = n.size.name;
                             delete n.size
                         }
-                    })
+                    });
                 }
+                found.user = found.user.name;
                 callback(null, found);
             } else {
                 callback(null, {});
