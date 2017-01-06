@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var requrl = "http://localhost:81/";
+// var requrl = "http://localhost:81/";
+var requrl = "http://130.211.245.224/:81/";
 var FileReader = require('filereader');
 var objectid = require("mongodb").ObjectId;
 var schema = new Schema({
@@ -190,6 +191,7 @@ var models = {
 
                     obj.name = n.name;
                     obj.sku = n.sku;
+                   
                     // obj.subcategory = n.subcategory;
                     obj.category = arrCategory.toString();
                     obj.subcategory = arrSubCategory.toString();
@@ -420,6 +422,7 @@ var models = {
                                 console.log(err);
                                 callback1(err, null);
                             } else {
+                                 n.status = true;
                                 Model(n).save(n, function (err, data) {
                                     if (err) {
                                         err.val = data;
