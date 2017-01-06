@@ -889,9 +889,7 @@ var models = {
                     name: {
                         "$regex": checkfor
                     }
-                }, {}).sort({
-                    order: 1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("category", "_id  name", null, {
+                }, {}).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("category", "_id  name", null, {
                     sort: {
                         "name": 1
                     }
