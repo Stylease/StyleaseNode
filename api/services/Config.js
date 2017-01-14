@@ -505,5 +505,26 @@ module.exports = {
             fs.unlink(dest);
             callback(err);
         });
-    }
+    },
+
+    saveXmlData: function(url, callback) {
+        var baseUrl = "http://www.thestylease.com/";
+        var obj = "\n <url> \n" + "<loc> \n" + baseUrl + url + " \n" + "</loc> \n" + "<changefreq>" + "monthly" + "</changefreq> \n" + "<priority>" + "1.0" + "</priority> \n" + "</url> \n" + "</urlset>";
+        var body = fs.readFileSync('sitemap.xml').toString();
+        var abc = body.toString();
+        console.log("abc", abc.length);
+        body = abc.substring(0, (abc.length - 10));
+        fs.writeFileSync("sitemap.xml", body);
+        fs.appendFile(
+            "sitemap.xml",
+            obj,
+            function(error) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    callback(null, "File Updated");
+                }
+            }
+        );
+  },
 };

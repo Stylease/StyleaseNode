@@ -451,7 +451,7 @@ var models = {
         });
     },
 
-    saveData: function (data, callback) {
+    saveData: function(data, callback) {
         // console.log("pro", data.suggestedProduct);
         //delete data.password;
         if (data.suggestedProduct != undefined) {
@@ -478,7 +478,7 @@ var models = {
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function (err, updated) {
+            }, data).exec(function(err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -489,17 +489,44 @@ var models = {
                 }
             });
         } else {
-            product.save(function (err, created) {
+            product.save(function(err, created) {
                 if (err) {
                     callback(err, null);
-                } else if (created) {
-                    callback(null, created);
                 } else {
-                    callback(null, {});
+                  if(created){
+                    async.each(data.category, function(categoryname, callback) {
+                      // var categoryId = data.category[0];
+                      Category.findOne({_id:categoryname}).exec(function(err, found){
+                        if(err){
+                          callback(err, null);
+                        }else{
+                          if(found){
+                            var sendXMLUrl = "productdetail/" + found.name + "/"+created._id;
+                            //Update XML file
+                            Config.saveXmlData(sendXMLUrl,function(err,xmlupdated){
+                              if(err){
+                                callback(err, null);
+                              }else{
+                                callback(null,{message:"XML Updated"});
+                              }
+                            });
+                          }else{
+                            callback({message:"Category Not Found"}, null);
+                          }
+                            }
+                      });
+                    }, function(err, result) {
+
+                        callback(null, "done");
+                    });
+
+                  }
+                    // callback(null, {});
                 }
             });
         }
     },
+
     deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id

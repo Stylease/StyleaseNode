@@ -43,7 +43,7 @@ var models = {
             callback(null, {});
         }
     },
-    saveData: function(data, callback) {
+   saveData: function(data, callback) {
         //        delete data.password;
         var category = this(data);
         if (data._id) {
@@ -64,7 +64,17 @@ var models = {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
-                    callback(null, created);
+
+                  var sendXMLUrl = "product/" + created.name ;
+                  //Update XML file
+                  Config.saveXmlData(sendXMLUrl,function(err,xmlupdated){
+                    if(err){
+                      callback(err, null);
+                    }else{
+                      callback(null,{message:"Category added"});
+                    }
+                  });
+                    // callback(null, created);
                 } else {
                     callback(null, {});
                 }
