@@ -190,6 +190,7 @@ var models = {
                     });
 
                     obj.name = n.name;
+                    // obj.name = n.name.toUpperCase();
                     obj.sku = n.sku;
                    
                     // obj.subcategory = n.subcategory;
