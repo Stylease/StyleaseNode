@@ -628,7 +628,7 @@ var models = {
                     path: 'suggestedProduct',
                     select: '_id name fourdayrentalamount eightdayrentalamount images',
                     options: {
-                        limit: 6,
+                        // limit: 6,
                         sort: {
                             "images.order": 1
                         }
