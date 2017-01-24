@@ -632,12 +632,13 @@ var models = {
                         sort: {
                             "images.order": 1
                         }
-                    },
+                    }
+//                     ,
                     
-  populate: {
-    path: 'designer',
-    model: 'Designer'
-  }
+//   populate: {
+//     path: 'designer',
+//     model: 'Designer'
+//   }
                 }).lean().exec(function (err, found) {
                     if (err) {
                         console.log(err);
