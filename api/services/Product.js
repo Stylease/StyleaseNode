@@ -626,13 +626,18 @@ var models = {
                     status: true
                 }).populate("category", "name").populate("subcategory", "name").populate("size").populate("designer", "name").populate({
                     path: 'suggestedProduct',
-                    select: '_id name fourdayrentalamount eightdayrentalamount images',
+                    select: '_id name fourdayrentalamount designer eightdayrentalamount images',
                     options: {
                         // limit: 6,
                         sort: {
                             "images.order": 1
                         }
-                    }
+                    },
+                    
+  populate: {
+    path: 'designer',
+    model: 'Designer'
+  }
                 }).lean().exec(function (err, found) {
                     if (err) {
                         console.log(err);
