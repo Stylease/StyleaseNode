@@ -626,7 +626,8 @@ var models = {
                     status: true
                 }).populate("category", "name").populate("subcategory", "name").populate("size").populate("designer", "name").populate({
                     path: 'suggestedProduct',
-                    select: '_id name fourdayrentalamount designer eightdayrentalamount images',
+                    select: '_id name fourdayrentalamount eightdayrentalamount images',
+                    // select: '_id name fourdayrentalamount designer eightdayrentalamount images',
                     options: {
                         // limit: 6,
                         sort: {
