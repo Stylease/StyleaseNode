@@ -192,7 +192,7 @@ var models = {
                     obj.name = n.name;
                     // obj.name = n.name.toUpperCase();
                     obj.sku = n.sku;
-                   
+
                     // obj.subcategory = n.subcategory;
                     obj.category = arrCategory.toString();
                     obj.subcategory = arrSubCategory.toString();
@@ -226,219 +226,219 @@ var models = {
         var Model = this;
         var retVal = [];
         async.eachSeries(data, function (n, callback) {
-//             Product.findOne({
-//                 sku: n.sku
-//             }).exec(function (err, found) {
-//                 if (err) {
-//                     callback(err);
-//                 } else {
-                    
-//                     if (found) {
+            //             Product.findOne({
+            //                 sku: n.sku
+            //             }).exec(function (err, found) {
+            //                 if (err) {
+            //                     callback(err);
+            //                 } else {
 
-//                                 console.log("product exists");
-//                         // callback({
-//                         //     message: "Product Already Exists"
-//                         // }, null);
-//                     } else {
-               
-// console.log("found", found);
+            //                     if (found) {
 
-                         var strsubcat = n.subcategory;
-                          if (!_.isEmpty(strsubcat)) {
-                          var subcatarray = strsubcat.split(',');
+            //                                 console.log("product exists");
+            //                         // callback({
+            //                         //     message: "Product Already Exists"
+            //                         // }, null);
+            //                     } else {
+
+            // console.log("found", found);
+
+            var strsubcat = n.subcategory;
+            if (!_.isEmpty(strsubcat)) {
+                var subcatarray = strsubcat.split(',');
+            }
+
+            var strcat = n.category;
+            if (!_.isEmpty(strcat)) {
+                var catarray = strcat.split(',');
+            }
+
+            var strcolor = n.color;
+            if (!_.isEmpty(strcolor)) {
+                var colorarray = strcolor.split(',');
+            }
+
+            var strsize = n.size;
+            if (!_.isEmpty(strsize)) {
+                var sizearray = strsize.split(',');
+            }
+
+            // var strsuggested = n.suggestedProduct;
+            // if (!_.isEmpty(strsuggested)) {
+            //     var suggestedarray = strsuggested.split(',');
+            // }
+            n.suggestedProduct = [];
+            var strimages = n.images;
+            if (!_.isEmpty(strimages)) {
+                var stimg = strimages.split(',');
+            }
+            async.parallel([function (callback1) {
+                    Subcategory.find({
+                        name: {
+                            $in: subcatarray
                         }
-                        
-                        var strcat = n.category;
-                        if (!_.isEmpty(strcat)) {
-                            var catarray = strcat.split(',');
+                    }).exec(function (err, found) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            subcatarr = [];
+                            _.each(found, function (subcat) {
+                                subcatarr.push(subcat._id.toString());
+                            });
+                            // n.subcategory = [];
+                            n.subcategory = subcatarr;
+                            callback1(null, "done");
                         }
-
-                        var strcolor = n.color;
-                        if (!_.isEmpty(strcolor)) {
-                            var colorarray = strcolor.split(',');
+                    });
+                }, function (callback1) {
+                    Category.find({
+                        name: {
+                            $in: catarray
                         }
-
-                        var strsize = n.size;
-                        if (!_.isEmpty(strsize)) {
-                            var sizearray = strsize.split(',');
+                    }).exec(function (err, found) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            catarr = [];
+                            _.each(found, function (cat) {
+                                catarr.push(cat._id.toString());
+                            });
+                            // n.category = [];
+                            n.category = catarr;
+                            callback1(null, "done");
                         }
-
-                        // var strsuggested = n.suggestedProduct;
-                        // if (!_.isEmpty(strsuggested)) {
-                        //     var suggestedarray = strsuggested.split(',');
-                        // }
-                        n.suggestedProduct = [];
-                        var strimages = n.images;
-                        if (!_.isEmpty(strimages)) {
-                            var stimg = strimages.split(',');
-                        }
-                        async.parallel([function (callback1) {
-                                Subcategory.find({
-                                    name: {
-                                        $in: subcatarray
-                                    }
-                                }).exec(function (err, found) {
-                                    if (err) {
-                                        callback(err, null);
-                                    } else {
-                                        subcatarr = [];
-                                        _.each(found, function (subcat) {
-                                            subcatarr.push(subcat._id.toString());
-                                        });
-                                        // n.subcategory = [];
-                                        n.subcategory = subcatarr;
-                                        callback1(null, "done");
-                                    }
-                                });
-                            }, function (callback1) {
-                                Category.find({
-                                    name: {
-                                        $in: catarray
-                                    }
-                                }).exec(function (err, found) {
-                                    if (err) {
-                                        callback(err, null);
-                                    } else {
-                                        catarr = [];
-                                        _.each(found, function (cat) {
-                                            catarr.push(cat._id.toString());
-                                        });
-                                        // n.category = [];
-                                        n.category = catarr;
-                                        callback1(null, "done");
-                                    }
-                                });
-                            },
-                            function (callback1) {
-                                Designer.findOne({
-                                    name: n.designer
-                                }).exec(function (err, found) {
-                                    if (err) {
-                                        console.log(err);
-                                        callback(err, null);
-                                    } else {
-                                        if (_.isEmpty(found)) {
-                                            n.designer = null;
-                                        } else {
-                                            n.designer = found._id;
-                                        }
-
-                                        callback1(null, "done");
-                                    }
-                                });
-                            },
-                            function (callback1) {
-                                Color.find({
-                                    name: {
-                                        $in: colorarray
-                                    }
-                                }).exec(function (err, found) {
-                                    if (err) {
-                                        console.log(err);
-                                        callback(err, null);
-                                    } else {
-                                        colarray = [];
-                                        _.each(found, function (color) {
-                                            colarray.push(color._id.toString());
-                                        });
-                                        // n.category = [];
-                                        n.color = colarray;
-                                        callback1(null, "done");
-                                    }
-                                });
-                            },
-                            function (callback1) {
-                                Size.find({
-                                    name: {
-                                        $in: sizearray
-                                    }
-                                }).exec(function (err, found) {
-                                    if (err) {
-                                        console.log(err);
-                                        callback(err, null);
-                                    } else {
-                                        sizearr = [];
-                                        _.each(found, function (size) {
-                                            sizearr.push(size._id.toString());
-                                        });
-                                        // n.category = [];
-                                        n.size = sizearr;
-                                        callback1(null, "done");
-                                    }
-                                });
-                            }
-                            // ,
-                            //  function (callback1) {
-                            //     Product.find({
-                            //         name: {
-                            //             $in: suggestedarray
-                            //         }
-                            //     }).exec(function (err, found) {
-                            //         if (err) {
-                            //             console.log(err);
-                            //             callback(err, null);
-                            //         } else {
-                            //             console.log("aaaaa",found);
-                            //             sugesarr = [];
-                            //             _.each(found, function (suges) {
-                            //                 sugesarr.push(suges._id.toString());
-                            //             });
-                            //             // n.sugesegory = [];
-                            //             n.suggestedProduct = sugesarr;
-                            //             callback1(null, "done");
-                            //         }
-                            //     });
-                            // }
-
-                            ,
-                            function (callback1) {
-                                var imagesarr = [];
-                                var i = 0;
-                                var imgurl = "http://storage.googleapis.com/styleaseproducts/";
-                                if (!_.isEmpty(stimg)) {
-                                    async.each(stimg, function (filename, callback) {
-                                        var newImg = imgurl + filename;
-                                        Config.downloadFromUrl(newImg, function (err, resimg) {
-                                            if (err) {
-                                                callback(null, "not went");
-                                            } else {
-                                                imagesarr.push({
-                                                    "image": resimg.name,
-                                                    "order": i
-                                                });
-                                                callback(null, resimg);
-                                            }
-                                        });
-                                    }, function (err, result) {
-                                        n.images = imagesarr;
-                                        callback1(null, "done");
-                                    });
-
-                                } else {
-                                    callback1(null, "done");
-                                }
-                            }
-                        ], function (err, respo) {
-                            if (err) {
-                                console.log(err);
-                                callback1(err, null);
+                    });
+                },
+                function (callback1) {
+                    Designer.findOne({
+                        name: n.designer
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            if (_.isEmpty(found)) {
+                                n.designer = null;
                             } else {
-                                 n.status = true;
-                                Model(n).save(n, function (err, data) {
-                                    if (err) {
-                                        err.val = data;
-                                        retVal.push(err);
-                                    } else {
-                                        retVal.push(data._id);
-                                    }
-                                    callback();
-                                });
-                                // callback();
+                                n.designer = found._id;
                             }
+
+                            callback1(null, "done");
+                        }
+                    });
+                },
+                function (callback1) {
+                    Color.find({
+                        name: {
+                            $in: colorarray
+                        }
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            colarray = [];
+                            _.each(found, function (color) {
+                                colarray.push(color._id.toString());
+                            });
+                            // n.category = [];
+                            n.color = colarray;
+                            callback1(null, "done");
+                        }
+                    });
+                },
+                function (callback1) {
+                    Size.find({
+                        name: {
+                            $in: sizearray
+                        }
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            sizearr = [];
+                            _.each(found, function (size) {
+                                sizearr.push(size._id.toString());
+                            });
+                            // n.category = [];
+                            n.size = sizearr;
+                            callback1(null, "done");
+                        }
+                    });
+                }
+                // ,
+                //  function (callback1) {
+                //     Product.find({
+                //         name: {
+                //             $in: suggestedarray
+                //         }
+                //     }).exec(function (err, found) {
+                //         if (err) {
+                //             console.log(err);
+                //             callback(err, null);
+                //         } else {
+                //             console.log("aaaaa",found);
+                //             sugesarr = [];
+                //             _.each(found, function (suges) {
+                //                 sugesarr.push(suges._id.toString());
+                //             });
+                //             // n.sugesegory = [];
+                //             n.suggestedProduct = sugesarr;
+                //             callback1(null, "done");
+                //         }
+                //     });
+                // }
+
+                ,
+                function (callback1) {
+                    var imagesarr = [];
+                    var i = 0;
+                    var imgurl = "http://storage.googleapis.com/styleaseproducts/";
+                    if (!_.isEmpty(stimg)) {
+                        async.each(stimg, function (filename, callback) {
+                            var newImg = imgurl + filename;
+                            Config.downloadFromUrl(newImg, function (err, resimg) {
+                                if (err) {
+                                    callback(null, "not went");
+                                } else {
+                                    imagesarr.push({
+                                        "image": resimg.name,
+                                        "order": i
+                                    });
+                                    callback(null, resimg);
+                                }
+                            });
+                        }, function (err, result) {
+                            n.images = imagesarr;
+                            callback1(null, "done");
                         });
 
-                    // }
-                // }
+                    } else {
+                        callback1(null, "done");
+                    }
+                }
+            ], function (err, respo) {
+                if (err) {
+                    console.log(err);
+                    callback1(err, null);
+                } else {
+                    n.status = true;
+                    Model(n).save(n, function (err, data) {
+                        if (err) {
+                            err.val = data;
+                            retVal.push(err);
+                        } else {
+                            retVal.push(data._id);
+                        }
+                        callback();
+                    });
+                    // callback();
+                }
+            });
+
+            // }
+            // }
             // })
         }, function (err) {
             if (err) {
@@ -452,7 +452,7 @@ var models = {
         });
     },
 
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         // console.log("pro", data.suggestedProduct);
         //delete data.password;
         if (data.suggestedProduct != undefined) {
@@ -479,7 +479,7 @@ var models = {
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, data).exec(function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -490,38 +490,44 @@ var models = {
                 }
             });
         } else {
-            product.save(function(err, created) {
+            product.save(function (err, created) {
                 if (err) {
                     callback(err, null);
                 } else {
-                  if(created){
-                    async.each(data.category, function(categoryname, callback) {
-                      // var categoryId = data.category[0];
-                      Category.findOne({_id:categoryname}).exec(function(err, found){
-                        if(err){
-                          callback(err, null);
-                        }else{
-                          if(found){
-                            var sendXMLUrl = "productdetail/" + found.name + "/"+created._id;
-                            //Update XML file
-                            Config.saveXmlData(sendXMLUrl,function(err,xmlupdated){
-                              if(err){
-                                callback(err, null);
-                              }else{
-                                callback(null,{message:"XML Updated"});
-                              }
+                    if (created) {
+                        async.each(data.category, function (categoryname, callback) {
+                            // var categoryId = data.category[0];
+                            Category.findOne({
+                                _id: categoryname
+                            }).exec(function (err, found) {
+                                if (err) {
+                                    callback(err, null);
+                                } else {
+                                    if (found) {
+                                        var sendXMLUrl = "productdetail/" + found.name + "/" + created._id;
+                                        //Update XML file
+                                        Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
+                                            if (err) {
+                                                callback(err, null);
+                                            } else {
+                                                callback(null, {
+                                                    message: "XML Updated"
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        callback({
+                                            message: "Category Not Found"
+                                        }, null);
+                                    }
+                                }
                             });
-                          }else{
-                            callback({message:"Category Not Found"}, null);
-                          }
-                            }
-                      });
-                    }, function(err, result) {
+                        }, function (err, result) {
 
-                        callback(null, "done");
-                    });
+                            callback(null, "done");
+                        });
 
-                  }
+                    }
                     // callback(null, {});
                 }
             });
@@ -544,7 +550,9 @@ var models = {
     getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).sort({name:1}).exec(function (err, found) {
+        }).sort({
+            name: 1
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -626,20 +634,18 @@ var models = {
                     status: true
                 }).populate("category", "name").populate("subcategory", "name").populate("size").populate("designer", "name").populate({
                     path: 'suggestedProduct',
-                    select: '_id name fourdayrentalamount eightdayrentalamount images',
-                    // select: '_id name fourdayrentalamount designer eightdayrentalamount images',
+                    // select: '_id name fourdayrentalamount eightdayrentalamount images',
+                    select: '_id name fourdayrentalamount designer eightdayrentalamount images',
                     options: {
                         // limit: 6,
                         sort: {
                             "images.order": 1
                         }
+                    },
+                    populate: {
+                        path: 'designer',
+                        model: 'Designer'
                     }
-//                     ,
-                    
-//   populate: {
-//     path: 'designer',
-//     model: 'Designer'
-//   }
                 }).lean().exec(function (err, found) {
                     if (err) {
                         console.log(err);
