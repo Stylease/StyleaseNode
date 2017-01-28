@@ -20,7 +20,7 @@ var xlsx = require('node-xlsx').default;
 var http = require('http');
 
 
-var requrl = "http://130.211.245.224/:81/";
+var requrl = "http://admin.thestylease.com/";
 var gfs = Grid(mongoose.connections[0].db, mongoose);
 gfs.mongo = mongoose.mongo;
 

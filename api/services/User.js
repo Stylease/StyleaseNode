@@ -769,7 +769,7 @@ var models = {
                             Config.sendSMS(smsData, function (err, smsRespo) {
                                 if (err) {
                                     console.log(err);
-                                    callback(err, null);
+                                    // callback(err, null);
                                 } else {
                                     // console.log("sms sent");
                                     // callback(null, smsRespo);
@@ -788,7 +788,7 @@ var models = {
                             Config.email(emailData, function (err, emailRespo) {
                                 if (err) {
                                     console.log(err);
-                                    callback(err, null);
+                                    // callback(err, null);
                                 } else {
                                     // callback(null, data3);
                                 }
