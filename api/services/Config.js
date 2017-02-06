@@ -510,13 +510,14 @@ module.exports = {
     saveXmlData: function(url, callback) {
         var baseUrl = "http://www.thestylease.com/";
         var obj = "\n <url> \n" + "<loc> \n" + baseUrl + url + " \n" + "</loc> \n" + "<changefreq>" + "monthly" + "</changefreq> \n" + "<priority>" + "1.0" + "</priority> \n" + "</url> \n" + "</urlset>";
-        var body = fs.readFileSync('../../../../../var/www/html/newsite/testing/production/sitemap.xml').toString();
+        var body = fs.readFileSync('sitemap.xml').toString();
         var abc = body.toString();
-        console.log("abc", abc.length);
+        // console.log("abccccccccccccccccccccccc", abc.length);
         body = abc.substring(0, (abc.length - 10));
-        fs.writeFileSync("../../../../../var/www/html/newsite/testing/production/sitemap.xml", body);
+        // "../../../../../var/www/html/newsite/testing/production/sitemap.xml"
+        fs.writeFileSync("sitemap.xml", body);
         fs.appendFile(
-            "../../../../../var/www/html/newsite/testing/production/sitemap.xml",
+            "sitemap.xml",
             obj,
             function(error) {
                 if (error) {

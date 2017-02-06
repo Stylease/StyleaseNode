@@ -43,6 +43,28 @@ var models = {
             callback(null, {});
         }
     },
+      generateAllXML: function(data, callback) {
+        Category.find({}).exec(function(err, found) {
+            if (err) {
+                callback(err, null);
+            } else if (found && Object.keys(found).length > 0) {
+                async.eachSeries(found, function(fdata, callback1) {
+                    var sendXMLUrl = "product/" + fdata.name;
+                    Config.saveXmlData(sendXMLUrl, function(err, XMLupdated) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback1(null, "done");
+                        }
+                    });
+                }, function(key, data2) {
+                    callback(null, found);
+                })
+            } else {
+                callback(null, {});
+            }
+        })
+    },
    saveData: function(data, callback) {
         //        delete data.password;
         var category = this(data);

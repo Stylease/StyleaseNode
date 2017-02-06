@@ -1331,7 +1331,75 @@ var models = {
             }
         });
     },
+    generateAllXML: function (data, callback) {
+        Product.find({}).exec(function (err, created) {
+            // console.log('createddddddddddd0000000000000',created);
+            if (err) {
+                callback(err, null);
+            } else if (created) {
+                // if (created) {
 
+                async.eachSeries(created, function (categoryname, callback1) {
+                    // console.log('categoryname.category00000000000000000000000000000000', categoryname.category);
+                    // var categoryId = data.category[0];
+                    // var categoryIds = [];
+                    _.each(categoryname.category, function (value) {
+                        Category.findOne({
+                            _id: value
+                        }).exec(function (err, found) {
+                            if (err) {
+                                callback(err, null);
+                            } else {
+                                if (found) {
+                                    var sendXMLUrl = "productdetail/" + found.name + "/" + categoryname._id;
+                                    //Update XML file
+                                    // console.log('sendXMLUrl0000000000000', sendXMLUrl);
+                                    Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
+                                        if (err) {
+                                            callback(err, null);
+                                        } else {
+                                            // callback1(null, {
+                                            //     message: "XML Updated"
+                                            // });
+                                        }
+                                    });
+                                } else {
+                                    // callback1({
+                                    //     message: "Category Not Found"
+                                    // }, null);
+                                }
+                            }
+                        });
+                    //     callback1(null, {
+                    //     message: "XML Updated"
+                    // });
+                    });
+                            callback1(null, {
+                        message: "XML Updated"
+                    });
+                }, function (err, result) {
+
+                    callback(null, "done");
+                });
+
+                // }
+                // async.eachSeries(found, function(fdata, callback1) {
+                //     var sendXMLUrl = "customisation/" + fdata.name;
+                //     Config.saveXmlData(sendXMLUrl, function(err, XMLupdated) {
+                //         if (err) {
+                //             callback(err, null);
+                //         } else {
+                //             callback1(null, "done");
+                //         }
+                //     });
+                // }, function(key, data2) {
+                //     callback(null, found);
+                // })
+            } else {
+                callback(null, {});
+            }
+        })
+    },
 };
 
 module.exports = _.assign(module.exports, models);
