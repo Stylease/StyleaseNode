@@ -4,18 +4,22 @@ module.exports = {
         Order.generateExcel(res);
     },
 
-        generateExcelByDesigner: function (req, res) {
-        Order.generateExcelByDesigner(req.query,res);
+    generateExcelByDesigner: function (req, res) {
+        Order.generateExcelByDesigner(req.query, res);
     },
     save: function (req, res) {
         if (req.body) {
             if (req.session.user) {
                 console.log("userss", req.session.user._id);
                 req.body.user = req.session.user._id;
+                Order.saveData(req.body, res.callback);
             } else {
-                req.body.user = null;
+                // req.body.user = null;
+                res.json({
+                    value: false,
+                    data: "User not logged in!!!"
+                });
             }
-            Order.saveData(req.body, res.callback);
         } else {
             res.json({
                 value: false,

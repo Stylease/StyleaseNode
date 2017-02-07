@@ -286,31 +286,43 @@ var models = {
                 mobile: {
                     $first: '$mobile'
                 },
-                 billingAddressFlat: {
+                billingAddressFlat: {
                     $first: '$billingAddressFlat'
-                }, billingAddressLandmark: {
+                },
+                billingAddressLandmark: {
                     $first: '$billingAddressLandmark'
-                }, billingAddressStreet: {
+                },
+                billingAddressStreet: {
                     $first: '$billingAddressStreet'
-                }, billingAddressCity: {
+                },
+                billingAddressCity: {
                     $first: '$billingAddressCity'
-                }, billingAddressPin: {
+                },
+                billingAddressPin: {
                     $first: '$billingAddressPin'
-                }, billingAddressCountry: {
+                },
+                billingAddressCountry: {
                     $first: '$billingAddressCountry'
-                }, shippingAddressFlat: {
+                },
+                shippingAddressFlat: {
                     $first: '$shippingAddressFlat'
-                }, shippingAddressLandmark: {
+                },
+                shippingAddressLandmark: {
                     $first: '$shippingAddressLandmark'
-                }, shippingAddressStreet: {
+                },
+                shippingAddressStreet: {
                     $first: '$shippingAddressStreet'
-                }, shippingAddressCity: {
+                },
+                shippingAddressCity: {
                     $first: '$shippingAddressCity'
-                }, shippingAddressPin: {
+                },
+                shippingAddressPin: {
                     $first: '$shippingAddressPin'
-                }, shippingAddressState: {
+                },
+                shippingAddressState: {
                     $first: '$shippingAddressState'
-                }, shippingAddressCountry: {
+                },
+                shippingAddressCountry: {
                     $first: '$shippingAddressCountry'
                 },
                 discountamount: {
@@ -468,7 +480,7 @@ var models = {
 
     saveData: function (data, callback) {
         //        delete data.password;
-        delete data.user;
+        // delete data.user;
         var order = this(data);
         if (data._id) {
 
@@ -1243,6 +1255,7 @@ var models = {
         });
     },
     getLimitedWithFilter: function (data, callback) {
+        var pagestartfrom = (data.pagenumber - 1) * data.pagesize;
         var subcategoryArray = [];
         var objArray = [];
         if (data.designer && data.designer !== '') {
@@ -1277,25 +1290,25 @@ var models = {
             };
             objArray.push(obj);
         }
-        if (data.search && data.search !== '') {
+        // if (data.search && data.search !== '') {
 
-            var obj = {
-                $or: [{
-                    firstname: {
-                        $regex: data.search
-                    }
-                }, {
-                    lastname: {
-                        $regex: data.search
-                    }
-                }, {
-                    mobile: {
-                        $regex: data.search
-                    }
-                }]
-            };
-            objArray.push(obj);
-        }
+        //     var obj = {
+        //         $or: [{
+        //             firstname: {
+        //                 $regex: data.search
+        //             }
+        //         }, {
+        //             lastname: {
+        //                 $regex: data.search
+        //             }
+        //         }, {
+        //             mobile: {
+        //                 $regex: data.search
+        //             }
+        //         }]
+        //     };
+        //     objArray.push(obj);
+        // }
         if (data.price && data.price !== '') {
             var pricearr = data.price.split('-');
             var obj = {
@@ -1308,7 +1321,7 @@ var models = {
         }
         if (data.coupon == '' && data.status == '' && data.subcategory == '' && data.designer == '' && data.search == '' && data.price == '') {
             var obj = {
-                firstname: {
+                paymentmode: {
                     $regex: ''
                 }
             };
@@ -1325,9 +1338,26 @@ var models = {
                                 "from": "products",
                                 "localField": "cartproduct.product",
                                 "foreignField": "_id",
-                                "as": "pro"
+                                "as": "cartproduct.product"
                             }
                         }, {
+                            $unwind: "$cartproduct.product"
+
+                        },
+                        //  {
+                        //     "$lookup": {
+                        //         "from": "users",
+                        //         "localField": "user",
+                        //         "foreignField": "_id",
+                        //         "as": "user"
+                        //     }
+                        // }, 
+                        // {
+                        //     $unwind: "$user"
+
+                        // },
+
+                        {
                             $match: {
                                 $and: objArray
                             }
@@ -1369,19 +1399,19 @@ var models = {
                                 "as": "cartproduct.product"
                             }
                         }, {
-                            "$lookup": {
-                                "from": "users",
-                                "localField": "user",
-                                "foreignField": "_id",
-                                "as": "user"
-                            }
-                        }, {
                             $unwind: "$cartproduct.product"
-
-                        }, {
-                            $unwind: "$user"
-
                         },
+                        //  {
+                        //     "$lookup": {
+                        //         "from": "users",
+                        //         "localField": "user",
+                        //         "foreignField": "_id",
+                        //         "as": "user"
+                        //     }
+                        // }, 
+                        // {
+                        //     $unwind: "$user"
+                        // },
 
                         {
                             $match: {
@@ -1437,6 +1467,10 @@ var models = {
                                     $push: "$cartproduct"
                                 }
                             }
+                        }, {
+                            $skip: parseInt(pagestartfrom)
+                        }, {
+                            $limit: data.pagesize
                         }
                     ]).exec(function (err, data2) {
                         if (err) {
