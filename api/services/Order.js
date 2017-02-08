@@ -1503,7 +1503,7 @@ var models = {
     },
     getOne: function (data, callback) {
         this.findOne({
-            "_id": data._id
+            _id: data._id
         }, {
             password: 0
         }).populate("user", "_id  name", null, {
@@ -1515,6 +1515,7 @@ var models = {
                 "name": 1
             }
         }).lean().exec(function (err, found) {
+            console.log("found",found);
             if (err) {
                 console.log(err);
                 callback(err, null);

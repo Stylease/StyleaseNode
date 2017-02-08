@@ -130,7 +130,10 @@ var models = {
     checkCoupon: function (data, callback) {
         this.findOne({
             status: true,
-            name: data.name,
+            name: {
+                $regex: data.name,
+                $options: 'si'
+            },
             minamt: {
                 $lte: data.amt
             }
