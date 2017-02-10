@@ -96,28 +96,28 @@ var schema = new Schema({
         default: 0
     },
     status: Boolean
-        // size: [{
-        //     name: {
-        //         type: String,
-        //         default: ""
-        //     },
-        //     chest: {
-        //         type: String,
-        //         default: ""
-        //     },
-        //     waist: {
-        //         type: String,
-        //         default: ""
-        //     },
-        //     hips: {
-        //         type: String,
-        //         default: ""
-        //     },
-        //     length: {
-        //         type: String,
-        //         default: ""
-        //     }
-        // }]
+    // size: [{
+    //     name: {
+    //         type: String,
+    //         default: ""
+    //     },
+    //     chest: {
+    //         type: String,
+    //         default: ""
+    //     },
+    //     waist: {
+    //         type: String,
+    //         default: ""
+    //     },
+    //     hips: {
+    //         type: String,
+    //         default: ""
+    //     },
+    //     length: {
+    //         type: String,
+    //         default: ""
+    //     }
+    // }]
 
 });
 
@@ -1333,6 +1333,16 @@ var models = {
         });
     },
     generateAllXML: function (data, callback) {
+
+
+        // get all category
+        // async.eachseries for category
+        // get sub category of category
+        // async.eachseries for subcategory
+        // find product of sub category
+        // async.eachseries
+
+
         Product.find({}).exec(function (err, created) {
             // console.log('createddddddddddd0000000000000',created);
             if (err) {
@@ -1357,26 +1367,23 @@ var models = {
                                     // console.log('sendXMLUrl0000000000000', sendXMLUrl);
                                     Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
                                         if (err) {
-                                            callback(err, null);
+                                            callback1(err, null);
                                         } else {
-                                            // callback1(null, {
-                                            //     message: "XML Updated"
-                                            // });
+                                            callback1(null, {
+                                                message: "XML Updated"
+                                            });
                                         }
                                     });
                                 } else {
-                                    // callback1({
-                                    //     message: "Category Not Found"
-                                    // }, null);
+                                    callback1({
+                                        message: "Category Not Found"
+                                    }, null);
                                 }
                             }
                         });
-                    //     callback1(null, {
-                    //     message: "XML Updated"
-                    // });
-                    });
-                            callback1(null, {
-                        message: "XML Updated"
+                        //     callback1(null, {
+                        //     message: "XML Updated"
+                        // });
                     });
                 }, function (err, result) {
 
