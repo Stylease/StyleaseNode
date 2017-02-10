@@ -527,4 +527,22 @@ module.exports = {
             }
         );
     },
+    writeSiteMap: function (body) {
+        // "/var/www/html/newsite/testing/production/sitemap.xml"
+        // "sitemap2.xml"
+        fs.writeFileSync("sitemap2.xml", body);
+    },
+
+    getOldSitemap: function (url, callback) {
+        var body = fs.readFileSync('sitemap.xml').toString();
+        var abc = body.toString();
+        body = abc.substring(0, (abc.length - 10));
+        return body;
+    },
+
+    getUrlXml: function (url, callback) {
+        var baseUrl = "http://www.thestylease.com/";
+        var obj = "\n <url> \n" + "<loc> \n" + baseUrl + url + " \n" + "</loc> \n" + "<changefreq>" + "monthly" + "</changefreq> \n" + "<priority>" + "1.0" + "</priority> \n" + "</url> \n" + "";
+        return obj;
+    },
 };

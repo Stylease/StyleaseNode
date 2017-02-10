@@ -1333,6 +1333,9 @@ var models = {
         });
     },
     generateAllXML: function (data, callback) {
+        var xmlString = Config.getOldSitemap();
+        var categoryXml = "";
+        var subCategoryXml = "";
         var retVal = {
             category: []
         };
@@ -1345,47 +1348,52 @@ var models = {
                         name: category.name,
                         subCat: []
                     };
+                    var sendXMLUrl1 = "product/" + category.name;
+                    categoryXml += Config.getUrlXml(sendXMLUrl1);
                     Subcategory.find({
                         category: category._id
                     }).exec(function (err, subCategories) {
-                            if (err) {
-                                callbackCategory(null, err);
-                            } else {
-                                async.eachSeries(subCategories, function (subCategory, callbackSubCategory) {
-                                    var subCatObj = {
-                                        name: subCategory.name,
-                                        product: []
-                                    }
-                                    Product.find({
-                                        subcategory: subCategory._id
-                                    }).exec(function (err, products) {
-                                        if (err) {
-                                            callbackSubCategory(null, true);
-                                        } else {
-                                            async.eachSeries(products, function (product, callbackProduct) {
-                                                subCatObj.product.push({
-                                                    name: product.name
-                                                });
-                                                // callbackProduct();
-                                                var sendXMLUrl = "productdetail/" + category.name + "/" + product._id;
-                                                Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
-                                                    callbackProduct(null,true);
-                                                });
-                                            }, function (err, products) {
-                                                catObj.subCat.push(subCatObj);
-                                                callbackSubCategory(null, true);
+                        if (err) {
+                            callbackCategory(null, err);
+                        } else {
+                            async.eachSeries(subCategories, function (subCategory, callbackSubCategory) {
+                                var subCatObj = {
+                                    name: subCategory.name,
+                                    product: []
+                                }
+                                var sendXMLUrl2 = "product/" + subCategory.name;
+                                subCategoryXml += Config.getUrlXml(sendXMLUrl2);
+                                Product.find({
+                                    subcategory: subCategory._id
+                                }).exec(function (err, products) {
+                                    if (err) {
+                                        callbackSubCategory(null, true);
+                                    } else {
+                                        async.eachSeries(products, function (product, callbackProduct) {
+                                            subCatObj.product.push({
+                                                name: product.name
                                             });
-                                        }
+                                            var sendXMLUrl3 = "productdetail/" + category.name + "/" + product._id;
+                                            xmlString += Config.getUrlXml(sendXMLUrl3);
+                                            
+                                            callbackProduct();
+                                        }, function (err, products) {
+                                            catObj.subCat.push(subCatObj);
+                                            callbackSubCategory(null, true);
+                                        });
+                                    }
 
-                                    })
-                                }, function (err, subCategories) {
-                                    retVal.category.push(catObj);
-                                    callbackCategory(null,true);
-                                });
-                            };
-                        });
+                                })
+                            }, function (err, subCategories) {
+                                retVal.category.push(catObj);
+                                callbackCategory(null, true);
+                            });
+                        };
+                    });
                 }, function (err, categories) {
-                    callback(err,retVal);
+                    xmlString += categoryXml+subCategoryXml+"</urlset>";
+                    Config.writeSiteMap(xmlString);
+                    callback(err, retVal);
                 });
             }
         });
