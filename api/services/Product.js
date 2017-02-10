@@ -777,6 +777,7 @@ var models = {
                     } else {
                         // console.log("Number of docs: ", count);
                         newreturns.totalpages = Math.ceil(count / data.pagesize);
+                        newreturns.totalItems = count;
                         callback(null, newreturns);
                     }
 
