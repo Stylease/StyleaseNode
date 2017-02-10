@@ -528,9 +528,8 @@ module.exports = {
         );
     },
     writeSiteMap: function (body) {
-        // "/var/www/html/newsite/testing/production/sitemap.xml"
-        // "sitemap2.xml"
-        fs.writeFileSync("sitemap2.xml", body);
+        // fs.writeFileSync("sitemap2.xml", body);
+        fs.writeFileSync("/var/www/html/newsite/testing/production/sitemap.xml", body);
     },
 
     getOldSitemap: function (url, callback) {
