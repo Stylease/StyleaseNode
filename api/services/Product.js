@@ -96,28 +96,28 @@ var schema = new Schema({
         default: 0
     },
     status: Boolean
-    // size: [{
-    //     name: {
-    //         type: String,
-    //         default: ""
-    //     },
-    //     chest: {
-    //         type: String,
-    //         default: ""
-    //     },
-    //     waist: {
-    //         type: String,
-    //         default: ""
-    //     },
-    //     hips: {
-    //         type: String,
-    //         default: ""
-    //     },
-    //     length: {
-    //         type: String,
-    //         default: ""
-    //     }
-    // }]
+        // size: [{
+        //     name: {
+        //         type: String,
+        //         default: ""
+        //     },
+        //     chest: {
+        //         type: String,
+        //         default: ""
+        //     },
+        //     waist: {
+        //         type: String,
+        //         default: ""
+        //     },
+        //     hips: {
+        //         type: String,
+        //         default: ""
+        //     },
+        //     length: {
+        //         type: String,
+        //         default: ""
+        //     }
+        // }]
 
 });
 
@@ -1333,82 +1333,63 @@ var models = {
         });
     },
     generateAllXML: function (data, callback) {
-
-
-        // get all category
-        // async.eachseries for category
-        // get sub category of category
-        // async.eachseries for subcategory
-        // find product of sub category
-        // async.eachseries
-
-
-
-        Product.find({}).exec(function (err, created) {
-            // console.log('createddddddddddd0000000000000',created);
+        var retVal = {
+            category: []
+        };
+        Category.find({}).exec(function (err, categories) {
             if (err) {
                 callback(err, null);
-            } else if (created) {
-                // if (created) {
-
-                async.eachSeries(created, function (categoryname, callback1) {
-                    // console.log('categoryname.category00000000000000000000000000000000', categoryname.category);
-                    // var categoryId = data.category[0];
-                    // var categoryIds = [];
-                    _.each(categoryname.category, function (value) {
-                        Category.findOne({
-                            _id: value
-                        }).exec(function (err, found) {
+            } else if (categories) {
+                async.eachSeries(categories, function (category, callbackCategory) {
+                    var catObj = {
+                        name: category.name,
+                        subCat: []
+                    };
+                    Subcategory.find({
+                        category: category._id
+                    }).exec(function (err, subCategories) {
                             if (err) {
-                                callback(err, null);
+                                callbackCategory(null, err);
                             } else {
-                                if (found) {
-                                    var sendXMLUrl = "productdetail/" + found.name + "/" + categoryname._id;
-                                    //Update XML file
-                                    // console.log('sendXMLUrl0000000000000', sendXMLUrl);
-                                    Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
+                                async.eachSeries(subCategories, function (subCategory, callbackSubCategory) {
+                                    var subCatObj = {
+                                        name: subCategory.name,
+                                        product: []
+                                    }
+                                    Product.find({
+                                        subcategory: subCategory._id
+                                    }).exec(function (err, products) {
                                         if (err) {
-                                            callback1(err, null);
+                                            callbackSubCategory(null, true);
                                         } else {
-                                            callback1(null, {
-                                                message: "XML Updated"
+                                            async.eachSeries(products, function (product, callbackProduct) {
+                                                subCatObj.product.push({
+                                                    name: product.name
+                                                });
+                                                // callbackProduct();
+                                                var sendXMLUrl = "productdetail/" + category.name + "/" + product._id;
+                                                Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
+                                                    callbackProduct(null,true);
+                                                });
+                                            }, function (err, products) {
+                                                catObj.subCat.push(subCatObj);
+                                                callbackSubCategory(null, true);
                                             });
                                         }
-                                    });
-                                } else {
-                                    callback1({
-                                        message: "Category Not Found"
-                                    }, null);
-                                }
-                            }
+
+                                    })
+                                }, function (err, subCategories) {
+                                    retVal.category.push(catObj);
+                                    callbackCategory(null,true);
+                                });
+                            };
                         });
-                        //     callback1(null, {
-                        //     message: "XML Updated"
-                        // });
-                    });
-                }, function (err, result) {
-
-                    callback(null, "done");
+                }, function (err, categories) {
+                    callback(err,retVal);
                 });
-
-                // }
-                // async.eachSeries(found, function(fdata, callback1) {
-                //     var sendXMLUrl = "customisation/" + fdata.name;
-                //     Config.saveXmlData(sendXMLUrl, function(err, XMLupdated) {
-                //         if (err) {
-                //             callback(err, null);
-                //         } else {
-                //             callback1(null, "done");
-                //         }
-                //     });
-                // }, function(key, data2) {
-                //     callback(null, found);
-                // })
-            } else {
-                callback(null, {});
             }
-        })
-    },
-};
+        });
+    }
+}
 
 module.exports = _.assign(module.exports, models);
