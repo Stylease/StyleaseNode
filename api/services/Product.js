@@ -658,10 +658,10 @@ var models = {
             },
             function (callback) {
                 ProductTime.find({
-                    product: data._id,
-                    timeTo: {
-                        $gte: new Date()
-                    }
+                    product: data._id
+                    // timeTo: {
+                    //     $gte: new Date()
+                    // }
                 }).exec(function (err, data1) {
                     if (err) {
                         console.log(err);
