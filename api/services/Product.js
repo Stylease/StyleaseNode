@@ -1373,7 +1373,7 @@ var models = {
                                             subCatObj.product.push({
                                                 name: product.name
                                             });
-                                            var sendXMLUrl3 = "productdetail/" + product.name + "/" + product._id;
+                                            var sendXMLUrl3 = "productdetail/" + _.trim(_.kebabCase(product.name)) + "/" + product._id;
                                             xmlString += Config.getUrlXml(sendXMLUrl3);
 
                                             callbackProduct();
