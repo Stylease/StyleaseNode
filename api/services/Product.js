@@ -96,28 +96,28 @@ var schema = new Schema({
         default: 0
     },
     status: Boolean
-        // size: [{
-        //     name: {
-        //         type: String,
-        //         default: ""
-        //     },
-        //     chest: {
-        //         type: String,
-        //         default: ""
-        //     },
-        //     waist: {
-        //         type: String,
-        //         default: ""
-        //     },
-        //     hips: {
-        //         type: String,
-        //         default: ""
-        //     },
-        //     length: {
-        //         type: String,
-        //         default: ""
-        //     }
-        // }]
+    // size: [{
+    //     name: {
+    //         type: String,
+    //         default: ""
+    //     },
+    //     chest: {
+    //         type: String,
+    //         default: ""
+    //     },
+    //     waist: {
+    //         type: String,
+    //         default: ""
+    //     },
+    //     hips: {
+    //         type: String,
+    //         default: ""
+    //     },
+    //     length: {
+    //         type: String,
+    //         default: ""
+    //     }
+    // }]
 
 });
 
@@ -1373,9 +1373,9 @@ var models = {
                                             subCatObj.product.push({
                                                 name: product.name
                                             });
-                                            var sendXMLUrl3 = "productdetail/" + category.name + "/" + product._id;
+                                            var sendXMLUrl3 = "productdetail/" + product.name + "/" + product._id;
                                             xmlString += Config.getUrlXml(sendXMLUrl3);
-                                            
+
                                             callbackProduct();
                                         }, function (err, products) {
                                             catObj.subCat.push(subCatObj);
@@ -1391,7 +1391,7 @@ var models = {
                         };
                     });
                 }, function (err, categories) {
-                    xmlString += categoryXml+subCategoryXml+"</urlset>";
+                    xmlString += categoryXml + subCategoryXml + "</urlset>";
                     Config.writeSiteMap(xmlString);
                     callback(err, retVal);
                 });
