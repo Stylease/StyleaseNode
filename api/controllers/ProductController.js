@@ -34,18 +34,11 @@ module.exports = {
         }
     },
 
-    generateAllXML: function(req, res) {
+    generateAllXML: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
-        if (req.body) {
-            Product.generateAllXML(req.body, res.callback);
-        } else {
-            res.json({
-                value: false,
-                data: "Invalid Request"
-            });
-        }
+        Product.generateAllXML(req.body, res.callback);
     },
     save: function (req, res) {
         if (req.body) {
