@@ -1,91 +1,91 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.1">
     <url>
         <loc>http://www.thestylease.com/home</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Occasion</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Wedding</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Sangeet</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Reception</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Engagement</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Mehendi</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Cocktail</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Dresses</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>
             http://www.thestylease.com/home/product/Indo-Western
         </loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Lehenga</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Anarkali</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Gown</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>
             http://www.thestylease.com/home/product/Accessories
         </loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Ring</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Bracelets</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Headwear</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Necklaces</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Handbags</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Anklets</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/product/Earrings</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <!-- dynamic -->
     <url>
@@ -994,27 +994,27 @@
     <!--  close dynamic  -->
     <url>
         <loc>http://www.thestylease.com/home/about-us</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/contact</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>
             http://www.thestylease.com/home/cancellation-policy
         </loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/return-policy</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/terms-condition</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>http://www.thestylease.com/home/privacy-policy</loc>
-        <priority>0.1</priority>
+        <priority>1.0</priority>
     </url>
