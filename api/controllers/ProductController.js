@@ -35,9 +35,6 @@ module.exports = {
     },
 
     generateAllXML: function (req, res) {
-        function callback(err, data) {
-            Global.response(err, data, res);
-        }
         Product.generateAllXML(req.body, res.callback);
     },
     save: function (req, res) {
