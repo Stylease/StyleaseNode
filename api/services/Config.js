@@ -527,7 +527,7 @@ module.exports = {
         // );
     },
     writeSiteMap: function (body) {
-        body = _.replace(body, new RegExp("</urlset>", "g"), "");
+        body.replace(new RegExp("</urlset>", "g"), "");
         body = body + "</urlset>";
         // fs.writeFileSync("sitemap2.xml", body);
         fs.writeFileSync("/var/www/html/newsite/testing/production/sitemap.xml", body);
@@ -535,7 +535,7 @@ module.exports = {
 
     getOldSitemap: function (url, callback) {
         var body = fs.readFileSync('sitemap.xml').toString();
-        body = _.replace(body, new RegExp("</urlset>", "g"), "");
+        body.replace(new RegExp("</urlset>", "g"), "");
         return body;
     },
 
