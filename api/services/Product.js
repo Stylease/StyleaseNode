@@ -504,7 +504,7 @@ var models = {
                                     callback(err, null);
                                 } else {
                                     if (found) {
-                                        var sendXMLUrl = "productdetail/" + found.name + "/" + created._id;
+                                        var sendXMLUrl = "pd/" + found.name + "/" + created._id;
                                         //Update XML file
                                         Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
                                             if (err) {
@@ -1373,7 +1373,7 @@ var models = {
                                             subCatObj.product.push({
                                                 name: product.name
                                             });
-                                            var sendXMLUrl3 = "productdetail/" + _.trim(_.kebabCase(product.name)) + "/" + product._id;
+                                            var sendXMLUrl3 = "pd/" + _.trim(_.kebabCase(product.name)) + "/" + product._id;
                                             xmlString += Config.getUrlXml(sendXMLUrl3);
 
                                             callbackProduct();
