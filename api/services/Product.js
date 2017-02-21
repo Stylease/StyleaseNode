@@ -1388,7 +1388,7 @@ var models = {
                                 retVal.category.push(catObj);
                                 callbackCategory(null, true);
                             });
-                        };
+                        }
                     });
                 }, function (err, categories) {
                     xmlString += categoryXml + subCategoryXml + "</urlset>";
