@@ -511,7 +511,7 @@ module.exports = {
         var baseUrl = "http://www.thestylease.com/";
         var obj = "\n <url> \n" + "<loc> \n" + baseUrl + url + " \n" + "</loc> \n" + "<changefreq>" + "monthly" + "</changefreq> \n" + "<priority>" + "1.0" + "</priority> \n" + "</url>\n" + "</urlset>";
         var body = fs.readFileSync('sitemap.xml').toString();
-        body = _.replace(body, "</urlset>", '');
+        body = _.replace(body, "</urlset>", "");
         // "/var/www/html/newsite/testing/production/sitemap.xml"
         fs.writeFileSync("sitemap.xml", body);
         fs.appendFile(
