@@ -1391,7 +1391,7 @@ var models = {
                         }
                     });
                 }, function (err, categories) {
-                    xmlString += categoryXml + subCategoryXml + "</urlset>";
+                    xmlString += categoryXml + subCategoryXml;
                     Config.writeSiteMap(xmlString);
                     callback(err, retVal);
                 });
