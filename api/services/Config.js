@@ -535,8 +535,7 @@ module.exports = {
 
     getOldSitemap: function (url, callback) {
         var body = fs.readFileSync('sitemap.xml').toString();
-        var abc = body.toString();
-        body = abc.substring(0, (abc.length - 10));
+        body = _.replace(body, new RegExp("</urlset>", "g"), "");
         return body;
     },
 
