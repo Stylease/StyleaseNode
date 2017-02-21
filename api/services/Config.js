@@ -508,23 +508,23 @@ module.exports = {
     },
 
     saveXmlData: function (url, callback) {
-        var baseUrl = "http://www.thestylease.com/";
-        var obj = "\n <url> \n" + "<loc> \n" + baseUrl + url + " \n" + "</loc> \n" + "<changefreq>" + "monthly" + "</changefreq> \n" + "<priority>" + "1.0" + "</priority> \n" + "</url>\n" + "";
-        var body = fs.readFileSync('sitemap.xml').toString();
-        body = _.replace(body, new RegExp("</urlset>", "g"), "");
-        // "/var/www/html/newsite/testing/production/sitemap.xml"
-        fs.writeFileSync("sitemap.xml", body);
-        fs.appendFile(
-            "sitemap.xml",
-            obj,
-            function (error) {
-                if (error) {
-                    callback(error);
-                } else {
-                    callback(null, "File Updated");
-                }
-            }
-        );
+        // var baseUrl = "http://www.thestylease.com/";
+        // var obj = "\n <url> \n" + "<loc> \n" + baseUrl + url + " \n" + "</loc> \n" + "<changefreq>" + "monthly" + "</changefreq> \n" + "<priority>" + "1.0" + "</priority> \n" + "</url>\n" + "";
+        // var body = fs.readFileSync('sitemap.xml').toString();
+        // body = _.replace(body, new RegExp("</urlset>", "g"), "");
+        // // "/var/www/html/newsite/testing/production/sitemap.xml"
+        // fs.writeFileSync("sitemap.xml", body);
+        // fs.appendFile(
+        //     "sitemap.xml",
+        //     obj,
+        //     function (error) {
+        //         if (error) {
+        //             callback(error);
+        //         } else {
+        //             callback(null, "File Updated");
+        //         }
+        //     }
+        // );
     },
     writeSiteMap: function (body) {
         body = _.replace(body, new RegExp("</urlset>", "g"), "");
