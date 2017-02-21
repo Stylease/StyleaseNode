@@ -1360,7 +1360,7 @@ var models = {
                                 var subCatObj = {
                                     name: subCategory.name,
                                     product: []
-                                }
+                                };
                                 var sendXMLUrl2 = "product/" + subCategory.name;
                                 subCategoryXml += Config.getUrlXml(sendXMLUrl2);
                                 Product.find({
@@ -1383,7 +1383,7 @@ var models = {
                                         });
                                     }
 
-                                })
+                                });
                             }, function (err, subCategories) {
                                 retVal.category.push(catObj);
                                 callbackCategory(null, true);

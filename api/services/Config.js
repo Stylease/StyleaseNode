@@ -511,7 +511,7 @@ module.exports = {
         var baseUrl = "http://www.thestylease.com/";
         var obj = "\n <url> \n" + "<loc> \n" + baseUrl + url + " \n" + "</loc> \n" + "<changefreq>" + "monthly" + "</changefreq> \n" + "<priority>" + "1.0" + "</priority> \n" + "</url>\n" + "";
         var body = fs.readFileSync('sitemap.xml').toString();
-        body = _.replace(body, "</urlset>", "");
+        body = _.replace(body, new RegExp("</urlset>", "g"), "");
         // "/var/www/html/newsite/testing/production/sitemap.xml"
         fs.writeFileSync("sitemap.xml", body);
         fs.appendFile(
@@ -527,8 +527,9 @@ module.exports = {
         );
     },
     writeSiteMap: function (body) {
-        // fs.writeFileSync("sitemap2.xml", body);
+        body = _.replace(body, new RegExp("</urlset>", "g"), "");
         body = body + "</urlset>";
+        // fs.writeFileSync("sitemap2.xml", body);
         fs.writeFileSync("/var/www/html/newsite/testing/production/sitemap.xml", body);
     },
 
