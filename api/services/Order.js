@@ -1264,6 +1264,14 @@ var models = {
             };
             objArray.push(obj);
         }
+        if (data.rentalDate && data.rentalDate !== '') {
+            console.log("inside rentalDate");
+            var obj = {
+                'cartproduct.timeFrom': new Date(data.rentalDate)
+            };
+            objArray.push(obj);
+            console.log("obj",objArray);
+        }
         if (data.subcategory && data.subcategory !== '') {
             subcategoryArray.push(ObjectID(data.subcategory));
             console.log(subcategoryArray);
@@ -1319,7 +1327,7 @@ var models = {
             };
             objArray.push(obj);
         }
-        if (data.coupon == '' && data.status == '' && data.subcategory == '' && data.designer == '' && data.search == '' && data.price == '') {
+        if (data.coupon == '' && data.rentalDate == '' && data.status == '' && data.subcategory == '' && data.designer == '' && data.search == '' && data.price == '') {
             var obj = {
                 paymentmode: {
                     $regex: ''
