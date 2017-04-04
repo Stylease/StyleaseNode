@@ -217,7 +217,9 @@ module.exports = {
             });
         }
     },
-
+  generateExcel: function (req, res) {
+        User.generateExcel(res);
+    },
     getAll: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);

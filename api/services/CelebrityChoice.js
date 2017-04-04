@@ -16,6 +16,7 @@ var schema = new Schema({
         type: Number,
         default: ""
     },
+    status: Boolean,
     // // description: {type:Number,default:""},
     // // link: {type:String,default:""},
     // by: {type:String,default:""},

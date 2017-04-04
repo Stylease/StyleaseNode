@@ -1298,25 +1298,25 @@ var models = {
             };
             objArray.push(obj);
         }
-        // if (data.search && data.search !== '') {
+        if (data.search && data.search !== '') {
 
-        //     var obj = {
-        //         $or: [{
-        //             firstname: {
-        //                 $regex: data.search
-        //             }
-        //         }, {
-        //             lastname: {
-        //                 $regex: data.search
-        //             }
-        //         }, {
-        //             mobile: {
-        //                 $regex: data.search
-        //             }
-        //         }]
-        //     };
-        //     objArray.push(obj);
-        // }
+            var obj = {
+                $or: [{
+                    firstname: {
+                        $regex: data.search
+                    }
+                }, {
+                    lastname: {
+                        $regex: data.search
+                    }
+                }, {
+                    mobile: {
+                        $regex: data.search
+                    }
+                }]
+            };
+            objArray.push(obj);
+        }
         if (data.price && data.price !== '') {
             var pricearr = data.price.split('-');
             var obj = {
@@ -1352,18 +1352,18 @@ var models = {
                             $unwind: "$cartproduct.product"
 
                         },
-                        //  {
-                        //     "$lookup": {
-                        //         "from": "users",
-                        //         "localField": "user",
-                        //         "foreignField": "_id",
-                        //         "as": "user"
-                        //     }
-                        // }, 
-                        // {
-                        //     $unwind: "$user"
+                         {
+                            "$lookup": {
+                                "from": "users",
+                                "localField": "user",
+                                "foreignField": "_id",
+                                "as": "user"
+                            }
+                        }, 
+                        {
+                            $unwind: "$user"
 
-                        // },
+                        },
 
                         {
                             $match: {
@@ -1409,17 +1409,17 @@ var models = {
                         }, {
                             $unwind: "$cartproduct.product"
                         },
-                        //  {
-                        //     "$lookup": {
-                        //         "from": "users",
-                        //         "localField": "user",
-                        //         "foreignField": "_id",
-                        //         "as": "user"
-                        //     }
-                        // }, 
-                        // {
-                        //     $unwind: "$user"
-                        // },
+                         {
+                            "$lookup": {
+                                "from": "users",
+                                "localField": "user",
+                                "foreignField": "_id",
+                                "as": "user"
+                            }
+                        }, 
+                        {
+                            $unwind: "$user"
+                        },
 
                         {
                             $match: {
@@ -1430,6 +1430,7 @@ var models = {
                                 "orderid": 1,
                                 "oid": "$_id",
                                 "user": "$user.name",
+                                "firstname": 1,                                
                                 "orderstatus": 1,
                                 "paymentmode": 1,
                                 "date": 1,
@@ -1457,6 +1458,9 @@ var models = {
 
                                 user: {
                                     $first: '$user'
+                                },
+                                 firstname: {
+                                    $first: '$firstname'
                                 },
                                 orderstatus: {
                                     $first: '$orderstatus'

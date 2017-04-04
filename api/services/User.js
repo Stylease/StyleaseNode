@@ -369,6 +369,24 @@ var models = {
     },
 
 
+    generateExcel: function (res) {
+        User.find().exec(function (err, data) {
+                var excelData = [];
+                _.each(data, function (n) {
+                    var obj = {};
+                    obj.name = n.name;
+                    obj.email = n.email;
+                    obj.mobile = n.mobile;
+                    obj.bankName = n.bankName;
+                    obj.beneficiaryName = n.beneficiaryName;
+                    obj.accountNumber = n.accountNumber;
+                    obj.IFSC = n.IFSC;
+                    obj.accesslevel = n.accesslevel;
+                    excelData.push(obj);
+                });
+                Config.generateExcel("User", excelData, res);
+            });
+    },
     deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
