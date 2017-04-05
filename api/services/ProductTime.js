@@ -110,6 +110,26 @@ var models = {
             }
         });
     },
+      generateExcel: function (res) {
+        ProductTime.find().populate("product", "name", null, {
+                    sort: {
+                        "name": 1
+                    }
+                }).exec(function (err, data) {
+            var excelData = [];
+            _.each(data, function (n) {
+                var obj = {};
+                if(n.product){
+                obj.product=n.product.name;
+                }
+                obj.timeFrom = n.timeFrom;
+                obj.timeTo = n.timeTo;
+                obj.status = n.status;
+                excelData.push(obj);
+            });
+            Config.generateExcel("ProductTime", excelData, res);
+        });
+    },
     getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);

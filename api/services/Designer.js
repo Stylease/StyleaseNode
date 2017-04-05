@@ -114,6 +114,17 @@ var models = {
             }
         });
     },
+     generateExcel: function (res) {
+        Designer.find().exec(function (err, data) {
+            var excelData = [];
+            _.each(data, function (n) {
+                var obj = {};
+                obj.name = n.name;
+                excelData.push(obj);
+            });
+            Config.generateExcel("Designer", excelData, res);
+        });
+    },
     getLimited: function(data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);

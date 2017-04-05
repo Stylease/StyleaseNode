@@ -1,6 +1,6 @@
 var request = require('request');
 module.exports = {
-    sort: function(req, res) {
+    sort: function (req, res) {
         function callback(err, data) {
             Config.GlobalCallback(err, data, res);
         }
@@ -13,7 +13,7 @@ module.exports = {
             });
         }
     },
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body) {
             CelebrityChoice.saveData(req.body, res.callback);
         } else {
@@ -23,7 +23,7 @@ module.exports = {
             });
         }
     },
-    getOne: function(req, res) {
+    getOne: function (req, res) {
 
         if (req.body) {
             CelebrityChoice.getOne(req.body, res.callback);
@@ -34,8 +34,10 @@ module.exports = {
             });
         }
     },
-
-    delete: function(req, res) {
+    generateExcel: function (req, res) {
+        CelebrityChoice.generateExcel(res);
+    },
+    delete: function (req, res) {
         if (req.body) {
             console.log(req.body);
             CelebrityChoice.deleteData(req.body, res.callback);
@@ -47,7 +49,7 @@ module.exports = {
         }
     },
 
-    getAll: function(req, res) {
+    getAll: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -60,7 +62,7 @@ module.exports = {
             });
         }
     },
-    getLimited: function(req, res) {
+    getLimited: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }

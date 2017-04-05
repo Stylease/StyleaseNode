@@ -263,11 +263,10 @@ var models = {
                 var sizearray = strsize.split(',');
             }
 
-            // var strsuggested = n.suggestedProduct;
-            // if (!_.isEmpty(strsuggested)) {
-            //     var suggestedarray = strsuggested.split(',');
-            // }
-            n.suggestedProduct = [];
+            var strsuggested = n.suggestedProduct;
+            if (!_.isEmpty(strsuggested)) {
+                var suggestedarray = strsuggested.split(',');
+            }
             var strimages = n.images;
             if (!_.isEmpty(strimages)) {
                 var stimg = strimages.split(',');
@@ -367,28 +366,28 @@ var models = {
                         }
                     });
                 }
-                // ,
-                //  function (callback1) {
-                //     Product.find({
-                //         name: {
-                //             $in: suggestedarray
-                //         }
-                //     }).exec(function (err, found) {
-                //         if (err) {
-                //             console.log(err);
-                //             callback(err, null);
-                //         } else {
-                //             console.log("aaaaa",found);
-                //             sugesarr = [];
-                //             _.each(found, function (suges) {
-                //                 sugesarr.push(suges._id.toString());
-                //             });
-                //             // n.sugesegory = [];
-                //             n.suggestedProduct = sugesarr;
-                //             callback1(null, "done");
-                //         }
-                //     });
-                // }
+                ,
+                 function (callback1) {
+                    Product.find({
+                        name: {
+                            $in: suggestedarray
+                        }
+                    }).exec(function (err, found) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            console.log("aaaaa",found);
+                            sugesarr = [];
+                            _.each(found, function (suges) {
+                                sugesarr.push(suges._id.toString());
+                            });
+                            // n.sugesegory = [];
+                            n.suggestedProduct = sugesarr;
+                            callback1(null, "done");
+                        }
+                    });
+                }
 
                 ,
                 function (callback1) {

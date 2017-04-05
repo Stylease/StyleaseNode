@@ -35,7 +35,9 @@ module.exports = {
             });
         }
     },
-
+  generateExcel: function (req, res) {
+        ProductTime.generateExcel(res);
+    },
     delete: function (req, res) {
         if (req.body) {
             console.log(req.body);

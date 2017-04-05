@@ -28,12 +28,12 @@ var schema = new Schema({
 module.exports = mongoose.model('CelebrityChoice', schema);
 
 var models = {
-    sort: function(data, callback) {
+    sort: function (data, callback) {
         function callSave(num) {
             CelebrityChoice.saveData({
                 _id: data[num],
                 order: num + 1
-            }, function(err, respo) {
+            }, function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -55,13 +55,13 @@ var models = {
             callback(null, {});
         }
     },
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         //        delete data.password;
         var Choice = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, data).exec(function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -73,7 +73,7 @@ var models = {
             });
         } else {
 
-            Choice.save(function(err, created) {
+            Choice.save(function (err, created) {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
@@ -84,10 +84,10 @@ var models = {
             });
         }
     },
-    deleteData: function(data, callback) {
+    deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -97,10 +97,10 @@ var models = {
             }
         });
     },
-    getAll: function(data, callback) {
+    getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -111,12 +111,30 @@ var models = {
             }
         });
     },
-    getOne: function(data, callback) {
+    generateExcel: function (res) {
+        CelebrityChoice.find().populate("product", "name", null, {
+            sort: {
+                "name": 1
+            }
+        }).exec(function (err, data) {
+            var excelData = [];
+            _.each(data, function (n) {
+                var obj = {};
+                obj.celebrity = n.celebrity;
+                if (n.product) {
+                    obj.product = n.product.name;
+                }
+                excelData.push(obj);
+            });
+            Config.generateExcel("CelebrityChoice", excelData, res);
+        });
+    },
+    getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -127,19 +145,19 @@ var models = {
             }
         });
     },
-    getLimited: function(data, callback) {
+    getLimited: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         var checkfor = new RegExp(data.search, "i");
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 CelebrityChoice.count({
                     celebrity: {
                         "$regex": checkfor
                     }
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -152,7 +170,7 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 CelebrityChoice.find({
                     celebrity: {
                         "$regex": checkfor
@@ -163,7 +181,7 @@ var models = {
                     sort: {
                         "name": 1
                     }
-                }).lean().exec(function(err, data2) {
+                }).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -180,7 +198,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);

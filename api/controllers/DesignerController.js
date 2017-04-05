@@ -1,6 +1,6 @@
 var request = require('request');
 module.exports = {
-    sort: function(req, res) {
+    sort: function (req, res) {
         function callback(err, data) {
             Config.GlobalCallback(err, data, res);
         }
@@ -14,7 +14,7 @@ module.exports = {
         }
     },
 
-    save: function(req, res) {
+    save: function (req, res) {
         if (req.body) {
             Designer.saveData(req.body, res.callback);
         } else {
@@ -24,7 +24,7 @@ module.exports = {
             });
         }
     },
-    getOne: function(req, res) {
+    getOne: function (req, res) {
 
         if (req.body) {
             Designer.getOne(req.body, res.callback);
@@ -36,7 +36,7 @@ module.exports = {
         }
     },
 
-    delete: function(req, res) {
+    delete: function (req, res) {
         if (req.body) {
             console.log(req.body);
             Designer.deleteData(req.body, res.callback);
@@ -47,8 +47,10 @@ module.exports = {
             });
         }
     },
-
-    getAll: function(req, res) {
+    generateExcel: function (req, res) {
+        Designer.generateExcel(res);
+    },
+    getAll: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -61,7 +63,7 @@ module.exports = {
             });
         }
     },
-    getLimited: function(req, res) {
+    getLimited: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }

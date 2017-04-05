@@ -22,7 +22,9 @@ module.exports = {
       });
     }
   },
-
+ generateExcel: function (req, res) {
+        Color.generateExcel(res);
+    },
   delete: function(req, res) {
     if (req.body) {
       console.log(req.body);
