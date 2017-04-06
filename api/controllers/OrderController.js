@@ -178,5 +178,15 @@ module.exports = {
             });
         }
     },
+    getDateWise: function (req, res) {
+        if (req.body) {
+            Order.getDateWise(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
 
 };
