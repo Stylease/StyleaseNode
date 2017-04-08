@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+
 var Schema = mongoose.Schema;
 var ObjectID = require('mongodb').ObjectID;
 var schema = new Schema({
@@ -1194,9 +1195,9 @@ var models = {
             function (callback1) {
                 Order.count({
                     user: data.user
-                        // email: {
-                        //     "$regex": checkfor
-                        // }
+                    // email: {
+                    //     "$regex": checkfor
+                    // }
                 }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
@@ -1213,9 +1214,9 @@ var models = {
             function (callback1) {
                 Order.find({
                     user: data.user
-                        // email: {
-                        //     "$regex": checkfor
-                        // }
+                    // email: {
+                    //     "$regex": checkfor
+                    // }
                 }, {}).sort({
                     name: 1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("user", "_id  name", null, {
@@ -1265,12 +1266,19 @@ var models = {
             objArray.push(obj);
         }
         if (data.rentalDate && data.rentalDate !== '') {
-            console.log("inside rentalDate");
+            var nextday = new Date(data.rentalDate);
+            nextday.setDate(nextday.getDate() + 1);
+            var currdate = new Date(data.rentalDate);
+            var currdate = new Date(data.rentalDate);
+            console.log("inside currdate", currdate, "nextday", nextday);
             var obj = {
-                'cartproduct.timeFrom': new Date(data.rentalDate)
+                'cartproduct.timeFrom': {
+                    $gte: currdate,
+                    $lt: nextday
+                }
             };
             objArray.push(obj);
-            console.log("obj",objArray);
+            console.log("obj", objArray);
         }
         if (data.subcategory && data.subcategory !== '') {
             subcategoryArray.push(ObjectID(data.subcategory));
@@ -1303,11 +1311,13 @@ var models = {
             var obj = {
                 $or: [{
                     firstname: {
-                        $regex: data.search
+                        $regex: data.search,
+                        $options: 'i'
                     }
                 }, {
                     lastname: {
-                        $regex: data.search
+                        $regex: data.search,
+                        $options: 'i'
                     }
                 }, {
                     mobile: {
@@ -1352,14 +1362,14 @@ var models = {
                             $unwind: "$cartproduct.product"
 
                         },
-                         {
+                        {
                             "$lookup": {
                                 "from": "users",
                                 "localField": "user",
                                 "foreignField": "_id",
                                 "as": "user"
                             }
-                        }, 
+                        },
                         {
                             $unwind: "$user"
 
@@ -1409,14 +1419,14 @@ var models = {
                         }, {
                             $unwind: "$cartproduct.product"
                         },
-                         {
+                        {
                             "$lookup": {
                                 "from": "users",
                                 "localField": "user",
                                 "foreignField": "_id",
                                 "as": "user"
                             }
-                        }, 
+                        },
                         {
                             $unwind: "$user"
                         },
@@ -1430,7 +1440,7 @@ var models = {
                                 "orderid": 1,
                                 "oid": "$_id",
                                 "user": "$user.name",
-                                "firstname": 1,                                
+                                "firstname": 1,
                                 "orderstatus": 1,
                                 "paymentmode": 1,
                                 "date": 1,
@@ -1459,7 +1469,7 @@ var models = {
                                 user: {
                                     $first: '$user'
                                 },
-                                 firstname: {
+                                firstname: {
                                     $first: '$firstname'
                                 },
                                 orderstatus: {
@@ -1527,7 +1537,7 @@ var models = {
                 "name": 1
             }
         }).lean().exec(function (err, found) {
-            console.log("found",found);
+            console.log("found", found);
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -1686,9 +1696,104 @@ var models = {
                 });
             }
         });
+    },
+    getUpcomingOrders: function (data, callback) {
+        console.log("hi")
+        var nextday = new Date();
+        nextday.setDate(nextday.getDate() + 7);
+        var currdate = new Date();
+        console.log("ccc", currdate, nextday);
+        var limit = 10;
+        Order.find({
+            cartproduct: {
+                $elemMatch: {
+                    timeFrom: {
+                        $gte: currdate,
+                        $lt: nextday
+                    }
+                }
+            },
+            orderstatus:{$ne: 'Refund' }
+        }).populate("cartproduct.product", "name rentalamount").sort({
+            _id: -1
+        }).limit(limit).exec(function (err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                if (data2 && data2.length > 0) {
+                    console.log(data2);
+                    callback(null, data2);
+                } else {
+                    callback({
+                        message: "No data found"
+                    }, null);
+                }
+            }
+        });
+    },
+    getUpcomingPickupOrders: function (data, callback) {
+        console.log("hi")
+        var nextday = new Date();
+        nextday.setDate(nextday.getDate() + 7);
+        var currdate = new Date();
+        console.log("ccc", currdate, nextday);
+        var limit = 10;
+        Order.find({
+            cartproduct: {
+                $elemMatch: {
+                    timeTo: {
+                        $gte: currdate,
+                        $lt: nextday
+                    }
+                }
+            },
+           orderstatus:{$ne: 'Refund' }
+        }).populate("cartproduct.product", "name rentalamount").sort({
+            _id: -1
+        }).limit(limit).exec(function (err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                if (data2 && data2.length > 0) {
+                    console.log(data2);
+                    callback(null, data2);
+                } else {
+                    callback({
+                        message: "No data found"
+                    }, null);
+                }
+            }
+        });
+    },
+     getRefundOrders: function (data, callback) {
+        console.log("hi")
+        var nextday = new Date();
+        nextday.setDate(nextday.getDate() + 7);
+        var currdate = new Date();
+        console.log("ccc", currdate, nextday);
+        var limit = 10;
+        Order.find({
+            orderstatus:'Refund'
+        }).populate("cartproduct.product", "name rentalamount").sort({
+            _id: -1
+        }).limit(limit).exec(function (err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                if (data2 && data2.length > 0) {
+                    console.log(data2);
+                    callback(null, data2);
+                } else {
+                    callback({
+                        message: "No data found"
+                    }, null);
+                }
+            }
+        });
     }
-
-
 };
 
 module.exports = _.assign(module.exports, models);

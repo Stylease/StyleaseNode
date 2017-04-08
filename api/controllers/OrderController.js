@@ -9,17 +9,17 @@ module.exports = {
     },
     save: function (req, res) {
         if (req.body) {
-            if (req.session.user) {
-                console.log("userss", req.session.user._id);
-                req.body.user = req.session.user._id;
-                Order.saveData(req.body, res.callback);
-            } else {
-                // req.body.user = null;
-                res.json({
-                    value: false,
-                    data: "User not logged in!!!"
-                });
-            }
+            // if (req.session.user) {
+            // console.log("userss", req.session.user._id);
+            // req.body.user = req.session.user._id;
+            Order.saveData(req.body, res.callback);
+            // } else {
+            //     // req.body.user = null;
+            //     res.json({
+            //         value: false,
+            //         data: "User not logged in!!!"
+            //     });
+            // }
         } else {
             res.json({
                 value: false,
@@ -178,9 +178,9 @@ module.exports = {
             });
         }
     },
-    getDateWise: function (req, res) {
+    getUpcomingOrders: function (req, res) {
         if (req.body) {
-            Order.getDateWise(req.body, res.callback);
+            Order.getUpcomingOrders(req.body, res.callback);
         } else {
             res.json({
                 value: false,
@@ -188,5 +188,24 @@ module.exports = {
             });
         }
     },
-
+    getUpcomingPickupOrders: function (req, res) {
+        if (req.body) {
+            Order.getUpcomingPickupOrders(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
+    getRefundOrders : function (req, res) {
+        if (req.body) {
+            Order.getRefundOrders(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
 };
