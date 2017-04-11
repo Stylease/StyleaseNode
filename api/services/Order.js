@@ -1532,11 +1532,7 @@ var models = {
             sort: {
                 "name": 1
             }
-        }).populate("cartproduct.product", "_id  name fourdayrentalamount images eightdayrentalamount", null, {
-            sort: {
-                "name": 1
-            }
-        }).lean().exec(function (err, found) {
+        }).populate("cartproduct.product", "_id  name fourdayrentalamount images eightdayrentalamount", null).lean().exec(function (err, found) {
             console.log("found", found);
             if (err) {
                 console.log(err);
@@ -1769,10 +1765,7 @@ var models = {
     },
      getRefundOrders: function (data, callback) {
         console.log("hi")
-        var nextday = new Date();
-        nextday.setDate(nextday.getDate() + 7);
-        var currdate = new Date();
-        console.log("ccc", currdate, nextday);
+       
         var limit = 10;
         Order.find({
             orderstatus:'Refund'

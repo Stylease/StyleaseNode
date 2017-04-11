@@ -213,7 +213,7 @@ var models = {
                     obj.eightdayrentalamount = n.eightdayrentalamount;
                     obj.fourdaysecuritydeposit = n.fourdaysecuritydeposit;
                     obj.eightdaysecuritydeposit = n.eightdaysecuritydeposit;
-                   // obj.order = n.order;
+                    // obj.order = n.order;
                     obj.suggestedProduct = arrSuggested.toString();
                     obj.images = "";
                     // obj.images = arrImage.toString();
@@ -365,9 +365,8 @@ var models = {
                             callback1(null, "done");
                         }
                     });
-                }
-                ,
-                 function (callback1) {
+                },
+                function (callback1) {
                     Product.find({
                         name: {
                             $in: suggestedarray
@@ -377,7 +376,7 @@ var models = {
                             console.log(err);
                             callback(err, null);
                         } else {
-                            console.log("aaaaa",found);
+                            console.log("aaaaa", found);
                             sugesarr = [];
                             _.each(found, function (suges) {
                                 sugesarr.push(suges._id.toString());
@@ -503,17 +502,10 @@ var models = {
                                     callback(err, null);
                                 } else {
                                     if (found) {
-                                        var sendXMLUrl = "pd/" + found.name + "/" + created._id;
-                                        //Update XML file
-                                        Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
-                                            if (err) {
-                                                callback(err, null);
-                                            } else {
-                                                callback(null, {
-                                                    message: "XML Updated"
-                                                });
-                                            }
+                                        callback(null, {
+                                            message: "Created"
                                         });
+
                                     } else {
                                         callback({
                                             message: "Category Not Found"

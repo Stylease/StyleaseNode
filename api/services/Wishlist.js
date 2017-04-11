@@ -17,12 +17,12 @@ var schema = new Schema({
 module.exports = mongoose.model('Wishlist', schema);
 
 var models = {
-    sort: function(data, callback) {
+    sort: function (data, callback) {
         function callSave(num) {
             Wishlist.saveData({
                 _id: data[num],
                 order: num + 1
-            }, function(err, respo) {
+            }, function (err, respo) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -44,13 +44,13 @@ var models = {
             callback(null, {});
         }
     },
-    saveData: function(data, callback) {
+    saveData: function (data, callback) {
         //        delete data.password;
         var wishlist = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
-            }, data).exec(function(err, updated) {
+            }, data).exec(function (err, updated) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
@@ -64,17 +64,17 @@ var models = {
             this.findOne({
                 user: data.user,
                 product: data.product
-            }).exec(function(err, found) {
+            }).exec(function (err, found) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
                 } else {
                     if (found) {
-                        callback( {
+                        callback({
                             message: "Already in wishlist"
-                        },null);
+                        }, null);
                     } else {
-                        wishlist.save(function(err, created) {
+                        wishlist.save(function (err, created) {
                             if (err) {
                                 callback(err, null);
                             } else if (created) {
@@ -89,10 +89,10 @@ var models = {
 
         }
     },
-    deleteData: function(data, callback) {
+    deleteData: function (data, callback) {
         this.findOneAndRemove({
             _id: data._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -102,11 +102,11 @@ var models = {
             }
         });
     },
-    deleteByUser: function(data, callback) {
+    deleteByUser: function (data, callback) {
         this.findOneAndRemove({
             product: data.product,
             user: data.user
-        }, function(err, deleted) {
+        }, function (err, deleted) {
             if (err) {
                 callback(err, null);
             } else if (deleted) {
@@ -116,10 +116,12 @@ var models = {
             }
         });
     },
-    getAll: function(data, callback) {
+    getAll: function (data, callback) {
         this.find({}, {
             password: 0
-        }).exec(function(err, found) {
+        }).sort({
+            _id: -1
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -130,12 +132,12 @@ var models = {
             }
         });
     },
-    getOne: function(data, callback) {
+    getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
         }, {
             password: 0
-        }).exec(function(err, found) {
+        }).exec(function (err, found) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -147,7 +149,7 @@ var models = {
         });
     },
 
-    getWishlist: function(data, callback) {
+    getWishlist: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         console.log(data);
@@ -155,10 +157,10 @@ var models = {
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Wishlist.count({
                     user: data._id
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -171,16 +173,16 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Wishlist.find({
                     user: data._id
                 }, {}).sort({
-                    name: 1
+                    _id: -1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id  name", null, {
                     sort: {
                         "name": 1
                     }
-                }).lean().exec(function(err, data2) {
+                }).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -197,7 +199,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -206,7 +208,7 @@ var models = {
             }
         });
     },
-    getWishlistUser: function(data, callback) {
+    getWishlistUser: function (data, callback) {
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
         console.log(data);
@@ -214,10 +216,10 @@ var models = {
         var newreturns = {};
         newreturns.data = [];
         async.parallel([
-            function(callback1) {
+            function (callback1) {
                 Wishlist.count({
                     user: data.user
-                }).exec(function(err, number) {
+                }).exec(function (err, number) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -230,16 +232,16 @@ var models = {
                     }
                 });
             },
-            function(callback1) {
+            function (callback1) {
                 Wishlist.find({
                     user: data.user
                 }, {}).sort({
-                    name: 1
+                    _id: -1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id  name fourdayrentalamount images", null, {
                     sort: {
                         "name": 1
                     }
-                }).lean().exec(function(err, data2) {
+                }).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
@@ -256,7 +258,7 @@ var models = {
                     }
                 });
             }
-        ], function(err, respo) {
+        ], function (err, respo) {
             if (err) {
                 console.log(err);
                 callback(err, null);

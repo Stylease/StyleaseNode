@@ -77,18 +77,7 @@ var models = {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
-                    var sendXMLUrl = "product/" + created.name;
-                    //Update XML file
-                    Config.saveXmlData(sendXMLUrl, function (err, xmlupdated) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, {
-                                message: "Subcategory added"
-                            });
-                        }
-                    });
-                    // callback(null, created);
+                    callback(null, created);
                 } else {
                     callback(null, {});
                 }
@@ -100,18 +89,7 @@ var models = {
             if (err) {
                 callback(err, null);
             } else if (found && Object.keys(found).length > 0) {
-                async.eachSeries(found, function (fdata, callback1) {
-                    var sendXMLUrl = "product/" + fdata.name;
-                    Config.saveXmlData(sendXMLUrl, function (err, XMLupdated) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback1(null, "done");
-                        }
-                    });
-                }, function (key, data2) {
-                    callback(null, found);
-                })
+                callback(null, found);
             } else {
                 callback(null, {});
             }
@@ -150,7 +128,7 @@ var models = {
         }, {
             password: 0
         }).sort({
-            order: 1
+            _id: -1
         }).populate("category", "_id  name", null, {
             sort: {}
         }).lean().exec(function (err, found) {
@@ -211,7 +189,7 @@ var models = {
                         "$regex": checkfor
                     }
                 }, {}).sort({
-                    order: 1
+                    _id: -1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("category", "_id  name", null, {}).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);

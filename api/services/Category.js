@@ -86,17 +86,7 @@ var models = {
                 if (err) {
                     callback(err, null);
                 } else if (created) {
-
-                  var sendXMLUrl = "product/" + created.name ;
-                  //Update XML file
-                  Config.saveXmlData(sendXMLUrl,function(err,xmlupdated){
-                    if(err){
-                      callback(err, null);
-                    }else{
-                      callback(null,{message:"Category added"});
-                    }
-                  });
-                    // callback(null, created);
+                 callback(null, created);
                 } else {
                     callback(null, {});
                 }
@@ -178,7 +168,7 @@ var models = {
                         "$regex": checkfor
                     }
                 }, {}).sort({
-                    order: 1
+                    _id: -1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("user", "_id  name", null, {
                     sort: {
                         "name": 1

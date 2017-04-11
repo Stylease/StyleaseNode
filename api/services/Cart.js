@@ -404,7 +404,7 @@ var models = {
                         "$regex": checkfor
                     }
                 }, {}).sort({
-                    name: 1
+                    _id: -1
                 }).skip((data.pagenumber - 1) * data.pagecart).limit(data.pagecart).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);

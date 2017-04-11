@@ -161,7 +161,7 @@ var models = {
                     //     "$regex": checkfor
                     // }
                 }, {}).sort({
-                    name: 1
+                    _id: -1
                 }).populate("product", "name").skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);

@@ -854,7 +854,7 @@ var models = {
                         "$regex": checkfor
                     }
                 }, {}).sort({
-                    name: 1
+                    _id: -1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("cart.product", "_id  name", null, {
                     sort: {
                         "name": 1

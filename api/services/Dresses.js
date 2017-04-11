@@ -1,22 +1,31 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
-  name: {type:String,default:""},
-  order: {type:Number,default:""},
-  status: {type:String,default:""}
+  name: {
+    type: String,
+    default: ""
+  },
+  order: {
+    type: Number,
+    default: ""
+  },
+  status: {
+    type: String,
+    default: ""
+  }
 
 });
 
 module.exports = mongoose.model('Dresses', schema);
 
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     //        delete data.password;
     var dresses = this(data);
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
-      }, data).exec(function(err, updated) {
+      }, data).exec(function (err, updated) {
         if (err) {
           console.log(err);
           callback(err, null);
@@ -28,7 +37,7 @@ var models = {
       });
     } else {
 
-      dresses.save(function(err, created) {
+      dresses.save(function (err, created) {
         if (err) {
           callback(err, null);
         } else if (created) {
@@ -39,10 +48,10 @@ var models = {
       });
     }
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     this.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else if (deleted) {
@@ -52,10 +61,12 @@ var models = {
       }
     });
   },
-  getAll: function(data, callback) {
+  getAll: function (data, callback) {
     this.find({}, {
       password: 0
-    }).exec(function(err, found) {
+    }).sort({
+      _id: -1
+    }).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -66,12 +77,12 @@ var models = {
       }
     });
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     this.findOne({
       "_id": data._id
     }, {
       password: 0
-    }).exec(function(err, found) {
+    }).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);

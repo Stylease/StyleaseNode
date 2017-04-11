@@ -148,7 +148,7 @@ var models = {
                         "$regex": checkfor
                     }
                 }, {}).sort({
-                    order: 1
+                    _id: -1
                 }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function(err, data2) {
                     if (err) {
                         console.log(err);
