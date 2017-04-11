@@ -244,7 +244,7 @@ var models = {
                     }
                 }, {}).sort({
                     _id: -1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).lean().exec(function (err, data2) {
+                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("designerType", "_id  name", null, {}).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
