@@ -63,12 +63,25 @@ module.exports = {
             });
         }
     },
-    getAllAlphabetically: function (req, res) {
+    // getAllAlphabetically: function (req, res) {
+    //     function callback(err, data) {
+    //         Global.response(err, data, res);
+    //     }
+    //     if (req.body) {
+    //         Designer.getAllAlphabetically(req.body, res.callback);
+    //     } else {
+    //         res.json({
+    //             value: false,
+    //             data: "Invalid Request"
+    //         });
+    //     }
+    // },
+    getByDesignerTypeAlpha:function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
         if (req.body) {
-            Designer.getAllAlphabetically(req.body, res.callback);
+            Designer.getByDesignerTypeAlpha(req.body, res.callback);
         } else {
             res.json({
                 value: false,

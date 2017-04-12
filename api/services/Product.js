@@ -395,6 +395,7 @@ var models = {
                     var imgurl = "http://storage.googleapis.com/styleaseproducts/";
                     if (!_.isEmpty(stimg)) {
                         async.each(stimg, function (filename, callback) {
+                            i++;
                             var newImg = imgurl + filename;
                             Config.downloadFromUrl(newImg, function (err, resimg) {
                                 if (err) {

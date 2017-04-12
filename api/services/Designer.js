@@ -5,7 +5,7 @@ var schema = new Schema({
         type: String,
         default: ""
     },
-     designerType: {
+    designerType: {
         type: Schema.Types.ObjectId,
         ref: 'DesignerType',
         index: true
@@ -107,29 +107,119 @@ var models = {
     },
 
 
-    getAllAlphabetically: function (reqBody, callback) {
+    // getAllAlphabetically: function (reqBody, callback) {
 
-        var resObj = {};
+    //     var resObj = {};
 
+    //     var trimText = reqBody.searchText;
+    //     async.parallel([
+    //         //Function to search event name
+    //         function (callback) {
+    //             resObj.firstObj = [];
+    //             var search = new RegExp('^' + trimText[0]);
+    //             Designer.find({
+    //                 name: {
+    //                     $regex: search,
+    //                     $options: "i"
+    //                 }
+    //             }).sort({
+    //                 _id: -1
+    //             }).exec(function (err, designerNameFound) {
+    //                 if (err) {
+    //                     console.log("Designer >>> searchDesigner >>> async.parallel >>> err", err);
+    //                     callback(err, []);
+    //                 } else {
+    //                     resObj.firstObj = designerNameFound;
+    //                     callback(null, resObj);
+    //                 }
+    //             })
+    //         },
+    //         //Function to search venue name
+    //         function (callback) {
+    //             resObj.secondObj = [];
+    //             var search = new RegExp('^' + trimText[1]);
+    //             Designer.find({
+    //                 name: {
+    //                     $regex: search,
+    //                     $options: "i"
+    //                 }
+    //             }).sort({
+    //                 name: 1
+    //             }).exec(function (err, designerNameFound) {
+    //                 if (err) {
+    //                     console.log("Designer >>> searchDesigner >>> async.parallel >>> err", err);
+    //                     callback(err, []);
+    //                 } else {
+    //                     resObj.secondObj = designerNameFound;
+    //                     callback(null, resObj);
+    //                 }
+    //             })
+    //         },
+    //         function (callback) {
+    //             resObj.thirdObj = [];
+    //             var search = new RegExp('^' + trimText[2]);
+    //             Designer.find({
+    //                 name: {
+    //                     $regex: search,
+    //                     $options: "i"
+    //                 }
+    //             }).sort({
+    //                 name: 1
+    //             }).exec(function (err, designerNameFound) {
+    //                 if (err) {
+    //                     console.log("Events >>> searchEvent >>> async.parallel  >>> err", err);
+    //                     callback(err, []);
+    //                 } else {
+    //                     resObj.thirdObj = designerNameFound;
+    //                     callback(null, resObj);
+    //                 }
+    //             })
+    //         }
+    //     ], function (error, data) {
+    //         if (error) {
+    //             console.log("designer >>> searchdesigner>>> async.parallel >>> final callback  >>> error", error);
+    //             callback(error, null);
+    //         } else {
+    //             callback(null, resObj);
+    //         }
+    //     }) //End of async.parallel
+    // },
+    getByDesignerTypeAlpha: function (reqBody, callback) {
+var resObj = {};
+        console.log("reqBody ", reqBody);
         var trimText = reqBody.searchText;
         async.parallel([
             //Function to search event name
             function (callback) {
-                 resObj.firstObj = [];
+                resObj.firstObj = [];
                 var search = new RegExp('^' + trimText[0]);
-                Designer.find({
-                    name: {
-                        $regex: search,
-                        $options: "i"
+                var matchObj = {};
+                if (_.isEmpty(reqBody.designerTypeArr)) {
+                    matchObj = {
+                        name: {
+                            $regex: search,
+                            $options: "i"
+                        }
                     }
-                }).sort({
+                } else {
+                    matchObj = {
+                        name: {
+                            $regex: search,
+                            $options: "i"
+                        },
+                        designerType: {
+                            $in: reqBody.designerTypeArr
+                        }
+                    }
+                }
+                Designer.find(matchObj).sort({
                     _id: -1
                 }).exec(function (err, designerNameFound) {
                     if (err) {
                         console.log("Designer >>> searchDesigner >>> async.parallel >>> err", err);
                         callback(err, []);
                     } else {
-                        resObj.firstObj=designerNameFound;
+                        resObj.firstObj = designerNameFound;
                         callback(null, resObj);
                     }
                 })
@@ -138,10 +228,32 @@ var models = {
             function (callback) {
                 resObj.secondObj = [];
                 var search = new RegExp('^' + trimText[1]);
+                var matchObj = {};
+                if (_.isEmpty(reqBody.designerTypeArr)) {
+                    matchObj = {
+                        name: {
+                            $regex: search,
+                            $options: "i"
+                        }
+                    }
+                } else {
+                    matchObj = {
+                        name: {
+                            $regex: search,
+                            $options: "i"
+                        },
+                        designerType: {
+                            $in: reqBody.designerTypeArr
+                        }
+                    }
+                }
                 Designer.find({
                     name: {
                         $regex: search,
                         $options: "i"
+                    },
+                    designerType: {
+                        $in: reqBody.designerTypeArr
                     }
                 }).sort({
                     name: 1
@@ -150,18 +262,40 @@ var models = {
                         console.log("Designer >>> searchDesigner >>> async.parallel >>> err", err);
                         callback(err, []);
                     } else {
-                        resObj.secondObj=designerNameFound;
+                        resObj.secondObj = designerNameFound;
                         callback(null, resObj);
                     }
                 })
             },
             function (callback) {
-                 resObj.thirdObj = [];
+                resObj.thirdObj = [];
                 var search = new RegExp('^' + trimText[2]);
+                var matchObj = {};
+                if (_.isEmpty(reqBody.designerTypeArr)) {
+                    matchObj = {
+                        name: {
+                            $regex: search,
+                            $options: "i"
+                        }
+                    }
+                } else {
+                    matchObj = {
+                        name: {
+                            $regex: search,
+                            $options: "i"
+                        },
+                        designerType: {
+                            $in: reqBody.designerTypeArr
+                        }
+                    }
+                }
                 Designer.find({
                     name: {
                         $regex: search,
                         $options: "i"
+                    },
+                    designerType: {
+                        $in: reqBody.designerTypeArr
                     }
                 }).sort({
                     name: 1
@@ -170,7 +304,7 @@ var models = {
                         console.log("Events >>> searchEvent >>> async.parallel  >>> err", err);
                         callback(err, []);
                     } else {
-                        resObj.thirdObj=designerNameFound;
+                        resObj.thirdObj = designerNameFound;
                         callback(null, resObj);
                     }
                 })
@@ -183,6 +317,7 @@ var models = {
                 callback(null, resObj);
             }
         }) //End of async.parallel
+
     },
 
     getOne: function (data, callback) {
