@@ -393,14 +393,17 @@ var models = {
                     obj.ShippingAddressCountry = orderdata.shippingAddressCountry;
                     _.each(orderdata.cartproduct, function (cartpro) {
                         // arrCartproduct.push(cartpro.product.name);
+                         if(cartpro.product){
                         obj.ProductName = cartpro.product.name;
-                        obj.Size = cartpro.size;
-                        obj.DesignBy = cartpro.by;
-                        if (cartpro.duration == 4) {
+                         if (cartpro.duration == 4) {
                             obj.Price = cartpro.product.fourdayrentalamount;
                         } else {
                             obj.Price = cartpro.product.eightdayrentalamount;
                         }
+                         }
+                        obj.Size = cartpro.size;
+                        obj.DesignBy = cartpro.by;
+                       
                         obj.Duration = cartpro.duration;
                         obj.RentalDate = cartpro.timeFrom;
                         obj.DeliveryTime = cartpro.deliveryTime;
@@ -425,7 +428,9 @@ var models = {
                 var sendobj = {};
                 obj.OrderId = orderdata.orderid;
                 obj.OrderStatus = orderdata.orderstatus;
+                if(orderdata.user){
                 obj.User = orderdata.user.name;
+                }
                 obj.PaymentMode = orderdata.paymentmode;
                 obj.TransactionId = orderdata.transactionid;
                 obj.Total = orderdata.total;
@@ -457,14 +462,17 @@ var models = {
                 obj.ShippingAddressCountry = orderdata.shippingAddressCountry;
                 _.each(orderdata.cartproduct, function (cartpro) {
                     // arrCartproduct.push(cartpro.product.name);
+                    if(cartpro.product){
                     obj.ProductName = cartpro.product.name;
-                    obj.Size = cartpro.size;
-                    obj.DesignBy = cartpro.by;
-                    if (cartpro.duration == 4) {
+                     if (cartpro.duration == 4) {
                         obj.Price = cartpro.product.fourdayrentalamount;
                     } else {
                         obj.Price = cartpro.product.eightdayrentalamount;
                     }
+                    }
+                    obj.Size = cartpro.size;
+                    obj.DesignBy = cartpro.by;
+                   
                     obj.Duration = cartpro.duration;
                     obj.RentalDate = cartpro.timeFrom;
                     obj.DeliveryTime = cartpro.deliveryTime;
