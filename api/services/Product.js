@@ -1389,7 +1389,52 @@ var models = {
                 });
             }
         });
-    }
+    },
+
+      getProductByDesigner: function (data, callback) {
+        var matchobj = {
+            designer: data.designerId
+        };
+
+        var newreturns = {};
+        newreturns.data = [];
+        data.pagesize = parseInt(data.pagesize);
+        data.pagenumber = parseInt(data.pagenumber);
+        async.parallel([
+            function (callback) {
+                Product.find(matchobj).select('_id name designer fourdayrentalamount eightdayrentalamount images subcategory').populate('designer', 'name').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        newreturns.data = found;
+                        callback(null, newreturns);
+                    }
+                });
+            },
+            function (callback) {
+                Product.find(matchobj).count(function (err, count) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else {
+                        // console.log("Number of docs: ", count);
+                        newreturns.totalpages = Math.ceil(count / data.pagesize);
+                        newreturns.totalItems = count;
+                        callback(null, newreturns);
+                    }
+
+                });
+            }
+        ], function (err, data3) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, newreturns);
+            }
+        });
+    },
 }
 
 module.exports = _.assign(module.exports, models);

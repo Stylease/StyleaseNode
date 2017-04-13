@@ -195,6 +195,7 @@ var resObj = {};
                 var search = new RegExp('^' + trimText[0]);
                 var matchObj = {};
                 if (_.isEmpty(reqBody.designerTypeArr)) {
+                    console.log("empty")
                     matchObj = {
                         name: {
                             $regex: search,
@@ -247,15 +248,7 @@ var resObj = {};
                         }
                     }
                 }
-                Designer.find({
-                    name: {
-                        $regex: search,
-                        $options: "i"
-                    },
-                    designerType: {
-                        $in: reqBody.designerTypeArr
-                    }
-                }).sort({
+                Designer.find(matchObj).sort({
                     name: 1
                 }).exec(function (err, designerNameFound) {
                     if (err) {
@@ -289,15 +282,7 @@ var resObj = {};
                         }
                     }
                 }
-                Designer.find({
-                    name: {
-                        $regex: search,
-                        $options: "i"
-                    },
-                    designerType: {
-                        $in: reqBody.designerTypeArr
-                    }
-                }).sort({
+                Designer.find(matchObj).sort({
                     name: 1
                 }).exec(function (err, designerNameFound) {
                     if (err) {
