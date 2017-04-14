@@ -142,6 +142,26 @@ var models = {
             }
         });
     },
+      getAllByCatId: function (data, callback) {
+        this.find({
+            category:data.id
+        }, {
+            password: 0
+        }).sort({
+            _id: -1
+        }).populate("category", "_id  name", null, {
+            sort: {}
+        }).lean().exec(function (err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (found && found.length > 0) {
+                callback(null, found);
+            } else {
+                callback(null, []);
+            }
+        });
+    },
     getOne: function (data, callback) {
         this.findOne({
             "_id": data._id
