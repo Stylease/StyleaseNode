@@ -1391,18 +1391,18 @@ var models = {
         });
     },
 
-      getProductByDesigner: function (data, callback) {
-        var matchobj = {
-            designer: data.designerId
-        };
-
+    getProductByDesigner: function (data, callback) {
         var newreturns = {};
         newreturns.data = [];
         data.pagesize = parseInt(data.pagesize);
         data.pagenumber = parseInt(data.pagenumber);
         async.parallel([
             function (callback) {
-                Product.find(matchobj).select('_id name designer fourdayrentalamount eightdayrentalamount images subcategory').populate('designer', 'name').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
+                Product.find({
+                    designer: {
+                        $in: data.designerId
+                    }
+                }).select('_id name designer fourdayrentalamount eightdayrentalamount images subcategory').populate('designer', 'name').skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).exec(function (err, found) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
@@ -1413,7 +1413,11 @@ var models = {
                 });
             },
             function (callback) {
-                Product.find(matchobj).count(function (err, count) {
+                Product.find({
+                    designer: {
+                        $in: data.designerId
+                    }
+                }).count(function (err, count) {
                     if (err) {
                         console.log(err);
                         callback(err, null);
