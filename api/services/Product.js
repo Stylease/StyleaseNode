@@ -712,6 +712,33 @@ var models = {
             },
             status: true
         };
+        if (data.designerId) {
+            matchobj = {
+                subcategory: {
+                    $in: data.subcategory
+                },
+                fourdayrentalamount: {
+                    $gte: data.pricefrom,
+                    $lt: data.priceto
+                },
+                size: {
+                    $in: data.size
+                },
+                // size: {
+                //     $elemMatch: {
+                //         name: data.size
+                //     }
+                // },
+                color: {
+                    $in: data.color
+                },
+                status: true,
+                designer: {
+                    $in: data.designerId
+                }
+            };
+
+        }
 
         if (data.sort === "Recent Addition") {
             var sortfilter = {
