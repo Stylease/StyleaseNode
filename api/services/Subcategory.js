@@ -129,7 +129,7 @@ var models = {
             password: 0
         }).sort({
             _id: -1
-        }).populate("category", "_id  name", null, {
+        }).populate("category", "_id  name status", null, {
             sort: {}
         }).lean().exec(function (err, found) {
             if (err) {
@@ -149,7 +149,7 @@ var models = {
             password: 0
         }).sort({
             _id: -1
-        }).populate("category", "_id  name", null, {
+        }).populate("category", "_id  name status", null, {
             sort: {}
         }).lean().exec(function (err, found) {
             if (err) {
@@ -210,7 +210,7 @@ var models = {
                     }
                 }, {}).sort({
                     _id: -1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("category", "_id  name", null, {}).lean().exec(function (err, data2) {
+                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("category", "_id  name status", null, {}).lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
