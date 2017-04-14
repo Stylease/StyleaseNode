@@ -712,7 +712,7 @@ var models = {
             },
             status: true
         };
-        if (data.designerId) {
+        if (!_.isEmpty(data.designerId)) {
             matchobj = {
                 subcategory: {
                     $in: data.subcategory
