@@ -395,7 +395,9 @@ var models = {
                     var imgurl = "http://storage.googleapis.com/styleaseproducts/";
                     if (!_.isEmpty(stimg)) {
                         async.each(stimg, function (filename, callback) {
-                            i++;
+                            var indx = _.findIndex(stimg, function (o) {
+                                return o == filename;
+                            });
                             var newImg = imgurl + filename;
                             Config.downloadFromUrl(newImg, function (err, resimg) {
                                 if (err) {
@@ -403,7 +405,7 @@ var models = {
                                 } else {
                                     imagesarr.push({
                                         "image": resimg.name,
-                                        "order": i
+                                        "order": indx
                                     });
                                     callback(null, resimg);
                                 }
