@@ -5,11 +5,11 @@ var schema = new Schema({
         type: String,
         default: ""
     },
-    designerType: {
+    designerType: [{
         type: Schema.Types.ObjectId,
         ref: 'DesignerType',
         index: true
-    },
+    }],
     order: {
         type: Number,
         default: ""
@@ -185,7 +185,7 @@ var models = {
     //     }) //End of async.parallel
     // },
     getByDesignerTypeAlpha: function (reqBody, callback) {
-var resObj = {};
+        var resObj = {};
         console.log("reqBody ", reqBody);
         var trimText = reqBody.searchText;
         async.parallel([
