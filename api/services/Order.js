@@ -393,17 +393,17 @@ var models = {
                     obj.ShippingAddressCountry = orderdata.shippingAddressCountry;
                     _.each(orderdata.cartproduct, function (cartpro) {
                         // arrCartproduct.push(cartpro.product.name);
-                         if(cartpro.product){
-                        obj.ProductName = cartpro.product.name;
-                         if (cartpro.duration == 4) {
-                            obj.Price = cartpro.product.fourdayrentalamount;
-                        } else {
-                            obj.Price = cartpro.product.eightdayrentalamount;
+                        if (cartpro.product) {
+                            obj.ProductName = cartpro.product.name;
+                            if (cartpro.duration == 4) {
+                                obj.Price = cartpro.product.fourdayrentalamount;
+                            } else {
+                                obj.Price = cartpro.product.eightdayrentalamount;
+                            }
                         }
-                         }
                         obj.Size = cartpro.size;
                         obj.DesignBy = cartpro.by;
-                       
+
                         obj.Duration = cartpro.duration;
                         obj.RentalDate = cartpro.timeFrom;
                         obj.DeliveryTime = cartpro.deliveryTime;
@@ -428,8 +428,8 @@ var models = {
                 var sendobj = {};
                 obj.OrderId = orderdata.orderid;
                 obj.OrderStatus = orderdata.orderstatus;
-                if(orderdata.user){
-                obj.User = orderdata.user.name;
+                if (orderdata.user) {
+                    obj.User = orderdata.user.name;
                 }
                 obj.PaymentMode = orderdata.paymentmode;
                 obj.TransactionId = orderdata.transactionid;
@@ -462,17 +462,17 @@ var models = {
                 obj.ShippingAddressCountry = orderdata.shippingAddressCountry;
                 _.each(orderdata.cartproduct, function (cartpro) {
                     // arrCartproduct.push(cartpro.product.name);
-                    if(cartpro.product){
-                    obj.ProductName = cartpro.product.name;
-                     if (cartpro.duration == 4) {
-                        obj.Price = cartpro.product.fourdayrentalamount;
-                    } else {
-                        obj.Price = cartpro.product.eightdayrentalamount;
-                    }
+                    if (cartpro.product) {
+                        obj.ProductName = cartpro.product.name;
+                        if (cartpro.duration == 4) {
+                            obj.Price = cartpro.product.fourdayrentalamount;
+                        } else {
+                            obj.Price = cartpro.product.eightdayrentalamount;
+                        }
                     }
                     obj.Size = cartpro.size;
                     obj.DesignBy = cartpro.by;
-                   
+
                     obj.Duration = cartpro.duration;
                     obj.RentalDate = cartpro.timeFrom;
                     obj.DeliveryTime = cartpro.deliveryTime;
@@ -1317,21 +1317,10 @@ var models = {
         if (data.search && data.search !== '') {
 
             var obj = {
-                $or: [{
-                    firstname: {
-                        $regex: data.search,
-                        $options: 'i'
-                    }
-                }, {
-                    lastname: {
-                        $regex: data.search,
-                        $options: 'i'
-                    }
-                }, {
-                    mobile: {
-                        $regex: data.search
-                    }
-                }]
+                'user.name': {
+                    $regex: data.search,
+                    $options: 'i'
+                }
             };
             objArray.push(obj);
         }
@@ -1717,7 +1706,9 @@ var models = {
                     }
                 }
             },
-            orderstatus:{$ne: 'Refund' }
+            orderstatus: {
+                $ne: 'Refund'
+            }
         }).populate("cartproduct.product", "name rentalamount").sort({
             _id: -1
         }).limit(limit).exec(function (err, data2) {
@@ -1752,7 +1743,9 @@ var models = {
                     }
                 }
             },
-           orderstatus:{$ne: 'Refund' }
+            orderstatus: {
+                $ne: 'Refund'
+            }
         }).populate("cartproduct.product", "name rentalamount").sort({
             _id: -1
         }).limit(limit).exec(function (err, data2) {
@@ -1771,12 +1764,12 @@ var models = {
             }
         });
     },
-     getRefundOrders: function (data, callback) {
+    getRefundOrders: function (data, callback) {
         console.log("hi")
-       
+
         var limit = 10;
         Order.find({
-            orderstatus:'Refund'
+            orderstatus: 'Refund'
         }).populate("cartproduct.product", "name rentalamount").sort({
             _id: -1
         }).limit(limit).exec(function (err, data2) {

@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+global["deepPopulate"] = require('mongoose-deep-populate')(mongoose);
+
 var Schema = mongoose.Schema;
 var schema = new Schema({
     // title: {type:String,default:""},
@@ -20,11 +22,13 @@ var schema = new Schema({
     // // description: {type:Number,default:""},
     // // link: {type:String,default:""},
     // by: {type:String,default:""},
-    images: [{
-        image: String
-    }],
+    image: {
+        type: String
+    },
 });
+schema.plugin(deepPopulate, {
 
+});
 module.exports = mongoose.model('CelebrityChoice', schema);
 
 var models = {
@@ -179,11 +183,7 @@ var models = {
                     }
                 }, {}).sort({
                     _id: -1
-                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).populate("product", "_id name fourdayrentalamount eightdayrentalamount", null, {
-                    sort: {
-                        "name": 1
-                    }
-                }).lean().exec(function (err, data2) {
+                }).skip((data.pagenumber - 1) * data.pagesize).limit(data.pagesize).deepPopulate('product product.designer').lean().exec(function (err, data2) {
                     if (err) {
                         console.log(err);
                         callback1(err, null);
