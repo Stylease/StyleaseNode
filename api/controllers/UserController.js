@@ -473,6 +473,7 @@ module.exports = {
      backupDatabase: function (req, res) {
              var request = require('request');
         var mongoose = require('mongoose');
+         var moment = require('moment');
         var fs = require('fs');
         var exec = require('child_process').exec;
          
