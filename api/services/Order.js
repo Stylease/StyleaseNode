@@ -1264,6 +1264,7 @@ var models = {
         });
     },
     getLimitedWithFilter: function (data, callback) {
+        console.log("********data*********", data);
         var pagestartfrom = (data.pagenumber - 1) * data.pagesize;
         var subcategoryArray = [];
         var objArray = [];
@@ -1344,6 +1345,7 @@ var models = {
         }
         var newreturns = {};
         newreturns.data = [];
+        console.log("********objArray*********", objArray);
         async.parallel([
                 function (callback1) {
                     Order.aggregate([{
@@ -1356,7 +1358,10 @@ var models = {
                                 "as": "cartproduct.product"
                             }
                         }, {
-                            $unwind: "$cartproduct.product"
+                            $unwind: {
+                                path: "$cartproduct.product",
+                                "preserveNullAndEmptyArrays": true
+                            }
 
                         },
                         {
@@ -1368,28 +1373,42 @@ var models = {
                             }
                         },
                         {
-                            $unwind: "$user"
+                            $unwind: {
+                                path: "$user",
+                                "preserveNullAndEmptyArrays": true
+                            }
 
                         },
 
                         {
                             $match: {
-                                $and: objArray
+                                $or: objArray
                             }
                         }, {
+                            $group: {
+                                "_id": {
+                                    _id: "$_id"
+                                },
+                                count: {
+                                    $sum: 1
+                                }
+                            }
+                        },
+                        {
                             $group: {
                                 _id: null,
                                 count: {
                                     $sum: 1
                                 }
                             }
-                        }
+                        },
 
                     ]).exec(function (err, number) {
                         if (err) {
                             console.log(err);
                             callback1(err, null);
                         } else if (number) {
+                            console.log("number", number);
                             if ((number === undefined || number.length == 0)) {
                                 newreturns.totalpages = 0;
                             } else {
@@ -1414,7 +1433,10 @@ var models = {
                                 "as": "cartproduct.product"
                             }
                         }, {
-                            $unwind: "$cartproduct.product"
+                            $unwind: {
+                                path: "$cartproduct.product",
+                                "preserveNullAndEmptyArrays": true
+                            }
                         },
                         {
                             "$lookup": {
@@ -1425,12 +1447,15 @@ var models = {
                             }
                         },
                         {
-                            $unwind: "$user"
+                            $unwind: {
+                                path: "$user",
+                                "preserveNullAndEmptyArrays": true
+                            }
                         },
 
                         {
                             $match: {
-                                $and: objArray
+                                $or: objArray
                             }
                         }, {
                             $project: {
