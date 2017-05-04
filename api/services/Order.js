@@ -1551,7 +1551,7 @@ var models = {
         console.log("********data*********", data);
         var pagestartfrom = (data.pagenumber - 1) * data.pagesize;
         var objArray = [];
-        if (data.designer && data.designer !== '') {
+        if (data.designer && data.designer !== []) {
             var obj = {
                 'cartproduct.product.designer': {
                     $in: data.designer
@@ -1574,7 +1574,7 @@ var models = {
             objArray.push(obj);
             console.log("obj", objArray);
         }
-        if (data.subcategory && data.subcategory !== '') {
+        if (data.subcategory && data.subcategory !== []) {
             var subcategoryArr=[];
             _.forEach(data.subcategory,function(val){
                 subcategoryArr.push(ObjectID(val));
@@ -1587,6 +1587,16 @@ var models = {
             };
             objArray.push(obj);
         }
+         if (data.search && data.search !== '') {
+
+            var obj = {
+                'user.name': {
+                    $regex: data.search,
+                    $options: 'i'
+                }
+            };
+            objArray.push(obj);
+        }
         if (data.status && data.status !== '') {
             var obj = {
                 orderstatus: {
@@ -1595,7 +1605,7 @@ var models = {
             };
             objArray.push(obj);
         }
-        if (data.coupon && data.coupon !== '') {
+        if (data.coupon && data.coupon !== []) {
             var obj = {
                 coupon: {
                     $in: data.coupon
@@ -1614,7 +1624,8 @@ var models = {
             };
             objArray.push(obj);
         }
-        if (data.coupon == '' && data.rentalDate == '' && data.status == '' && data.subcategory == '' && data.designer == '' && data.search == '' && data.price == '') {
+        if (_.isEmpty(data.coupon) && _.isEmpty(data.rentalDate) && _.isEmpty(data.status) && _.isEmpty(data.subcategory) && _.isEmpty(data.designer) && _.isEmpty(data.search) && _.isEmpty(data.price) ) {
+            console.log("inside if");
             var obj = {
                 paymentmode: {
                     $regex: ''
@@ -1852,7 +1863,9 @@ var models = {
                         }
                     });
                 }
+                if(found.user && found.user.name){
                 found.user = found.user.name;
+                }
                 callback(null, found);
             } else {
                 callback(null, {});
