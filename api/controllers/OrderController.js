@@ -79,7 +79,16 @@ module.exports = {
             });
         }
     },
-
+getLimitedWithFilterPopup: function (req, res) {
+        if (req.body) {
+            Order.getLimitedWithFilterPopup(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
     delete: function (req, res) {
         if (req.body) {
             console.log(req.body);

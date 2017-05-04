@@ -1263,6 +1263,7 @@ var models = {
             }
         });
     },
+
     getLimitedWithFilter: function (data, callback) {
         console.log("********data*********", data);
         var pagestartfrom = (data.pagenumber - 1) * data.pagesize;
@@ -1278,7 +1279,7 @@ var models = {
             var nextday = new Date(data.rentalDate);
             nextday.setDate(nextday.getDate() + 1);
             var currdate = new Date(data.rentalDate);
-            var currdate = new Date(data.rentalDate);
+            // var currdate = new Date(data.rentalDate);
             console.log("inside currdate", currdate, "nextday", nextday);
             var obj = {
                 'cartproduct.timeFrom': {
@@ -1331,6 +1332,284 @@ var models = {
                 total: {
                     $gte: parseInt(pricearr[0]),
                     $lte: parseInt(pricearr[1])
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.coupon == '' && data.rentalDate == '' && data.status == '' && data.subcategory == '' && data.designer == '' && data.search == '' && data.price == '') {
+            var obj = {
+                paymentmode: {
+                    $regex: ''
+                }
+            };
+            objArray.push(obj);
+        }
+        var newreturns = {};
+        newreturns.data = [];
+        console.log("********objArray*********", objArray);
+        async.parallel([
+                function (callback1) {
+                    Order.aggregate([{
+                            $unwind: "$cartproduct"
+                        }, {
+                            "$lookup": {
+                                "from": "products",
+                                "localField": "cartproduct.product",
+                                "foreignField": "_id",
+                                "as": "cartproduct.product"
+                            }
+                        }, {
+                            $unwind: {
+                                path: "$cartproduct.product",
+                                "preserveNullAndEmptyArrays": true
+                            }
+
+                        },
+                        {
+                            "$lookup": {
+                                "from": "users",
+                                "localField": "user",
+                                "foreignField": "_id",
+                                "as": "user"
+                            }
+                        },
+                        {
+                            $unwind: {
+                                path: "$user",
+                                "preserveNullAndEmptyArrays": true
+                            }
+
+                        },
+
+                        {
+                            $match: {
+                                $or: objArray
+                            }
+                        }, {
+                            $group: {
+                                "_id": {
+                                    _id: "$_id"
+                                },
+                                count: {
+                                    $sum: 1
+                                }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: null,
+                                count: {
+                                    $sum: 1
+                                }
+                            }
+                        },
+
+                    ]).exec(function (err, number) {
+                        if (err) {
+                            console.log(err);
+                            callback1(err, null);
+                        } else if (number) {
+                            console.log("number", number);
+                            if ((number === undefined || number.length == 0)) {
+                                newreturns.totalpages = 0;
+                            } else {
+                                newreturns.totalpages = Math.ceil(number[0].count / data.pagesize);
+                            }
+
+                            callback1(null, newreturns);
+                        } else {
+                            newreturns.totalpages = 0;
+                            callback1(null, newreturns);
+                        }
+                    });
+                },
+                function (callback1) {
+                    Order.aggregate([{
+                            $unwind: "$cartproduct"
+                        }, {
+                            "$lookup": {
+                                "from": "products",
+                                "localField": "cartproduct.product",
+                                "foreignField": "_id",
+                                "as": "cartproduct.product"
+                            }
+                        }, {
+                            $unwind: {
+                                path: "$cartproduct.product",
+                                "preserveNullAndEmptyArrays": true
+                            }
+                        },
+                        {
+                            "$lookup": {
+                                "from": "users",
+                                "localField": "user",
+                                "foreignField": "_id",
+                                "as": "user"
+                            }
+                        },
+                        {
+                            $unwind: {
+                                path: "$user",
+                                "preserveNullAndEmptyArrays": true
+                            }
+                        },
+
+                        {
+                            $match: {
+                                $or: objArray
+                            }
+                        }, {
+                            $project: {
+                                "orderid": 1,
+                                "oid": "$_id",
+                                "user": "$user.name",
+                                "firstname": 1,
+                                "orderstatus": 1,
+                                "paymentmode": 1,
+                                "date": 1,
+                                "total": 1,
+                                "cartproduct.product._id": "$cartproduct.product._id",
+                                "cartproduct.duration": "$cartproduct.duration",
+                                "cartproduct.timeFrom": "$cartproduct.timeFrom",
+                                "cartproduct.timeTo": "$cartproduct.timeTo",
+                                "cartproduct.deliveryTime": "$cartproduct.deliveryTime",
+                                "cartproduct.pickupTime": "$cartproduct.pickupTime",
+                                "cartproduct.product.designer": "$cartproduct.product.designer",
+                                "cartproduct.product.name": "$cartproduct.product.name",
+                                "cartproduct.product.fourdayrentalamount": "$cartproduct.product.fourdayrentalamount",
+                                "cartproduct.product.eightdayrentalamount": "$cartproduct.product.eightdayrentalamount"
+                            }
+                        }, {
+                            $group: {
+                                _id: "$orderid",
+                                orderid: {
+                                    $first: '$orderid'
+                                },
+                                oid: {
+                                    $first: '$oid'
+                                },
+
+                                user: {
+                                    $first: '$user'
+                                },
+                                firstname: {
+                                    $first: '$firstname'
+                                },
+                                orderstatus: {
+                                    $first: '$orderstatus'
+                                },
+                                paymentmode: {
+                                    $first: '$paymentmode'
+                                },
+                                date: {
+                                    $first: '$date'
+                                },
+                                total: {
+                                    $first: '$total'
+                                },
+
+                                "cartproduct": {
+                                    $push: "$cartproduct"
+                                }
+                            }
+                        }, {
+                            $skip: parseInt(pagestartfrom)
+                        }, {
+                            $limit: data.pagesize
+                        }
+                    ]).exec(function (err, data2) {
+                        if (err) {
+                            console.log(err);
+                            callback1(err, null);
+                        } else {
+                            if (data2 && data2.length > 0) {
+                                console.log(" ##### ");
+                                console.log(data2);
+                                newreturns.data = data2;
+                                newreturns.pagenumber = data.pagenumber;
+                                callback1(null, newreturns);
+                            } else {
+                                callback1({
+                                    message: "No data found"
+                                }, null);
+                            }
+                        }
+                    });
+                }
+            ],
+            function (err, respo) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    callback(null, newreturns);
+                }
+            });
+    },
+
+    getLimitedWithFilterPopup: function (data, callback) {
+        console.log("********data*********", data);
+        var pagestartfrom = (data.pagenumber - 1) * data.pagesize;
+        var objArray = [];
+        if (data.designer && data.designer !== '') {
+            var obj = {
+                'cartproduct.product.designer': {
+                    $in: data.designer
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.rentalDate && data.rentalDate !== '') {
+            var nextday = new Date(data.rentalDate);
+            nextday.setDate(nextday.getDate() + 1);
+            var currdate = new Date(data.rentalDate);
+            // var currdate = new Date(data.rentalDate);
+            console.log("inside currdate", currdate, "nextday", nextday);
+            var obj = {
+                'cartproduct.timeFrom': {
+                    $gte: currdate,
+                    $lt: nextday
+                }
+            };
+            objArray.push(obj);
+            console.log("obj", objArray);
+        }
+        if (data.subcategory && data.subcategory !== '') {
+            var subcategoryArr=[];
+            _.forEach(data.subcategory,function(val){
+                subcategoryArr.push(ObjectID(val));
+            })
+            console.log(data.subcategory);
+            var obj = {
+                'cartproduct.product.subcategory': {
+                    $in:subcategoryArr
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.status && data.status !== '') {
+            var obj = {
+                orderstatus: {
+                    $in:data.status
+                }
+            };
+            objArray.push(obj);
+        }
+        if (data.coupon && data.coupon !== '') {
+            var obj = {
+                coupon: {
+                    $in: data.coupon
+                }
+            };
+            objArray.push(obj);
+        }
+
+        if (data.price && data.price !== '') {
+            var pricearr = data.price.split('-');
+            var obj = {
+                total: {
+                        $gte: parseInt(pricearr[0]),
+                        $lte: parseInt(pricearr[1])
                 }
             };
             objArray.push(obj);
