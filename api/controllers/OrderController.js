@@ -79,7 +79,8 @@ module.exports = {
             });
         }
     },
-getLimitedWithFilterPopup: function (req, res) {
+
+    getLimitedWithFilterPopup: function (req, res) {
         if (req.body) {
             Order.getLimitedWithFilterPopup(req.body, res.callback);
         } else {
@@ -207,7 +208,7 @@ getLimitedWithFilterPopup: function (req, res) {
             });
         }
     },
-    getRefundOrders : function (req, res) {
+    getRefundOrders: function (req, res) {
         if (req.body) {
             Order.getRefundOrders(req.body, res.callback);
         } else {
@@ -216,5 +217,12 @@ getLimitedWithFilterPopup: function (req, res) {
                 data: "Invalid Request"
             });
         }
+    },
+
+    getDesignerOrderDetail: function (req, res) {
+        Order.getDesignerOrderDetail(req.body, res)
+    },
+    getDesignerOrderDetailExcel: function (req, res) {
+        Order.getDesignerOrderDetailExcel(req.query, res)
     },
 };

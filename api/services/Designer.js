@@ -390,6 +390,41 @@ var models = {
             }
         });
     },
+
+    //Get desinger name
+    getMyDesigner: function (data, callback) {
+        var trimText = data.searchText.trim();
+        var search = new RegExp('^' + trimText);
+        var queryString = {};
+        if (data.searchText) {
+            queryString.name = {
+                $regex: search,
+                $options: "i"
+            };
+
+            Designer.find(queryString).exec(function (error, found) {
+                if (error || found == undefined) {
+                    console.log("Designer >>> getMyDesigner >>> Designer.find >>> error >>>", error);
+                    callback(error, null);
+                } else {
+                    if (found.length > 0) {
+                        callback(null, found);
+                    } else {
+                        callback(null, {
+                            message: "No data found"
+                        });
+                    }
+                }
+            })
+        } else {
+            callback(null, {
+                message: "Please provide search text"
+            });
+        }
+
+
+
+    }
 };
 
 module.exports = _.assign(module.exports, models);

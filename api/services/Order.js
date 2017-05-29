@@ -1575,19 +1575,19 @@ var models = {
             console.log("obj", objArray);
         }
         if (data.subcategory && data.subcategory !== []) {
-            var subcategoryArr=[];
-            _.forEach(data.subcategory,function(val){
+            var subcategoryArr = [];
+            _.forEach(data.subcategory, function (val) {
                 subcategoryArr.push(ObjectID(val));
             })
             console.log(data.subcategory);
             var obj = {
                 'cartproduct.product.subcategory': {
-                    $in:subcategoryArr
+                    $in: subcategoryArr
                 }
             };
             objArray.push(obj);
         }
-         if (data.search && data.search !== '') {
+        if (data.search && data.search !== '') {
 
             var obj = {
                 'user.name': {
@@ -1600,7 +1600,7 @@ var models = {
         if (data.status && data.status !== '') {
             var obj = {
                 orderstatus: {
-                    $in:data.status
+                    $in: data.status
                 }
             };
             objArray.push(obj);
@@ -1618,13 +1618,13 @@ var models = {
             var pricearr = data.price.split('-');
             var obj = {
                 total: {
-                        $gte: parseInt(pricearr[0]),
-                        $lte: parseInt(pricearr[1])
+                    $gte: parseInt(pricearr[0]),
+                    $lte: parseInt(pricearr[1])
                 }
             };
             objArray.push(obj);
         }
-        if (_.isEmpty(data.coupon) && _.isEmpty(data.rentalDate) && _.isEmpty(data.status) && _.isEmpty(data.subcategory) && _.isEmpty(data.designer) && _.isEmpty(data.search) && _.isEmpty(data.price) ) {
+        if (_.isEmpty(data.coupon) && _.isEmpty(data.rentalDate) && _.isEmpty(data.status) && _.isEmpty(data.subcategory) && _.isEmpty(data.designer) && _.isEmpty(data.search) && _.isEmpty(data.price)) {
             console.log("inside if");
             var obj = {
                 paymentmode: {
@@ -1863,8 +1863,8 @@ var models = {
                         }
                     });
                 }
-                if(found.user && found.user.name){
-                found.user = found.user.name;
+                if (found.user && found.user.name) {
+                    found.user = found.user.name;
                 }
                 callback(null, found);
             } else {
@@ -2101,6 +2101,225 @@ var models = {
                     callback({
                         message: "No data found"
                     }, null);
+                }
+            }
+        });
+    },
+
+
+    //Code by Nilesh
+    //To get designer order details of perticular duration
+    getDesignerOrderDetail: function (data, callback) {
+        var matchdesigner = {
+            "cartproduct.product.designer": ObjectID(data.designer)
+        }
+
+        if (data.startDate && data.endDate) {
+            var queryString = {
+                date: {
+                    $gte: new Date(data.startDate),
+                    $lte: new Date(data.endDate)
+                },
+            };
+
+        } else if (data.startDate) {
+            var queryString = {
+                date: {
+                    $gte: new Date(data.startDate)
+                }
+            };
+        } else if (data.endDate) {
+            var queryString = {
+                date: {
+                    $lte: new Date(data.endDate)
+                }
+            };
+        } else {
+            var queryString = {};
+        }
+
+
+        //Query to get desinger data
+        Order.aggregate([{
+                $match: queryString
+            }, {
+                $unwind: "$cartproduct"
+            }, {
+                "$lookup": {
+                    "from": "products",
+                    "localField": "cartproduct.product",
+                    "foreignField": "_id",
+                    "as": "cartproduct.product"
+                }
+            }, {
+                $unwind: "$cartproduct.product"
+
+            }, {
+                $match: matchdesigner
+            }, {
+                $project: {
+                    "orderid": 1,
+                    "cartproduct.product.name": "$cartproduct.product.name",
+                    "cartproduct.product.price": "$cartproduct.product.price",
+                    "cartproduct.product.fourdayrentalamount": "$cartproduct.product.fourdayrentalamount",
+                    "cartproduct.product.eightdayrentalamount": "$cartproduct.product.eightdayrentalamount",
+                    "cartproduct.RentalDate": "$cartproduct.timeFrom",
+                    "rentalamount": 1,
+                    // "totalRentalAmount": {
+                    //     $sum: rentalamount
+                    // }
+                }
+            },
+            {
+                $group: {
+                    _id: "$orderid",
+                    orderid: {
+                        $first: '$orderid'
+                    },
+                    totalRentalAmount: {
+                        $sum: "$rentalamount"
+                    },
+                    "cartproduct": {
+                        $push: "$cartproduct"
+                    }
+                }
+            }
+        ], function (error, found) {
+            if (error || found == undefined) {
+                callback(error, null);
+            } else {
+                var resObj = {};
+                var excelData = [];
+                var designerName = data.designerName;
+                // var designerName = "Nilesh";
+                resObj.designerName = designerName;
+                if (found.length > 0) {
+                    resObj.totalRentalAmount = 0;
+                    _.each(found, function (n) {
+                        resObj.totalRentalAmount = resObj.totalRentalAmount + n.totalRentalAmount;
+                    });
+                    resObj.salesDetails = found;
+                    callback.callback(null, resObj);
+                    // excelData.push(resObj);
+                    // Config.generateExcel("DesignerSalesReport", excelData, callback);
+                } else {
+                    resObj.totalRentalAmount = 0;
+                    resObj.salesDetails = [];
+                    callback.callback(null, resObj);
+                }
+            }
+        });
+    },
+
+    //To get designer order details and generate excelData
+    getDesignerOrderDetailExcel: function (data, callback) {
+        var matchdesigner = {
+            "cartproduct.product.designer": ObjectID(data.designer)
+        }
+
+        if (data.startDate && data.endDate) {
+            var queryString = {
+                date: {
+                    $gte: new Date(data.startDate),
+                    $lte: new Date(data.endDate)
+                },
+            };
+
+        } else if (data.startDate) {
+            var queryString = {
+                date: {
+                    $gte: new Date(data.startDate)
+                }
+            };
+        } else if (data.endDate) {
+            var queryString = {
+                date: {
+                    $lte: new Date(data.endDate)
+                }
+            };
+        } else {
+            var queryString = {};
+        }
+
+
+        //Query to get desinger data
+        Order.aggregate([{
+                $match: queryString
+            }, {
+                $unwind: "$cartproduct"
+            }, {
+                "$lookup": {
+                    "from": "products",
+                    "localField": "cartproduct.product",
+                    "foreignField": "_id",
+                    "as": "cartproduct.product"
+                }
+            }, {
+                $unwind: "$cartproduct.product"
+
+            }, {
+                $match: matchdesigner
+            }, {
+                $project: {
+                    "orderid": 1,
+                    "cartproduct.product.name": "$cartproduct.product.name",
+                    "cartproduct.product.price": "$cartproduct.product.price",
+                    "cartproduct.product.fourdayrentalamount": "$cartproduct.product.fourdayrentalamount",
+                    "cartproduct.product.eightdayrentalamount": "$cartproduct.product.eightdayrentalamount",
+                    "cartproduct.RentalDate": "$cartproduct.timeFrom",
+                    "rentalamount": 1,
+                    // "totalRentalAmount": {
+                    //     $sum: rentalamount
+                    // }
+                }
+            },
+            {
+                $group: {
+                    _id: "$orderid",
+                    orderid: {
+                        $first: '$orderid'
+                    },
+                    totalRentalAmount: {
+                        $sum: "$rentalamount"
+                    },
+                    "cartproduct": {
+                        $push: "$cartproduct"
+                    }
+                }
+            }
+        ], function (error, found) {
+            if (error || found == undefined) {
+                callback(error, null);
+            } else {
+                var resObj = {};
+                var excelData = [];
+                var designerName = data.designerName;
+                // var designerName = "Nilesh";
+                resObj.designerName = designerName;
+                if (found.length > 0) {
+                    resObj.totalRentalAmount = 0;
+                    _.each(found, function (n) {
+                        resObj.totalRentalAmount = resObj.totalRentalAmount + n.totalRentalAmount;
+                        _.each(n.cartproduct, function (m) {
+                            var product = {};
+                            product.orderId = n.orderid;
+                            product.name = m.product.name;
+                            product.price = m.product.price;
+                            product.fourdayrentalamount = m.product.fourdayrentalamount;
+                            product.eightdayrentalamount = m.product.eightdayrentalamount;
+                            product.RentalDate = m.RentalDate;
+                            product.totalRentalAmount = n.totalRentalAmount;
+                            excelData.push(product);
+                        });
+                    });
+                    // resObj.salesDetails = found;
+                    // callback.callback(null, resObj);
+                    // excelData.push(resObj);
+                    Config.generateExcel("DesignerSalesReport", excelData, callback);
+                } else {
+                    resObj.totalRentalAmount = 0;
+                    resObj.salesDetails = [];
+                    callback.callback(null, resObj);
                 }
             }
         });

@@ -76,7 +76,7 @@ module.exports = {
     //         });
     //     }
     // },
-    getByDesignerTypeAlpha:function (req, res) {
+    getByDesignerTypeAlpha: function (req, res) {
         function callback(err, data) {
             Global.response(err, data, res);
         }
@@ -110,6 +110,11 @@ module.exports = {
             });
         }
     },
+
+    //To get Designer name
+    getMyDesigner: function (req, res) {
+        Designer.getMyDesigner(req.body, res.callback);
+    }
 
 
 };
