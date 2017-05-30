@@ -2122,22 +2122,27 @@ var models = {
                     $gte: new Date(data.startDate),
                     $lte: new Date(data.endDate)
                 },
+                $nin: ["Refund", "Processing"]
             };
 
         } else if (data.startDate) {
             var queryString = {
                 date: {
                     $gte: new Date(data.startDate)
-                }
+                },
+                $nin: ["Refund", "Processing"]
             };
         } else if (data.endDate) {
             var queryString = {
                 date: {
                     $lte: new Date(data.endDate)
-                }
+                },
+                $nin: ["Refund", "Processing"]
             };
         } else {
-            var queryString = {};
+            var queryString = {
+                $nin: ["Refund", "Processing"]
+            };
         }
 
 
@@ -2225,22 +2230,27 @@ var models = {
                     $gte: new Date(data.startDate),
                     $lte: new Date(data.endDate)
                 },
+                $nin: ["Refund", "Processing"]
             };
 
         } else if (data.startDate) {
             var queryString = {
                 date: {
                     $gte: new Date(data.startDate)
-                }
+                },
+                $nin: ["Refund", "Processing"]
             };
         } else if (data.endDate) {
             var queryString = {
                 date: {
                     $lte: new Date(data.endDate)
-                }
+                },
+                $nin: ["Refund", "Processing"]
             };
         } else {
-            var queryString = {};
+            var queryString = {
+                $nin: ["Refund", "Processing"]
+            };
         }
 
 
