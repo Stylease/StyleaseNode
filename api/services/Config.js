@@ -54,7 +54,6 @@ module.exports = {
             excelData.push(singleExcel);
         });
         var xls = json2xls(excelData);
-        console.log(xls);
         var folder = "././.tmp/";
         var path = name + "-" + moment().format("MMM-DD-YYYY-hh-mm-ss-a") + ".xlsx";
         var finalPath = folder + path;

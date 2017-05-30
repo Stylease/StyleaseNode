@@ -2024,7 +2024,8 @@ var models = {
                 }
             },
             orderstatus: {
-                $ne: 'Refund'
+                // $ne: 'Refund'
+                $nin: ["Refund", "Processing"]
             }
         }).populate("cartproduct.product", "name rentalamount").sort({
             _id: -1
@@ -2061,7 +2062,8 @@ var models = {
                 }
             },
             orderstatus: {
-                $ne: 'Refund'
+                // $ne: 'Refund'
+                $nin: ["Refund", "Processing"]
             }
         }).populate("cartproduct.product", "name rentalamount").sort({
             _id: -1
@@ -2314,12 +2316,14 @@ var models = {
                     });
                     // resObj.salesDetails = found;
                     // callback.callback(null, resObj);
-                    // excelData.push(resObj);
+                    excelData.push(resObj);
+                    console.log("excelData", excelData);
                     Config.generateExcel("DesignerSalesReport", excelData, callback);
                 } else {
-                    resObj.totalRentalAmount = 0;
-                    resObj.salesDetails = [];
-                    callback.callback(null, resObj);
+                    // resObj.totalRentalAmount = 0;
+                    // resObj.salesDetails = [];
+                    // callback.callback(null, resObj);
+                    Config.generateExcel("DesignerSalesReport", excelData, callback);
                 }
             }
         });

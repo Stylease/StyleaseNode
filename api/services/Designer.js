@@ -93,7 +93,7 @@ var models = {
         this.find({}, {
             password: 0
         }).sort({
-            _id: -1
+            name: 1
         }).exec(function (err, found) {
             if (err) {
                 console.log(err);
