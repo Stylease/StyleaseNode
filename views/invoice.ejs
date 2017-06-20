@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<body style='margin:0px;-webkit-color: #0000;color: #0000;'>
+<body style='margin:0px;-webkit-color: #000;color: #000;'>
     <div style='width:600px;background-color: #fff6f1;font-family: sans-serif;color: #2d2d2d;'>
         <img href='#' src='http://wohlig.co.in/stylease/img/Layer-1.png'>
         <div style='padding:0px 8% 0 13%;'>
@@ -41,7 +41,7 @@
             <table style='width: 100%;margin: 8% 0;'>
             <% cartproduct.forEach(function(cartpro) { %>
                 <tr>
-                    <!--<td style='text-align: center;width: 35%;'><img style='width: 84px;margin: -9% 0%;' src='http://admin.thestylease.com/upload/readFile?file=<%= cartpro.product.images[0].image %>'>-->
+                    <td style='text-align: center;width: 35%;'><img style='width: 84px;margin: -9% 0%;' src='http://admin.thestylease.com/upload/readFile?file=<%= cartpro.product.images[0].image %>'>
                      <br><span> <%= cartpro.product.name %></span></td>
                     <td style='text-align: center;width: 35%;'> <%= cartpro.size %></td>
    <%if (cartpro.duration == 4) { %>
