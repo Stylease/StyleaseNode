@@ -84,7 +84,7 @@
         <% cartproduct.forEach(function(cartpro) { %>
           <tr>
             <td style="width:300px; text-align:center;font-weight:600;padding: 7px;text-transform: uppercase;">
-              
+              <img src='http://104.155.129.33:81/upload/readFile?file=<%= cartpro.product.images[0].image %>' alt="Stylease" style="width: 100px;margin: 0 auto 5px;overflow: hidden;">
               <br><span> <%= cartpro.product.name %></span>
             </td>
             <td style="text-align:center;font-weight:600;padding: 7px;text-transform: uppercase;">
