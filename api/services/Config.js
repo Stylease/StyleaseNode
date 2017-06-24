@@ -297,7 +297,7 @@ module.exports = {
         });
     },
     email: function (data, callback) {
-        // console.log("######################### email data ##########################",data);
+        console.log("######################### email data ##########################",data);
         Password.find().exec(function (err, userdata) {
             if (err) {
                 console.log(err);
@@ -308,7 +308,8 @@ module.exports = {
                         url: requrl + "config/emailReader/",
                         json: data
                     }, function (err, http, body) {
-                        // console.log("######################### err, http, body ##########################",err, http, body);
+                        console.log("######################### err, http, body ##########################",err, http, body);
+                        console.log("######################### body ##########################",body);
                         if (err) {
                             console.log(err);
                             callback(err, null);
