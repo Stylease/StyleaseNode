@@ -162,39 +162,59 @@ var models = {
             emailData.subject = "Order confirmation - TheStylease";
             // console.log("eee", emailData);
 
-            async.parallel({
-                emailToCustomer:function(cb){
-                    Config.email(emailData, function (err, emailRespo) {
-                        if (err) {
-                            console.log(err);
-                            cb(err, null);
-                        } else {
-                            cb();
-                        }
-                    });
-                },
-                emailToAdmin:function(cb){
+            // async.parallel({
+            //     emailToCustomer:function(cb){
+            //         Config.email(emailData, function (err, emailRespo) {
+            //             if (err) {
+            //                 console.log(err);
+            //                 cb(err, null);
+            //             } else {
+            //                 cb();
+            //             }
+            //         });
+            //     },
+            //     emailToAdmin:function(cb){
                    
-                    emailData.fromname = 'orders@thestylease.com';
-                    emailData.email = 'harsh@wohlig.com';
+            //         emailData.fromname = 'orders@thestylease.com';
+            //         emailData.email = 'contact@thestylease.com';
                     
+            //         Config.email(emailData, function (err, emailRespo) {
+            //             if (err) {
+            //                 console.log(err);
+            //                 cb(err, null);
+            //             } else {
+            //                 cb();
+            //             }
+            //         });
+            //     }
+            // },function(error){
+            //     if(error){
+            //         console.log(error);
+            //         callback(error, null);
+            //     }else{
+
+            //     }
+            // })
+
+            Config.email(emailData, function (err, emailRespo) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else {
+                    // callback(null, emailRespo);
+                    emailData.fromname = 'orders@thestylease.com';
+                    // emailData.email = 'contact@thestylease.com';
+                    emailData.email = 'harsh@wohlig.com';
                     Config.email(emailData, function (err, emailRespo) {
                         if (err) {
                             console.log(err);
-                            cb(err, null);
+                            callback(err, null);
                         } else {
-                            cb();
+                            // callback(null, emailRespo);
                         }
                     });
                 }
-            },function(error){
-                if(error){
-                    console.log(error);
-                    callback(error, null);
-                }else{
-
-                }
-            })
+            });
         });
 
 
