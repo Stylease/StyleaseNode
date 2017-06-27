@@ -161,14 +161,41 @@ var models = {
             emailData.orderno = data.orderid;
             emailData.subject = "Order confirmation - TheStylease";
             // console.log("eee", emailData);
-            Config.email(emailData, function (err, emailRespo) {
-                if (err) {
+
+            async.parallel({
+                emailToCustomer:function(cb){
+                    Config.email(emailData, function (err, emailRespo) {
+                        if (err) {
+                            console.log(err);
+                            cb(err, null);
+                        } else {
+                            cb(null, {});
+                        }
+                    });
+                },
+                emailToAdmin:function(cb){
+                    var adminEmailData = {};
+                    adminEmailData = _.cloneDeep(emailData);
+                    delete adminEmailData.fromname; 
+                    delete adminEmailData.email; 
+                    adminEmailData.fromname = 'orders@thestylease.com';
+                    adminEmailData.email = 'orders@thestylease.com';
+                    
+                    Config.email(adminEmailData, function (err, emailRespo) {
+                        if (err) {
+                            console.log(err);
+                            cb(err, null);
+                        } else {
+                            cb(null, {});
+                        }
+                    });
+                }
+            },function(error){
+                if(error){
                     console.log(err);
                     callback(err, null);
-                } else {
-                    // callback(null, emailRespo);
                 }
-            });
+            })
         });
 
 
