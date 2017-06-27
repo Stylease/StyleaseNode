@@ -174,12 +174,9 @@ var models = {
                     });
                 },
                 emailToAdmin:function(cb){
-                    var adminEmailData = {};
-                    adminEmailData = _.cloneDeep(emailData);
-                    delete adminEmailData.fromname; 
-                    delete adminEmailData.email; 
-                    adminEmailData.fromname = 'orders@thestylease.com';
-                    adminEmailData.email = 'harsh@wohlig.com';
+                   
+                    emailData.fromname = 'orders@thestylease.com';
+                    emailData.email = 'harsh@wohlig.com';
                     
                     Config.email(adminEmailData, function (err, emailRespo) {
                         if (err) {
