@@ -178,7 +178,7 @@ var models = {
                     emailData.fromname = 'orders@thestylease.com';
                     emailData.email = 'harsh@wohlig.com';
                     
-                    Config.email(adminEmailData, function (err, emailRespo) {
+                    Config.email(emailData, function (err, emailRespo) {
                         if (err) {
                             console.log(err);
                             cb(err, null);
