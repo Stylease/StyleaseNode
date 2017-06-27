@@ -203,8 +203,8 @@ var models = {
                 } else {
                     // callback(null, emailRespo);
                     emailData.fromname = 'orders@thestylease.com';
-                    // emailData.email = 'contact@thestylease.com';
-                    emailData.email = 'harsh@wohlig.com';
+                    emailData.email = 'contact@thestylease.com';
+                    // emailData.email = 'harsh@wohlig.com';
                     Config.email(emailData, function (err, emailRespo) {
                         if (err) {
                             console.log(err);
