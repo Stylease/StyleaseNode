@@ -192,10 +192,10 @@ var models = {
                 }
             },function(error){
                 if(error){
-                    console.log(err);
-                    callback(err, null);
+                    console.log(error);
+                    callback(error, null);
                 }else{
-                    
+
                 }
             })
         });
