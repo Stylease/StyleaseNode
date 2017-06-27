@@ -169,7 +169,7 @@ var models = {
                             console.log(err);
                             cb(err, null);
                         } else {
-                            cb(null, {});
+                            cb();
                         }
                     });
                 },
@@ -179,14 +179,14 @@ var models = {
                     delete adminEmailData.fromname; 
                     delete adminEmailData.email; 
                     adminEmailData.fromname = 'orders@thestylease.com';
-                    adminEmailData.email = 'orders@thestylease.com';
+                    adminEmailData.email = 'harsh@wohlig.com';
                     
                     Config.email(adminEmailData, function (err, emailRespo) {
                         if (err) {
                             console.log(err);
                             cb(err, null);
                         } else {
-                            cb(null, {});
+                            cb();
                         }
                     });
                 }
@@ -194,6 +194,8 @@ var models = {
                 if(error){
                     console.log(err);
                     callback(err, null);
+                }else{
+                    
                 }
             })
         });
